@@ -9,11 +9,30 @@ export default class TypingTest extends Component {
         this.onInputChange = this.onInputChange.bind(this);
         this.compare = this.compare.bind(this);
 
+
         this.state = {
             quote_name: 'Test Quote Title',
-            quote_body : 'This is a test quote that I am hardcoding to make this site',
+            quote_body : 'This is a "test" quote that I am hardcoding to make this site',
             user_input : '',
+            quote_words: [],
+            current_quote_word: '',
+            count: 0
         }
+    }
+
+    componentDidMount () {
+        let body = this.state.quote_body;
+        
+
+        let words = [];
+
+        words = body.split(" ");
+
+        this.setState({
+            quote_words : words,
+            current_quote_word : words[this.state.count]
+        })
+        
     }
 
     onInputChange (e) {
@@ -23,11 +42,21 @@ export default class TypingTest extends Component {
             user_input : e.target.value
         
         })
-        this.compare()
+        console.log(this.state.current_quote_word)
+        this.compare(this.state.current_quote_word)
     }
 
-    compare () {
-        if (this.state.quote_body === this.state.user_input) {
+ 
+
+    compare (current_word) {
+        
+        if (current_word === this.state.user_input) {
+            console.log("match")
+            this.setState({
+                current_quote_word : this.state.quote_words[this.state.count],
+                count: this.state.count + 1
+            })
+            console.log(this.state.count)
             
         }
     }
@@ -39,9 +68,13 @@ export default class TypingTest extends Component {
                 
                     
                 <table style={{borborderWidth: 5,  borderColor: "black", borderStyle: "solid"}}>
-                    <tr>
-                        <p>{this.state.quote_body}</p>
-                    </tr>
+
+                    <tbody>
+                         <tr>
+                            <p>{this.state.quote_body}</p>
+                        </tr>
+                    </tbody>
+                   
                 </table>
                  <br></br>   
                 <input type="text" onChange={this.onInputChange}></input>
