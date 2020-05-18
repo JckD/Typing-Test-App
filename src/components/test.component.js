@@ -27,18 +27,23 @@ export default class TypingTest extends Component {
     }
 
     compare () {
-
+        if (this.state.quote_body === this.state.user_input) {
+            
+        }
     }
 
     render() {
         return (
             <div className="container">
                 <h4>{this.state.quote_name}</h4>
-                <p>
-                <span className="border border-dark">{this.state.quote_body}</span>
-                </p>
+                
                     
-    
+                <table style={{borborderWidth: 5,  borderColor: "black", borderStyle: "solid"}}>
+                    <tr>
+                        <p>{this.state.quote_body}</p>
+                    </tr>
+                </table>
+                 <br></br>   
                 <input type="text" onChange={this.onInputChange}></input>
             </div>
         )
