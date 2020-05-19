@@ -17,6 +17,8 @@ export default class TypingTest extends Component {
             quote_body : 'This is a test quote that I am hardcoding to make this site',
             user_input : '',
             quote_words: [],
+            char_array: [],
+            current_quote_char: '',
             current_quote_word: '',
             count: 0
         }
@@ -27,16 +29,22 @@ export default class TypingTest extends Component {
         
 
         let words = [];
+        let chars = [];
 
         words = body.split(" ");
+        chars = Array.from(body);
 
         this.setState({
             quote_words : words,
-            current_quote_word : words[this.state.count]
+            current_quote_word : words[this.state.count],
+            char_array : chars,
+            current_quote_char : chars[this.state.count]
         })
         
     }
 
+    // Called whenever the user input is changed
+    // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
         console.log(e.target.value)
 
@@ -58,12 +66,16 @@ export default class TypingTest extends Component {
     }
 
  
-
+    // Called in onInputChange
+    // Takes the current word to be typed from state
+    // Compares it to the user input
+    // Checks the if the word count is equal to the length of the quote_words array; if it is the test is over and endTest() is called.
+    // If it is not the state of the current word is changed, the count is incremented and the user_input is set back to empty
     compare (current_word) {
 
         if (current_word === this.state.user_input) {
             console.log("match")
-            if (this.state.user_input === this.state.quote_words[this.state.quote_words.length-1] ) {
+            if (this.state.count === this.state.quote_words.length ) {
                 this.endTest();
             }
             else {
@@ -81,6 +93,8 @@ export default class TypingTest extends Component {
         console.log(this.state.current_quote_word)
     }
 
+    //Called whenever the reset button is pressed
+    //Resets the test by resetting the state to default.
     resetTest () {
         this.setState({
             quote_name: 'Test Quote Title',
@@ -95,6 +109,8 @@ export default class TypingTest extends Component {
             console.log(this.state)
     }
 
+    //Called when the end of the test is reached in compare()
+    // Calculates word per minute
     endTest () {
         console.log('Test is over!')
         this.resetTest();
