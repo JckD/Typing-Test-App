@@ -8,11 +8,13 @@ export default class TypingTest extends Component {
 
         this.onInputChange = this.onInputChange.bind(this);
         this.compare = this.compare.bind(this);
+        this.resetTest = this.resetTest.bind(this);
+        this.endTest = this.endTest.bind(this);
 
 
         this.state = {
             quote_name: 'Test Quote Title',
-            quote_body : 'This is a "test" quote that I am hardcoding to make this site',
+            quote_body : 'This is a test quote that I am hardcoding to make this site',
             user_input : '',
             quote_words: [],
             current_quote_word: '',
@@ -36,29 +38,67 @@ export default class TypingTest extends Component {
     }
 
     onInputChange (e) {
-        const fieldName = e.target.name;
+        console.log(e.target.value)
 
-        this.setState({
+        if (e.target.value === ' ') {
+            this.setState({
+                user_input : null
+            
+            })
+        }
+        else {
+
+            this.setState({
             user_input : e.target.value
-        
-        })
-        console.log(this.state.current_quote_word)
+            })
+        }
+       
+        //console.log(this.state.current_quote_word)
         this.compare(this.state.current_quote_word)
     }
 
  
 
     compare (current_word) {
-        
+
         if (current_word === this.state.user_input) {
             console.log("match")
-            this.setState({
-                current_quote_word : this.state.quote_words[this.state.count],
-                count: this.state.count + 1
-            })
-            console.log(this.state.count)
-            
+            if (this.state.user_input === this.state.quote_words[this.state.quote_words.length-1] ) {
+                this.endTest();
+            }
+            else {
+                this.setState({
+                    current_quote_word : this.state.quote_words[this.state.count],
+                    count: this.state.count + 1,
+                    user_input : ''
+                })  
+            }
+                document.getElementById('input').value ='';
+                console.log(this.state.user_input)
         }
+        
+        console.log(this.state.count)
+        console.log(this.state.current_quote_word)
+    }
+
+    resetTest () {
+        this.setState({
+            quote_name: 'Test Quote Title',
+            quote_body : 'This is a test quote that I am hardcoding to make this site',
+            user_input : '',
+            //quote_words: [],
+            current_quote_word: '',
+            count: 0,},
+            () => {
+                        console.log(this.state)
+            })
+            console.log(this.state)
+    }
+
+    endTest () {
+        console.log('Test is over!')
+        this.resetTest();
+        
     }
 
     render() {
@@ -66,18 +106,22 @@ export default class TypingTest extends Component {
             <div className="container">
                 <h4>{this.state.quote_name}</h4>
                 
-                    
                 <table style={{borborderWidth: 5,  borderColor: "black", borderStyle: "solid"}}>
-
                     <tbody>
                          <tr>
                             <p>{this.state.quote_body}</p>
                         </tr>
-                    </tbody>
-                   
+                    </tbody>      
                 </table>
+                <h5>Current Word: {this.state.current_quote_word}</h5>
                  <br></br>   
-                <input type="text" onChange={this.onInputChange}></input>
+                <input type="text" onChange={this.onInputChange} id='input'></input>
+                <button onClick={this.resetTest} style={{marginLeft: 10}} className="btn btn-light">
+                    <svg className="bi bi-arrow-repeat" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" d="M2.854 7.146a.5.5 0 00-.708 0l-2 2a.5.5 0 10.708.708L2.5 8.207l1.646 1.647a.5.5 0 00.708-.708l-2-2zm13-1a.5.5 0 00-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 00-.708.708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 000-.708z" clipRule="evenodd"/>
+                        <path fillRule="evenodd" d="M8 3a4.995 4.995 0 00-4.192 2.273.5.5 0 01-.837-.546A6 6 0 0114 8a.5.5 0 01-1.001 0 5 5 0 00-5-5zM2.5 7.5A.5.5 0 013 8a5 5 0 009.192 2.727.5.5 0 11.837.546A6 6 0 012 8a.5.5 0 01.501-.5z" clipRule="evenodd"/>
+                    </svg>
+                </button>
             </div>
         )
     }
