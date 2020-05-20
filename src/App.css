@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+
+.quote-current {
+  background-color: #c2ffd2;
+}
+
+.quote-left {
+  color: #bbb;
+}
+
+.quote-error {
+  background-color: #f00;
+  color: white;
+}
