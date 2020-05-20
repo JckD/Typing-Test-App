@@ -22,6 +22,7 @@ export default class TypingTest extends Component {
             current_quote_char: '',
             typed_chars: '',
             current_quote_word: '',
+            bg_colour: 'white',
             count: 0
         }
     }
@@ -48,14 +49,9 @@ export default class TypingTest extends Component {
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
-        console.log('inputbox value: '+ e.target.value) 
-
         this.setState({
             user_input : e.target.value
         }, () => this.compare(this.state.current_quote_char))
-       
-        //console.log(this.state.current_quote_word)
-        
     }
 
  
@@ -76,6 +72,7 @@ export default class TypingTest extends Component {
                     //current_quote_word : this.state.quote_words[this.state.count],
                     current_quote_char : state.char_array[state.count + 1],
                     count: state.count + 1,
+                    bg_colour : 'white',
                     typed_chars: state.typed_chars + state.user_input,
                     user_input : ''
                 }));  
@@ -84,7 +81,9 @@ export default class TypingTest extends Component {
         }
         else {
             console.log('bad')
-            document.getElementById('input').backgroundColor = 'lightred'
+            this.setState((state) => ({
+                bg_colour : '#ff6666'
+            }))
         }
     }
 
@@ -136,7 +135,7 @@ export default class TypingTest extends Component {
                 </table>
                 <h5>Current Character: {this.state.current_quote_char}</h5>
                  <br></br>   
-                <input type="text" onChange={this.onInputChange} id='input'></input>
+                <input type="text" onChange={this.onInputChange} id='input' style={{backgroundColor : this.state.bg_colour}}></input>
                 <button onClick={this.resetTest} style={{marginLeft: 10}} className="btn btn-light">
                     <svg className="bi bi-arrow-repeat" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" d="M2.854 7.146a.5.5 0 00-.708 0l-2 2a.5.5 0 10.708.708L2.5 8.207l1.646 1.647a.5.5 0 00.708-.708l-2-2zm13-1a.5.5 0 00-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 00-.708.708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 000-.708z" clipRule="evenodd"/>
