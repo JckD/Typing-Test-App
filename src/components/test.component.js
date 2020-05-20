@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Highlighter from 'react-highlight-words';
 
 
 export default class TypingTest extends Component {
@@ -14,11 +15,12 @@ export default class TypingTest extends Component {
 
         this.state = {
             quote_name: 'Test Quote Title',
-            quote_body : 'This is a test quote that I am hardcoding to make this site',
+            quote_body : 'This is a test quote that I am hardcoding to make this web app',
             user_input : '',
             quote_words: [],
             char_array: [],
             current_quote_char: '',
+            typed_chars: '',
             current_quote_word: '',
             count: 0
         }
@@ -34,35 +36,26 @@ export default class TypingTest extends Component {
         words = body.split(" ");
         chars = Array.from(body);
 
-        this.setState({
+        this.setState((state) => ({
             quote_words : words,
-            current_quote_word : words[this.state.count],
+            current_quote_word : words[state.count],
             char_array : chars,
-            current_quote_char : chars[this.state.count]
-        })
+            current_quote_char : chars[state.count]
+        }))
         
     }
 
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
-        console.log(e.target.value)
+        console.log('inputbox value: '+ e.target.value) 
 
-        if (e.target.value === ' ') {
-            this.setState({
-                user_input : null
-            
-            })
-        }
-        else {
-
-            this.setState({
+        this.setState({
             user_input : e.target.value
-            })
-        }
+        }, () => this.compare(this.state.current_quote_char))
        
         //console.log(this.state.current_quote_word)
-        this.compare(this.state.current_quote_word)
+        
     }
 
  
@@ -72,25 +65,27 @@ export default class TypingTest extends Component {
     // Checks the if the word count is equal to the length of the quote_words array; if it is the test is over and endTest() is called.
     // If it is not the state of the current word is changed, the count is incremented and the user_input is set back to empty
     compare (current_word) {
-
+        
         if (current_word === this.state.user_input) {
             console.log("match")
-            if (this.state.count === this.state.quote_words.length ) {
+            if (this.state.count === this.state.char_array.length ) {
                 this.endTest();
             }
             else {
-                this.setState({
-                    current_quote_word : this.state.quote_words[this.state.count],
-                    count: this.state.count + 1,
+                this.setState((state) => ({
+                    //current_quote_word : this.state.quote_words[this.state.count],
+                    current_quote_char : state.char_array[state.count + 1],
+                    count: state.count + 1,
+                    typed_chars: state.typed_chars + state.user_input,
                     user_input : ''
-                })  
+                }));  
             }
-                document.getElementById('input').value ='';
-                console.log(this.state.user_input)
+                document.getElementById('input').value = '';
         }
-        
-        console.log(this.state.count)
-        console.log(this.state.current_quote_word)
+        else {
+            console.log('bad')
+            document.getElementById('input').backgroundColor = 'lightred'
+        }
     }
 
     //Called whenever the reset button is pressed
@@ -98,10 +93,12 @@ export default class TypingTest extends Component {
     resetTest () {
         this.setState({
             quote_name: 'Test Quote Title',
-            quote_body : 'This is a test quote that I am hardcoding to make this site',
+            quote_body : 'This is a test quote that I am hardcoding to make web app',
             user_input : '',
             //quote_words: [],
+            current_quote_char : '',
             current_quote_word: '',
+            typed_chars : '',
             count: 0,},
             () => {
                         console.log(this.state)
@@ -122,14 +119,22 @@ export default class TypingTest extends Component {
             <div className="container">
                 <h4>{this.state.quote_name}</h4>
                 
-                <table style={{borborderWidth: 5,  borderColor: "black", borderStyle: "solid"}}>
+                <table style={{borborderWidth: 5,  borderColor: "white", borderStyle: "solid"}}>
                     <tbody>
                          <tr>
-                            <p>{this.state.quote_body}</p>
+                            <Highlighter 
+                                highlightClassName="HighlightClass"
+                                searchWords={[this.state.typed_chars]}
+                                autoEscape={true}
+                                textToHighlight={this.state.quote_body}
+                                highlightStyle={{backgroundColor : "lightgreen"}}
+                                activeIndex={0}
+                                caseSensitive={true}
+                            />
                         </tr>
                     </tbody>      
                 </table>
-                <h5>Current Word: {this.state.current_quote_word}</h5>
+                <h5>Current Character: {this.state.current_quote_char}</h5>
                  <br></br>   
                 <input type="text" onChange={this.onInputChange} id='input'></input>
                 <button onClick={this.resetTest} style={{marginLeft: 10}} className="btn btn-light">
