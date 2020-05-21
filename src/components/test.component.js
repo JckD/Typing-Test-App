@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Highlighter from 'react-highlight-words';
 
 
 export default class TypingTest extends Component {
@@ -22,7 +21,6 @@ export default class TypingTest extends Component {
             current_quote_char: '',
             typed_chars: '',
             current_quote_word: '',
-            bg_colour: 'white',
             count: 0,
             error_count : 0,
             input_disabled : false,
@@ -30,6 +28,7 @@ export default class TypingTest extends Component {
             quote_right : '',
             quote_error : '',
             quote_start : '',
+            quote_class : 'quote-current'
 
         }
     }
@@ -58,19 +57,39 @@ export default class TypingTest extends Component {
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
 
-        if (this.state.count === 0) {
-            //Start timer
+      
 
-            this.setState ({
-                quote_start : ''
-            })
-        }
+        console.log(e.keyCode);
+        console.log(e.key)
+        
 
+            if (e.keyCode !== 8 && e.location === 0) {
 
-        this.setState({
-            user_input : e.target.value
-        }, () => this.compare(this.state.current_quote_char))
+                if (this.state.count === 0) {
+                    //Start timer
+        
+                    this.setState ({
+                        quote_start : ''
+                    })
+                }
+                this.setState({
+                    user_input : e.key
+                }, () => this.compare(this.state.current_quote_char))
+            }
+            else if (e.keyCode === 8) {
+                this.setState ((state) => ({
+                    error_count : state.error_count --
+                }), () => console.log(this.state.error_count))
+                
+            }
+        
+
+        
+       
     }
+
+
+    
 
  
     // Called in onInputChange
@@ -79,7 +98,7 @@ export default class TypingTest extends Component {
     // Checks the if the word count is equal to the length of the quote_words array; if it is the test is over and endTest() is called.
     // If it is not the state of the current word is changed, the count is incremented and the user_input is set back to empty
     compare (current_word) {
-        
+        console.log(current_word)
         if (current_word === this.state.user_input) {
             console.log("match");
             console.log('count: ' + this.state.count);
@@ -94,7 +113,7 @@ export default class TypingTest extends Component {
                     //current_quote_word : this.state.quote_words[this.state.count],
                     current_quote_char : state.char_array[state.count + 1],
                     count: state.count + 1,
-                    bg_colour : 'white',
+                    quote_class : 'quote-current',
                     typed_chars: state.typed_chars + state.user_input,
                     quote_left : state.typed_chars + state.user_input,
                     quote_right : state.char_array.slice(state.count+2, state.char_array.length),
@@ -108,14 +127,16 @@ export default class TypingTest extends Component {
         else {
             //let errcount = this.state.error_count/2
             let errorPos = this.state.count;
+            console.log(this.state.typed_chars + this.state.char_array[this.state.count+1])
             this.setState((state) => ({
                 //bg_colour : '#ff6666',
 
                 quote_error : state.char_array[state.count+1],
-                current_quote_char : '',
+                current_quote_char : state.char_array[state.count + 1],
                 count: state.count + 1,
-                typed_chars : state.typed_chars + state.char_array[state.count+1],
-                quote_left : state.typed_chars,
+                quote_class : 'quote-error',
+                typed_chars : state.typed_chars + state.char_array[state.count],
+                quote_error : state.current_quote_char,
                 quote_right : state.char_array.slice(state.count +2, state.char_array.length),
                 error_count : state.error_count + 1
             }), () => console.log('Error count:' + this.state.error_count))
@@ -147,11 +168,12 @@ export default class TypingTest extends Component {
         console.log('Test is over!')
         //this.resetTest();
         console.log('End error count before dividing : ' + this.state.error_count)
-        let errcount = this.state.error_count/2 
+
         this.setState((state) => ({
-            error_count : state.error_count/2,
+            error_count : state.error_count,
             input_disabled : true,
-            //current_quote_char : 'TEST FINISHED'
+            current_quote_char : '',
+            quote_left : state.quote_body
         }), () => console.log('end error count: ' + this.state.error_count))
 
         
@@ -166,8 +188,8 @@ export default class TypingTest extends Component {
                 <div>
                     <span className="quote-start">{this.state.quote_start}</span>
                     <span className="quote-left">{this.state.quote_left}</span>
-                    <span className="quote-current">{this.state.current_quote_char}</span>
                     <span className="quote-error">{this.state.quote_error}</span>
+                    <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
                     <span className="quote-right">{this.state.quote_right}</span>
                 </div>   
 
@@ -182,7 +204,7 @@ export default class TypingTest extends Component {
                 /> */}
                 <h5>Current Character: {this.state.current_quote_char}</h5>
                 <br></br>   
-                <input type="text" onChange={this.onInputChange} id='input' style={{backgroundColor : this.state.bg_colour}} disabled={this.state.input_disabled}></input>
+                <input type="text"  onKeyDown={this.onInputChange} id='input' style={{backgroundColor : this.state.bg_colour}} disabled={this.state.input_disabled}></input>
                 <button onClick={this.resetTest} style={{marginLeft: 10}} className="btn btn-light">
                     <svg className="bi bi-arrow-repeat" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" d="M2.854 7.146a.5.5 0 00-.708 0l-2 2a.5.5 0 10.708.708L2.5 8.207l1.646 1.647a.5.5 0 00.708-.708l-2-2zm13-1a.5.5 0 00-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 00-.708.708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 000-.708z" clipRule="evenodd"/>
