@@ -29,6 +29,7 @@ export default class TypingTest extends Component {
             current_quote_word: '',
             count: 0,
             error_count : 0,
+            total_error_count : 0,
             input_disabled : false,
             quote_left : '',
             quote_right : '',
@@ -87,10 +88,26 @@ export default class TypingTest extends Component {
                 user_input : e.key
             }, () => this.compare(this.state.current_quote_char))
         }
-        else if (e.keyCode === 8) {
-            this.setState ((state) => ({
-                error_count : state.error_count --
-            }))         
+        // Backspace conditions for changing the current char left and right spans
+        else if (e.keyCode === 8 && this.state.quote_error !== '' && this.state.error_count  > 0) {
+            if (this.state.error_count > 0) {
+                this.setState ((state) => ({
+                    error_count : state.error_count --,
+                    count : state.count - 1,
+                    current_quote_char : state.char_array[state.count -1],
+                    quote_left : state.typed_chars.slice(0, -1),
+                    quote_right :  state.char_array.slice(state.count, state.char_array.length)
+                }))      
+            }
+            else {
+                this.setState ((state) => ({
+                    count : state.count - 1,
+                    current_quote_char : state.char_array[state.count -1],
+                    quote_left : state.typed_chars.slice(0, -1),
+                    typed_chars : state.typed_chars.slice(0, -1),
+                    quote_right :  state.char_array.slice(state.count , state.char_array.length)
+                }), () => console.log(this.state.quote_left))      
+            }
         }
     }
 
@@ -102,7 +119,7 @@ export default class TypingTest extends Component {
     compare (current_word) {
         if (current_word === this.state.user_input) {
             console.log("match");
-            if (this.state.count === this.state.char_array.length -1) {
+            if (this.state.count >= this.state.char_array.length -1) {
                 this.setState((state) => ({
                     typed_chars: state.typed_chars + state.user_input
                 }), () => this.endTest())
@@ -127,14 +144,15 @@ export default class TypingTest extends Component {
 
             console.log(this.state.typed_chars + this.state.char_array[this.state.count+1])
             this.setState((state) => ({
-                quote_error : state.char_array[state.count+1],
+                //quote_error : state.char_array[state.count+1],
                 current_quote_char : state.char_array[state.count + 1],
                 count: state.count + 1,
                 quote_class : 'quote-error',
                 typed_chars : state.typed_chars + state.char_array[state.count],
                 quote_error : state.current_quote_char,
                 quote_right : state.char_array.slice(state.count +2, state.char_array.length),
-                error_count : state.error_count + 1
+                error_count : state.error_count + 1,
+                total_error_count : state.total_error_count + 1
             }), () => console.log('Error count:' + this.state.error_count))
         }
     }
@@ -164,7 +182,7 @@ export default class TypingTest extends Component {
        // console.log('Test is over!')
         clearInterval(this.state.tInterval);
         console.log(this.state.error_count)
-        let correctChars = this.state.char_array.length - this.state.error_count
+        let correctChars = this.state.char_array.length - this.state.total_error_count
         this.setState((state) => ({
             error_count : state.error_count,
             accuracy : Math.ceil((correctChars / state.char_array.length)*100),
@@ -200,7 +218,7 @@ export default class TypingTest extends Component {
                 <div>
                     <span className="quote-start">{this.state.quote_start}</span>
                     <span className="quote-left">{this.state.quote_left}</span>
-                    <span className="quote-error">{this.state.quote_error}</span>
+                    {/* <span className="quote-error">{this.state.quote_error}</span> */}
                     <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
                     <span className="quote-right">{this.state.quote_right}</span>
                 </div>   
@@ -214,7 +232,8 @@ export default class TypingTest extends Component {
                         <path fillRule="evenodd" d="M8 3a4.995 4.995 0 00-4.192 2.273.5.5 0 01-.837-.546A6 6 0 0114 8a.5.5 0 01-1.001 0 5 5 0 00-5-5zM2.5 7.5A.5.5 0 013 8a5 5 0 009.192 2.727.5.5 0 11.837.546A6 6 0 012 8a.5.5 0 01.501-.5z" clipRule="evenodd"/>
                     </svg>
                 </button>
-                <br/>
+                <br></br>
+                <br></br>
                 <Collapse in={this.state.input_disabled}>
                     <div id="results">
                         <Alert variant="success">
