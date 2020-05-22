@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 
+
 export default class TypingTest extends Component {
 
     constructor(props) {
@@ -10,6 +11,8 @@ export default class TypingTest extends Component {
         this.compare = this.compare.bind(this);
         this.resetTest = this.resetTest.bind(this);
         this.endTest = this.endTest.bind(this);
+        this.startTimer = this.startTimer.bind(this);
+        this.calculateWPM = this.calculateWPM.bind(this);
 
 
         this.state = {
@@ -28,15 +31,15 @@ export default class TypingTest extends Component {
             quote_right : '',
             quote_error : '',
             quote_start : '',
-            quote_class : 'quote-current'
-
+            quote_class : 'quote-current',
+            tInterval : '', 
+            minutes : 0,
+            seconds : 0
         }
     }
 
     componentDidMount () {
         let body = this.state.quote_body;
-        
-
         let words = [];
         let chars = [];
 
@@ -49,60 +52,50 @@ export default class TypingTest extends Component {
             char_array : chars,
             current_quote_char : chars[state.count],
             quote_start : state.quote_body
-        }))
-        
+        })) 
+    }
+
+    startTimer () {
+        let seconds = this.state.seconds + 1;
+
+        this.setState((state) => ({
+            seconds : seconds,
+        }))   
     }
 
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
+        if (e.keyCode !== 8 && e.location === 0) {
 
-      
-
-        console.log(e.keyCode);
-        console.log(e.key)
-        
-
-            if (e.keyCode !== 8 && e.location === 0) {
-
-                if (this.state.count === 0) {
-                    //Start timer
-        
-                    this.setState ({
-                        quote_start : ''
-                    })
-                }
-                this.setState({
-                    user_input : e.key
-                }, () => this.compare(this.state.current_quote_char))
-            }
-            else if (e.keyCode === 8) {
-                this.setState ((state) => ({
-                    error_count : state.error_count --
-                }), () => console.log(this.state.error_count))
+            if (this.state.count === 0) {
+                //Start timer
                 
-            }
-        
+                this.setState ({
+                    quote_start : '',
+                    tInterval : setInterval(this.startTimer, 1000),
+                })
 
-        
-       
+            }
+            this.setState({
+                user_input : e.key
+            }, () => this.compare(this.state.current_quote_char))
+        }
+        else if (e.keyCode === 8) {
+            this.setState ((state) => ({
+                error_count : state.error_count --
+            }))         
+        }
     }
 
-
-    
-
- 
     // Called in onInputChange
     // Takes the current word to be typed from state
     // Compares it to the user input
     // Checks the if the word count is equal to the length of the quote_words array; if it is the test is over and endTest() is called.
     // If it is not the state of the current word is changed, the count is incremented and the user_input is set back to empty
     compare (current_word) {
-        console.log(current_word)
         if (current_word === this.state.user_input) {
             console.log("match");
-            console.log('count: ' + this.state.count);
-            console.log('charrarry length: ' + this.state.char_array.length)
             if (this.state.count === this.state.char_array.length -1) {
                 this.setState((state) => ({
                     typed_chars: state.typed_chars + state.user_input
@@ -125,12 +118,9 @@ export default class TypingTest extends Component {
                 document.getElementById('input').value = '';
         }
         else {
-            //let errcount = this.state.error_count/2
-            let errorPos = this.state.count;
+
             console.log(this.state.typed_chars + this.state.char_array[this.state.count+1])
             this.setState((state) => ({
-                //bg_colour : '#ff6666',
-
                 quote_error : state.char_array[state.count+1],
                 current_quote_char : state.char_array[state.count + 1],
                 count: state.count + 1,
@@ -166,24 +156,42 @@ export default class TypingTest extends Component {
     // Calculates word per minute
     endTest () {
         console.log('Test is over!')
-        //this.resetTest();
-        console.log('End error count before dividing : ' + this.state.error_count)
 
+        let netWPM = Math.ceil(this.calculateWPM());
+        clearInterval(this.state.tInterval);
         this.setState((state) => ({
             error_count : state.error_count,
             input_disabled : true,
             current_quote_char : '',
-            quote_left : state.quote_body
-        }), () => console.log('end error count: ' + this.state.error_count))
+            quote_left : state.quote_body,
+            minutes : 0,
+            seconds : 0,
+ 
+        }))
 
+       console.log(netWPM + 'WPM')
         
+    }
+
+    calculateWPM () {
+       
+        let seconds = this.state.seconds;
+        let minutes = seconds/60
+        let errors = this.state.error_count;
+
+        let typedEntries = this.state.typed_chars.length;
+
+        let grossWPM = (typedEntries/5) / minutes
+        let netWPM = grossWPM - (errors/minutes)
+
+
+        return netWPM
     }
 
     render() {
         return (
             <div className="container">
                 <h4>{this.state.quote_name}</h4>
-
                     
                 <div>
                     <span className="quote-start">{this.state.quote_start}</span>
@@ -193,15 +201,6 @@ export default class TypingTest extends Component {
                     <span className="quote-right">{this.state.quote_right}</span>
                 </div>   
 
-                {/* <Highlighter 
-                highlightClassName="HighlightClass"
-                searchWords={[this.state.typed_chars]}
-                autoEscape={true}
-                textToHighlight={this.state.quote_body}
-                highlightStyle={{backgroundColor : "lightgreen"}}
-                activeIndex={1}
-                caseSensitive={true}
-                /> */}
                 <h5>Current Character: {this.state.current_quote_char}</h5>
                 <br></br>   
                 <input type="text"  onKeyDown={this.onInputChange} id='input' style={{backgroundColor : this.state.bg_colour}} disabled={this.state.input_disabled}></input>
