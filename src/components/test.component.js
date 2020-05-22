@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
+import Alert from 'react-bootstrap/Alert';
+import Collapse from 'react-bootstrap/Collapse'
 
 
 
@@ -15,9 +17,10 @@ export default class TypingTest extends Component {
         this.calculateWPM = this.calculateWPM.bind(this);
 
 
+
         this.state = {
             quote_name: 'Test Quote Title',
-            quote_body : 'This is a test quote that I am hardcoding to make this web app',
+            quote_body : 'Irishmen and Irishwomen: In the name of God and of the dead generations from which she receives her old tradition of nationhood, Ireland, through us, summons her children to her flag and strikes for her freedom.',
             user_input : '',
             quote_words: [],
             char_array: [],
@@ -34,7 +37,10 @@ export default class TypingTest extends Component {
             quote_class : 'quote-current',
             tInterval : '', 
             minutes : 0,
-            seconds : 0
+            seconds : 0,
+            netWPM : 0,
+            accuracy : 0
+
         }
     }
 
@@ -155,22 +161,20 @@ export default class TypingTest extends Component {
     //Called when the end of the test is reached in compare()
     // Calculates word per minute
     endTest () {
-        console.log('Test is over!')
-
-        let netWPM = Math.ceil(this.calculateWPM());
+       // console.log('Test is over!')
         clearInterval(this.state.tInterval);
+        console.log(this.state.error_count)
+        let correctChars = this.state.char_array.length - this.state.error_count
         this.setState((state) => ({
             error_count : state.error_count,
+            accuracy : Math.ceil((correctChars / state.char_array.length)*100),
             input_disabled : true,
             current_quote_char : '',
             quote_left : state.quote_body,
             minutes : 0,
             seconds : 0,
- 
+            netWPM : Math.ceil(this.calculateWPM()),
         }))
-
-       console.log(netWPM + 'WPM')
-        
     }
 
     calculateWPM () {
@@ -210,6 +214,20 @@ export default class TypingTest extends Component {
                         <path fillRule="evenodd" d="M8 3a4.995 4.995 0 00-4.192 2.273.5.5 0 01-.837-.546A6 6 0 0114 8a.5.5 0 01-1.001 0 5 5 0 00-5-5zM2.5 7.5A.5.5 0 013 8a5 5 0 009.192 2.727.5.5 0 11.837.546A6 6 0 012 8a.5.5 0 01.501-.5z" clipRule="evenodd"/>
                     </svg>
                 </button>
+                <br/>
+                <Collapse in={this.state.input_disabled}>
+                    <div id="results">
+                        <Alert variant="success">
+                            <Alert.Heading>Well Done!</Alert.Heading>
+                            <p>
+                                Here are your results:<br></br>
+                                WPM : {this.state.netWPM} <br></br>
+                                accuracy : {this.state.accuracy}%
+                            </p>
+                        </Alert>
+                    </div>          
+                </Collapse>
+                
             </div>
         )
     }
