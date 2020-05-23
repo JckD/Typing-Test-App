@@ -96,6 +96,7 @@ export default class TypingTest extends Component {
                     count : state.count - 1,
                     current_quote_char : state.char_array[state.count -1],
                     quote_left : state.typed_chars.slice(0, -1),
+                    typed_chars : state.typed_chars.slice(0, -1),
                     quote_right :  state.char_array.slice(state.count, state.char_array.length)
                 }))      
             }
@@ -160,16 +161,30 @@ export default class TypingTest extends Component {
     //Called whenever the reset button is pressed
     //Resets the test by resetting the state to default.
     resetTest () {
-        this.setState({
+
+        let body = this.state.quote_body;
+        let words = [];
+        let chars = [];
+
+        words = body.split(" ");
+        chars = Array.from(body);
+
+        this.setState((state) => ({
             quote_name: 'Test Quote Title',
             quote_body : 'This is a test quote that I am hardcoding to make web app',
+            quote_words : words,
+            current_quote_word : words[state.count],
+            char_array : chars,
+            current_quote_char : chars[state.count],
+            quote_start : state.quote_body,
             user_input : '',
             current_quote_char : '',
             current_quote_word: '',
             typed_chars : '',
             error_count : 0,
-            bg_colour: 'white',
-            count: 0,},
+            total_error_count : 0,
+            count: 0,
+            }),
             () => {
                 console.log(this.state)
             })
@@ -214,20 +229,19 @@ export default class TypingTest extends Component {
         return (
             <div className="container">
                 <h4>{this.state.quote_name}</h4>
-                    
-                <div>
-                    <span className="quote-start">{this.state.quote_start}</span>
+
+                <Alert variant="secondary">
+                     <span className="quote-start">{this.state.quote_start}</span>
                     <span className="quote-left">{this.state.quote_left}</span>
-                    {/* <span className="quote-error">{this.state.quote_error}</span> */}
                     <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
                     <span className="quote-right">{this.state.quote_right}</span>
-                </div>   
+                </Alert>    
 
                 <h5>Current Character: {this.state.current_quote_char}</h5>
                 <br></br>   
-                <input type="text"  onKeyDown={this.onInputChange} id='input' style={{backgroundColor : this.state.bg_colour}} disabled={this.state.input_disabled}></input>
-                <button onClick={this.resetTest} style={{marginLeft: 10}} className="btn btn-light">
-                    <svg className="bi bi-arrow-repeat" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <input type="text"  onKeyDown={this.onInputChange} id='input' disabled={this.state.input_disabled}></input>
+                <button onClick={this.resetTest} style={{marginLeft: 10}} className="btn btn-secondary">
+                    <svg className="bi bi-arrow-repeat" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" d="M2.854 7.146a.5.5 0 00-.708 0l-2 2a.5.5 0 10.708.708L2.5 8.207l1.646 1.647a.5.5 0 00.708-.708l-2-2zm13-1a.5.5 0 00-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 00-.708.708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 000-.708z" clipRule="evenodd"/>
                         <path fillRule="evenodd" d="M8 3a4.995 4.995 0 00-4.192 2.273.5.5 0 01-.837-.546A6 6 0 0114 8a.5.5 0 01-1.001 0 5 5 0 00-5-5zM2.5 7.5A.5.5 0 013 8a5 5 0 009.192 2.727.5.5 0 11.837.546A6 6 0 012 8a.5.5 0 01.501-.5z" clipRule="evenodd"/>
                     </svg>
