@@ -1,6 +1,9 @@
 import React, { Component, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
-import Collapse from 'react-bootstrap/Collapse'
+import Collapse from 'react-bootstrap/Collapse';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 
 
@@ -15,11 +18,12 @@ export default class TypingTest extends Component {
         this.endTest = this.endTest.bind(this);
         this.startTimer = this.startTimer.bind(this);
         this.calculateWPM = this.calculateWPM.bind(this);
+        this.calculateHighScore = this.calculateHighScore.bind(this);
 
 
 
         this.state = {
-            quote_name: 'Test Quote Title',
+            quote_name: 'Phoblacht Na hÉireann',
             quote_body : 'Irishmen and Irishwomen: In the name of God and of the dead generations from which she receives her old tradition of nationhood, Ireland, through us, summons her children to her flag and strikes for her freedom.',
             user_input : '',
             quote_words: [],
@@ -40,7 +44,9 @@ export default class TypingTest extends Component {
             minutes : 0,
             seconds : 0,
             netWPM : 0,
-            accuracy : 0
+            accuracy : 0,
+            highestAcc : 0, 
+            highestWPM : 0,
 
         }
     }
@@ -171,24 +177,26 @@ export default class TypingTest extends Component {
 
         this.setState((state) => ({
             quote_name: 'Test Quote Title',
-            quote_body : 'This is a test quote that I am hardcoding to make web app',
+            quote_body : 'Irishmen and Irishwomen: In the name of God and of the dead generations from which she receives her old tradition of nationhood, Ireland, through us, summons her children to her flag and strikes for her freedom.',
             quote_words : words,
             current_quote_word : words[state.count],
             char_array : chars,
             current_quote_char : chars[state.count],
             quote_start : state.quote_body,
             user_input : '',
+            quote_left : '',
             current_quote_char : '',
             current_quote_word: '',
             typed_chars : '',
             error_count : 0,
             total_error_count : 0,
             count: 0,
+            input_disabled : false
             }),
             () => {
                 console.log(this.state)
             })
-            console.log(this.state)
+
     }
 
     //Called when the end of the test is reached in compare()
@@ -196,8 +204,12 @@ export default class TypingTest extends Component {
     endTest () {
        // console.log('Test is over!')
         clearInterval(this.state.tInterval);
-        console.log(this.state.error_count)
-        let correctChars = this.state.char_array.length - this.state.total_error_count
+        console.log(this.state.error_count);
+        let correctChars = this.state.char_array.length - this.state.total_error_count;
+
+        let lastWPM = this.state.netWPM;
+        let lastAccuracy = this.state.accuracy;
+         
         this.setState((state) => ({
             error_count : state.error_count,
             accuracy : Math.ceil((correctChars / state.char_array.length)*100),
@@ -207,7 +219,22 @@ export default class TypingTest extends Component {
             minutes : 0,
             seconds : 0,
             netWPM : Math.ceil(this.calculateWPM()),
-        }))
+        }), () => this.calculateHighScore(lastAccuracy, lastWPM))
+    }
+
+    calculateHighScore (lastAccuracy, lastWPM) {
+        let latestAccuracy = this.state.accuracy;
+        let latestWPM = this.state.netWPM;
+
+        if (latestAccuracy > lastAccuracy && latestWPM > lastWPM) {
+
+            this.setState({
+                highestAcc : latestAccuracy,
+                highestWPM : latestWPM
+            })
+        }
+        
+
     }
 
     calculateWPM () {
@@ -228,38 +255,69 @@ export default class TypingTest extends Component {
     render() {
         return (
             <div className="container">
-                <h4>{this.state.quote_name}</h4>
-
-                <Alert variant="secondary">
-                     <span className="quote-start">{this.state.quote_start}</span>
-                    <span className="quote-left">{this.state.quote_left}</span>
-                    <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
-                    <span className="quote-right">{this.state.quote_right}</span>
-                </Alert>    
-
-                <h5>Current Character: {this.state.current_quote_char}</h5>
-                <br></br>   
-                <input type="text"  onKeyDown={this.onInputChange} id='input' disabled={this.state.input_disabled}></input>
-                <button onClick={this.resetTest} style={{marginLeft: 10}} className="btn btn-secondary">
-                    <svg className="bi bi-arrow-repeat" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fillRule="evenodd" d="M2.854 7.146a.5.5 0 00-.708 0l-2 2a.5.5 0 10.708.708L2.5 8.207l1.646 1.647a.5.5 0 00.708-.708l-2-2zm13-1a.5.5 0 00-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 00-.708.708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 000-.708z" clipRule="evenodd"/>
-                        <path fillRule="evenodd" d="M8 3a4.995 4.995 0 00-4.192 2.273.5.5 0 01-.837-.546A6 6 0 0114 8a.5.5 0 01-1.001 0 5 5 0 00-5-5zM2.5 7.5A.5.5 0 013 8a5 5 0 009.192 2.727.5.5 0 11.837.546A6 6 0 012 8a.5.5 0 01.501-.5z" clipRule="evenodd"/>
-                    </svg>
-                </button>
                 <br></br>
-                <br></br>
-                <Collapse in={this.state.input_disabled}>
-                    <div id="results">
-                        <Alert variant="success">
-                            <Alert.Heading>Well Done!</Alert.Heading>
-                            <p>
-                                Here are your results:<br></br>
-                                WPM : {this.state.netWPM} <br></br>
-                                accuracy : {this.state.accuracy}%
-                            </p>
-                        </Alert>
-                    </div>          
-                </Collapse>
+                <Container>
+                    <Row>
+                        <Col sm={8}>
+                            <h4>{this.state.quote_name}</h4>
+                            <Alert variant="secondary">
+                                <span className="quote-start">{this.state.quote_start}</span>
+                                <span className="quote-left">{this.state.quote_left}</span>
+                                <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
+                                <span className="quote-right">{this.state.quote_right}</span>
+                            </Alert>    
+
+                        </Col>
+                        <Col sm={4}>
+                            <h4>High Scores</h4>
+                            <Alert variant="info">
+                                <p>
+                                    Here are your results:<br></br>
+                                    WPM : {this.state.netWPM} <br></br>
+                                    accuracy : {this.state.accuracy}%
+                                </p>
+                            </Alert>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <h5>Current Character: {this.state.current_quote_char}</h5>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <input type="text"  onKeyDown={this.onInputChange} id='input' disabled={this.state.input_disabled}></input>
+                            <button onClick={this.resetTest} style={{marginLeft: 10}} className="btn btn-secondary">
+                                <svg className="bi bi-arrow-repeat" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" d="M2.854 7.146a.5.5 0 00-.708 0l-2 2a.5.5 0 10.708.708L2.5 8.207l1.646 1.647a.5.5 0 00.708-.708l-2-2zm13-1a.5.5 0 00-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 00-.708.708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 000-.708z" clipRule="evenodd"/>
+                                    <path fillRule="evenodd" d="M8 3a4.995 4.995 0 00-4.192 2.273.5.5 0 01-.837-.546A6 6 0 0114 8a.5.5 0 01-1.001 0 5 5 0 00-5-5zM2.5 7.5A.5.5 0 013 8a5 5 0 009.192 2.727.5.5 0 11.837.546A6 6 0 012 8a.5.5 0 01.501-.5z" clipRule="evenodd"/>
+                                </svg>
+                            </button>
+                        </Col>
+                       
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <br></br>
+                            <Collapse in={this.state.input_disabled}>
+                                <div id="results">
+                                    <Alert variant="success">
+                                        <Alert.Heading>Well Done!</Alert.Heading>
+                                        <p>
+                                            Here are your results:<br></br>
+                                            WPM : {this.state.netWPM} <br></br>
+                                            accuracy : {this.state.accuracy}%
+                                        </p>
+                                    </Alert>
+                                </div>          
+                             </Collapse>
+                        </Col>
+                    </Row>
+                </Container>
+
+
+                
                 
             </div>
         )
