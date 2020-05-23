@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Image from 'react-bootstrap/Image';
+import BoldAndBrash from '../assets/B&B.png'
 
 
 export default class TypingTest extends Component {
@@ -7,6 +9,8 @@ export default class TypingTest extends Component {
         return (
             <div className="container">
                 <p>Create Quote</p>
+
+                <Image src={BoldAndBrash} fluid />
             </div>
         )
     }

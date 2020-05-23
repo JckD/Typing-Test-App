@@ -4,6 +4,8 @@ import Collapse from 'react-bootstrap/Collapse';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import keySound from '../assets/cherry-mx-blue.mp3';
+import Sound from 'react-sound';
 
 
 
@@ -47,6 +49,7 @@ export default class TypingTest extends Component {
             accuracy : 0,
             highestAcc : 0, 
             highestWPM : 0,
+            soundStatus : Sound.status.STOPPED
 
         }
     }
@@ -79,6 +82,11 @@ export default class TypingTest extends Component {
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
+
+        this.setState({
+            soundStatus : Sound.status.PLAYING
+        })
+
         if (e.keyCode !== 8 && e.location === 0) {
 
             if (this.state.count === 0) {
@@ -143,6 +151,7 @@ export default class TypingTest extends Component {
                     user_input : '',
                     quote_error: '',
 
+
                 }));  
             }
                 document.getElementById('input').value = '';
@@ -159,7 +168,8 @@ export default class TypingTest extends Component {
                 quote_error : state.current_quote_char,
                 quote_right : state.char_array.slice(state.count +2, state.char_array.length),
                 error_count : state.error_count + 1,
-                total_error_count : state.total_error_count + 1
+                total_error_count : state.total_error_count + 1,
+                
             }), () => console.log('Error count:' + this.state.error_count))
         }
     }
@@ -176,7 +186,7 @@ export default class TypingTest extends Component {
         chars = Array.from(body);
 
         this.setState((state) => ({
-            quote_name: 'Test Quote Title',
+            quote_name: 'Phoblacht Na hÉireann',
             quote_body : 'Irishmen and Irishwomen: In the name of God and of the dead generations from which she receives her old tradition of nationhood, Ireland, through us, summons her children to her flag and strikes for her freedom.',
             quote_words : words,
             current_quote_word : words[state.count],
@@ -225,8 +235,9 @@ export default class TypingTest extends Component {
     calculateHighScore (lastAccuracy, lastWPM) {
         let latestAccuracy = this.state.accuracy;
         let latestWPM = this.state.netWPM;
-
-        if (latestAccuracy > lastAccuracy && latestWPM > lastWPM) {
+        console.log('last: ' + lastAccuracy + ' ' + lastWPM);
+        console.log('latest: ' + latestAccuracy + ' ' + latestWPM);
+        if (latestWPM > lastWPM) {
 
             this.setState({
                 highestAcc : latestAccuracy,
@@ -271,11 +282,12 @@ export default class TypingTest extends Component {
                         <Col sm={4}>
                             <h4>High Scores</h4>
                             <Alert variant="info">
-                                <p>
-                                    Here are your results:<br></br>
-                                    WPM : {this.state.netWPM} <br></br>
-                                    accuracy : {this.state.accuracy}%
-                                </p>
+                                <span>
+                                      Here are your results:<br></br>
+                                    WPM : {this.state.highestWPM} <br></br>
+                                    accuracy : {this.state.highestAcc}%
+                                </span>
+                                  
                             </Alert>
                         </Col>
                     </Row>
@@ -316,6 +328,16 @@ export default class TypingTest extends Component {
                     </Row>
                 </Container>
 
+                {/*<Sound
+                url={keySound}
+                playStatus={this.state.soundStatus}
+                playFromPosition={0 /* in milliseconds 
+                onLoading={this.handleSongLoading}
+                onPlaying={this.handleSongPlaying}
+                onFinishedPlaying={this.handleSongFinishedPlaying}
+                 /> 
+                 
+                */}
 
                 
                 
