@@ -83,7 +83,8 @@ export default class TypingTest extends Component {
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
-
+        console.log('quote err0r ' + this.state.quote_error);
+        console.log('err count' + this.state.error_count);
         this.setState({
             soundStatus : Sound.status.PLAYING
         })
@@ -105,23 +106,25 @@ export default class TypingTest extends Component {
             }, () => this.compare(this.state.current_quote_char))
         }
         // Backspace conditions for changing the current char left and right spans
+        
         else if (e.keyCode === 8 && this.state.quote_error !== '' && this.state.error_count  > 0) {
             if (this.state.error_count > 0) {
                 this.setState ((state) => ({
-                    err_arr : state.err_arr.slice(state.err_arr.length-1, state.err_arr.length),
+                    err_arr : state.err_arr.slice(0, state.err_arr.length-1),
                     error_count : state.error_count --,
                     count : state.count - 1,
                     current_quote_char : state.char_array[state.count -1],
-                    quote_left : state.typed_chars.slice(0, -1),
+                    quote_left : state.typed_chars.slice(0, state.typed_chars.length-state.err_arr.length),
                     typed_chars : state.typed_chars.slice(0, -1),
                     quote_right :  state.char_array.slice(state.count, state.char_array.length)
                 }))      
             }
             else {
                 this.setState ((state) => ({
+                    err_arr : state.err_arr.slice(0, state.err_arr.length-1),
                     count : state.count - 1,
                     current_quote_char : state.char_array[state.count -1],
-                    quote_left : state.typed_chars.slice(0, -1),
+                    quote_left : state.typed_chars.slice(0, state.typed_chars.length-state.err_arr.length),
                     typed_chars : state.typed_chars.slice(0, -1),
                     quote_right :  state.char_array.slice(state.count , state.char_array.length)
                 }), () => console.log(this.state.quote_left))      
@@ -222,6 +225,8 @@ export default class TypingTest extends Component {
         let lastWPM = this.state.netWPM;
         let lastAccuracy = this.state.accuracy;
          
+        console.log(this.state.typed_chars)
+
         this.setState((state) => ({
             error_count : state.error_count,
             accuracy : Math.ceil((correctChars / state.char_array.length)*100),
@@ -237,8 +242,8 @@ export default class TypingTest extends Component {
     calculateHighScore (lastAccuracy, lastWPM) {
         let latestAccuracy = this.state.accuracy;
         let latestWPM = this.state.netWPM;
-        console.log('last: ' + lastAccuracy + ' ' + lastWPM);
-        console.log('latest: ' + latestAccuracy + ' ' + latestWPM);
+       // console.log('last: ' + lastAccuracy + ' ' + lastWPM);
+       // console.log('latest: ' + latestAccuracy + ' ' + latestWPM);
         if (latestWPM > lastWPM) {
 
             this.setState({
