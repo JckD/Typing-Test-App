@@ -25,31 +25,54 @@ export default class TypingTest extends Component {
 
 
         this.state = {
+            //The name of the quote
             quote_name: 'Phoblacht Na hÉireann',
+            // The text body of the quote
             quote_body : 'Irishmen and Irishwomen: In the name of God and of the dead generations from which she receives her old tradition of nationhood, Ireland, through us, summons her children to her flag and strikes for her freedom.',
+            // What the user inputs into the text input
             user_input : '',
+            // An array of every word in the quote not currently used but might be useful later
             quote_words: [],
+            // An array of every character in the quote including spaces
             char_array: [],
+            // String that contains the next character to be typed
             current_quote_char: '',
+            // String that holds what the user types if they are correct but if it is not correct it is filled correctly by char_array
             typed_chars: '',
+            // string that contains the current work to be typed not currently used but might be useful later
             current_quote_word: '',
+            // counter that keeps track of the number of user inputs excluding backspace
             count: 0,
+            // counter that keeps track of errors, can be decremented if the user corrects their error
             error_count : 0,
+            // a total error counter that does not decrement
             total_error_count : 0,
+            // boolean to disable input to the text box and display results when the test is over, false == test not over, true == test over
             input_disabled : false,
+            // String that contains every thing that has been typed or that the user has passed
             quote_left : '',
+            // String that contains everything the user has left to type
             quote_right : '',
+            // String that contains correct characters that the user has gotten wrong errors the user has typed
             quote_error : '',
+            // The quote placeholder for before the test starts is emptied after the test starts
             quote_start : '',
+            // error array that conatins the errors the user has typed
             err_arr : '',
+            // string that contains the css class of the current character span so it can be change when there is an error or not
             quote_class : 'quote-current',
+            // Interval to time the user
             tInterval : '', 
-            minutes : 0,
+            // number that keeps track of the seconds that have passed since the test started
             seconds : 0,
+            // The net words per minute
             netWPM : 0,
+            // Accuracy %
             accuracy : 0,
+            // Highscores
             highestAcc : 0, 
             highestWPM : 0,
+            // Playing status of the key sounds currently not in use
             soundStatus : Sound.status.STOPPED
 
         }
@@ -137,8 +160,8 @@ export default class TypingTest extends Component {
     // Compares it to the user input
     // Checks the if the word count is equal to the length of the quote_words array; if it is the test is over and endTest() is called.
     // If it is not the state of the current word is changed, the count is incremented and the user_input is set back to empty
-    compare (current_word) {
-        if (current_word === this.state.user_input) {
+    compare (current_char) {
+        if (current_char === this.state.user_input) {
             console.log("match");
             if (this.state.count >= this.state.char_array.length -1) {
                 this.setState((state) => ({
@@ -192,6 +215,9 @@ export default class TypingTest extends Component {
         words = body.split(" ");
         chars = Array.from(body);
         console.log(chars)
+        clearInterval(this.state.tInterval);
+        document.getElementById('input').value = '';
+
         this.setState((state) => ({
             quote_name: 'Phoblacht Na hÉireann',
             quote_body : 'Irishmen and Irishwomen: In the name of God and of the dead generations from which she receives her old tradition of nationhood, Ireland, through us, summons her children to her flag and strikes for her freedom.',
@@ -200,13 +226,18 @@ export default class TypingTest extends Component {
             char_array : chars,
             quote_start : state.quote_body,
             current_quote_char : state.char_array[0],
+            err_arr : '',
             user_input : '',
             quote_left : '',
+            quote_right : '',
             typed_chars : '',
             error_count : 0,
+            quote_class : 'quote_current',
             total_error_count : 0,
             count: 0,
-            input_disabled : false
+            input_disabled : false,
+            tInterval : ''
+
             }),
             () => {
                 console.log(this.state)
@@ -233,7 +264,6 @@ export default class TypingTest extends Component {
             input_disabled : true,
             current_quote_char : '',
             quote_left : state.quote_body,
-            minutes : 0,
             seconds : 0,
             netWPM : Math.ceil(this.calculateWPM()),
         }), () => this.calculateHighScore(lastAccuracy, lastWPM))
