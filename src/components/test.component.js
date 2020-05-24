@@ -65,8 +65,8 @@ export default class TypingTest extends Component {
         this.setState((state) => ({
             quote_words : words,
             current_quote_word : words[state.count],
-            char_array : chars,
-            current_quote_char : chars[state.count],
+            char_array : Array.from(state.quote_body),
+            current_quote_char : chars[0],
             quote_start : state.quote_body
         })) 
     }
@@ -92,10 +92,11 @@ export default class TypingTest extends Component {
             if (this.state.count === 0) {
                 //Start timer
                 
-                this.setState ({
+                this.setState ((state) => ({
                     quote_start : '',
                     tInterval : setInterval(this.startTimer, 1000),
-                })
+                    
+                }))
 
             }
             this.setState({
@@ -191,8 +192,8 @@ export default class TypingTest extends Component {
             quote_words : words,
             current_quote_word : words[0],
             char_array : chars,
-            current_quote_char : chars[0],
             quote_start : state.quote_body,
+            current_quote_char : state.char_array[0],
             user_input : '',
             quote_left : '',
             typed_chars : '',
@@ -270,9 +271,10 @@ export default class TypingTest extends Component {
                         <Col sm={8}>
                             <h4>{this.state.quote_name}</h4>
                             <Alert variant="secondary">
-                                <span className="quote-start">{this.state.quote_start}</span>
+                                
                                 <span className="quote-left">{this.state.quote_left}</span>
                                 <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
+                                <span className="quote-start">{this.state.quote_start.slice(1) }</span>
                                 <span className="quote-right">{this.state.quote_right}</span>
                             </Alert>    
 
