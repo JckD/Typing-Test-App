@@ -184,19 +184,17 @@ export default class TypingTest extends Component {
 
         words = body.split(" ");
         chars = Array.from(body);
-
+        console.log(chars)
         this.setState((state) => ({
             quote_name: 'Phoblacht Na hÉireann',
             quote_body : 'Irishmen and Irishwomen: In the name of God and of the dead generations from which she receives her old tradition of nationhood, Ireland, through us, summons her children to her flag and strikes for her freedom.',
             quote_words : words,
-            current_quote_word : words[state.count],
+            current_quote_word : words[0],
             char_array : chars,
-            current_quote_char : chars[state.count],
+            current_quote_char : chars[0],
             quote_start : state.quote_body,
             user_input : '',
             quote_left : '',
-            current_quote_char : '',
-            current_quote_word: '',
             typed_chars : '',
             error_count : 0,
             total_error_count : 0,
