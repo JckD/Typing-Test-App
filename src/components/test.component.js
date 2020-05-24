@@ -41,6 +41,7 @@ export default class TypingTest extends Component {
             quote_right : '',
             quote_error : '',
             quote_start : '',
+            err_arr : '',
             quote_class : 'quote-current',
             tInterval : '', 
             minutes : 0,
@@ -107,6 +108,7 @@ export default class TypingTest extends Component {
         else if (e.keyCode === 8 && this.state.quote_error !== '' && this.state.error_count  > 0) {
             if (this.state.error_count > 0) {
                 this.setState ((state) => ({
+                    err_arr : state.err_arr.slice(state.err_arr.length-1, state.err_arr.length),
                     error_count : state.error_count --,
                     count : state.count - 1,
                     current_quote_char : state.char_array[state.count -1],
@@ -151,7 +153,7 @@ export default class TypingTest extends Component {
                     quote_right : state.char_array.slice(state.count+2, state.char_array.length),
                     user_input : '',
                     quote_error: '',
-
+                    err_arr : ''
 
                 }));  
             }
@@ -163,15 +165,16 @@ export default class TypingTest extends Component {
             this.setState((state) => ({
                 //quote_error : state.char_array[state.count+1],
                 current_quote_char : state.char_array[state.count + 1],
+                err_arr : state.err_arr + state.char_array[state.count],
                 count: state.count + 1,
                 quote_class : 'quote-error',
                 typed_chars : state.typed_chars + state.char_array[state.count],
-                quote_error : state.current_quote_char,
+                quote_error : state.err_arr,
                 quote_right : state.char_array.slice(state.count +2, state.char_array.length),
                 error_count : state.error_count + 1,
                 total_error_count : state.total_error_count + 1,
                 
-            }), () => console.log('Error count:' + this.state.error_count))
+            }), () => console.log(this.state.err_arr))
         }
     }
 
@@ -273,6 +276,7 @@ export default class TypingTest extends Component {
                             <Alert variant="secondary">
                                 
                                 <span className="quote-left">{this.state.quote_left}</span>
+                                <span className="quote-error">{this.state.err_arr}</span>
                                 <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
                                 <span className="quote-start">{this.state.quote_start.slice(1) }</span>
                                 <span className="quote-right">{this.state.quote_right}</span>
