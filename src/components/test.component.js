@@ -238,11 +238,7 @@ export default class TypingTest extends Component {
             input_disabled : false,
             tInterval : ''
 
-            }),
-            () => {
-                console.log(this.state)
-            })
-
+        }),() => {console.log(this.state)})
     }
 
     //Called when the end of the test is reached in compare()
@@ -256,7 +252,7 @@ export default class TypingTest extends Component {
         let lastWPM = this.state.netWPM;
         let lastAccuracy = this.state.accuracy;
          
-        console.log(this.state.typed_chars)
+        console.log(this.state.error_count)
 
         this.setState((state) => ({
             error_count : state.error_count,
