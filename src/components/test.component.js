@@ -28,7 +28,7 @@ export default class TypingTest extends Component {
             //The name of the quote
             quote_name: 'Phoblacht Na hÉireann',
             // The text body of the quote
-            quote_body : 'Irishmen and Irishwomen: In the name of God and of the dead generations from which she receives her old tradition of nationhood, Ireland, through us, summons her children to her flag and strikes for her freedom.',
+            quote_body : 'This is the day you will always remember as the day you almost caught Captain Jack Sparrow.',
             // What the user inputs into the text input
             user_input : '',
             // An array of every word in the quote not currently used but might be useful later
@@ -97,7 +97,7 @@ export default class TypingTest extends Component {
 
     startTimer () {
         let seconds = this.state.seconds + 1;
-
+        console.log('seconds from timer' + seconds)
         this.setState((state) => ({
             seconds : seconds,
         }))   
@@ -106,6 +106,7 @@ export default class TypingTest extends Component {
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
+        console.log(e.keyCode)
         console.log('quote err0r ' + this.state.quote_error);
         console.log('err count' + this.state.error_count);
         this.setState({
@@ -116,13 +117,15 @@ export default class TypingTest extends Component {
 
             if (this.state.count === 0) {
                 //Start timer
-                
+
+
                 this.setState ((state) => ({
                     quote_start : '',
+                    seconds : 0,
                     tInterval : setInterval(this.startTimer, 1000),
                     
                 }))
-
+            
             }
             this.setState({
                 user_input : e.key
@@ -161,6 +164,7 @@ export default class TypingTest extends Component {
     // Checks the if the word count is equal to the length of the quote_words array; if it is the test is over and endTest() is called.
     // If it is not the state of the current word is changed, the count is incremented and the user_input is set back to empty
     compare (current_char) {
+
         if (current_char === this.state.user_input) {
             console.log("match");
             if (this.state.count >= this.state.char_array.length -1) {
@@ -220,7 +224,7 @@ export default class TypingTest extends Component {
 
         this.setState((state) => ({
             quote_name: 'Phoblacht Na hÉireann',
-            quote_body : 'Irishmen and Irishwomen: In the name of God and of the dead generations from which she receives her old tradition of nationhood, Ireland, through us, summons her children to her flag and strikes for her freedom.',
+            quote_body : 'This is the day you will always remember as the day you almost caught captain jack sparrow.', 
             quote_words : words,
             current_quote_word : words[0],
             char_array : chars,
@@ -235,8 +239,9 @@ export default class TypingTest extends Component {
             quote_class : 'quote_current',
             total_error_count : 0,
             count: 0,
+            seconds : null,
             input_disabled : false,
-            tInterval : ''
+            //tInterval : clearInterval(this.state.tInterval)
 
         }),() => {console.log(this.state)})
     }
@@ -245,7 +250,7 @@ export default class TypingTest extends Component {
     // Calculates word per minute
     endTest () {
        // console.log('Test is over!')
-        clearInterval(this.state.tInterval);
+        window.clearInterval(this.state.tInterval);
         console.log(this.state.error_count);
         let correctChars = this.state.char_array.length - this.state.total_error_count;
 
@@ -284,14 +289,21 @@ export default class TypingTest extends Component {
     calculateWPM () {
        
         let seconds = this.state.seconds;
+        console.log('seconds: ' + seconds)
         let minutes = seconds/60
+        console.log('minutes: ' + minutes)
         let errors = this.state.error_count;
 
         let typedEntries = this.state.typed_chars.length;
 
-        let grossWPM = (typedEntries/5) / minutes
-        let netWPM = grossWPM - (errors/minutes)
+        console.log('typed entries : (' + typedEntries + '/' + '5) / ' + minutes)
+        
 
+        let grossWPM = (typedEntries/5) / minutes
+        console.log('grossWPM = ' + grossWPM)
+        console.log('errors ' + errors)
+        let netWPM = grossWPM - (errors/minutes)
+        console.log(grossWPM - (errors/minutes))
 
         return netWPM
     }
