@@ -108,7 +108,7 @@ export default class TypingTest extends Component {
     onInputChange (e) {
         console.log(e.keyCode)
         console.log('quote err0r ' + this.state.quote_error);
-        console.log('err count' + this.state.error_count);
+        console.log('err count ' + this.state.error_count);
         this.setState({
             soundStatus : Sound.status.PLAYING
         })
@@ -117,8 +117,6 @@ export default class TypingTest extends Component {
 
             if (this.state.count === 0) {
                 //Start timer
-
-
                 this.setState ((state) => ({
                     quote_start : '',
                     seconds : 0,
@@ -250,7 +248,7 @@ export default class TypingTest extends Component {
     // Calculates word per minute
     endTest () {
        // console.log('Test is over!')
-        window.clearInterval(this.state.tInterval);
+        clearInterval(this.state.tInterval);
         console.log(this.state.error_count);
         let correctChars = this.state.char_array.length - this.state.total_error_count;
 
@@ -289,21 +287,21 @@ export default class TypingTest extends Component {
     calculateWPM () {
        
         let seconds = this.state.seconds;
-        console.log('seconds: ' + seconds)
-        let minutes = seconds/60
-        console.log('minutes: ' + minutes)
+        console.log('seconds: ' + seconds);
+        let minutes = seconds/60;
+        console.log('minutes: ' + minutes);
         let errors = this.state.error_count;
 
         let typedEntries = this.state.typed_chars.length;
 
-        console.log('typed entries : (' + typedEntries + '/' + '5) / ' + minutes)
+        console.log('typed entries : (' + typedEntries + '/' + '5) / ' + minutes);
         
 
-        let grossWPM = (typedEntries/5) / minutes
-        console.log('grossWPM = ' + grossWPM)
-        console.log('errors ' + errors)
-        let netWPM = grossWPM - (errors/minutes)
-        console.log(grossWPM - (errors/minutes))
+        let grossWPM = (typedEntries/5) / minutes;
+        console.log('grossWPM = ' + grossWPM);
+        console.log('errors ' + errors);
+        let netWPM = grossWPM - (errors/minutes);
+        console.log(grossWPM - (errors/minutes));
 
         return netWPM
     }
