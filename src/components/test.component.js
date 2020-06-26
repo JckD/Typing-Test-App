@@ -22,7 +22,7 @@ export default class TypingTest extends Component {
         this.calculateWPM = this.calculateWPM.bind(this);
         this.calculateHighScore = this.calculateHighScore.bind(this);
         this.backspace = this.backspace.bind(this);
-
+        this.escFunction = this.escFunction.bind(this);
 
 
         this.state = {
@@ -94,14 +94,29 @@ export default class TypingTest extends Component {
             current_quote_char : chars[0],
             quote_start : state.quote_body
         })) 
+
+        document.addEventListener("keydown", this.escFunction, false);
+    }
+
+    escFunction(event){
+        if(event.keyCode === 27) {
+          //Do whatever when esc is pressed
+          this.resetTest();
+        }
+    }
+     
+    componentWillUnmount(){
+        document.removeEventListener("keydown", this.escFunction, false);
     }
 
     startTimer () {
         let seconds = this.state.seconds + 1;
         this.setState((state) => ({
             seconds : seconds,
-        }))   
+        }))
     }
+
+    
 
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
@@ -113,7 +128,7 @@ export default class TypingTest extends Component {
         })
 
         // if the key pressed is not backspace and is in the general keys location 0
-        if (e.keyCode !== 8 && e.keyCode !== 27 && e.location === 0) {
+        if (e.keyCode !== 8 && e.location === 0) {
 
             // if the user has started typing yet
             if (this.state.count === 0) {
@@ -142,9 +157,6 @@ export default class TypingTest extends Component {
             else {
                 this.backspace();
             }
-        }
-        else if (e.keyCode === 27) {
-            this.resetTest();
         }
     }
 
@@ -244,9 +256,11 @@ export default class TypingTest extends Component {
         chars = Array.from(body);
         clearInterval(this.state.tInterval);
         document.getElementById('input').value = '';
+        //document.activeElement.blur();
         document.getElementById('input').focus();
-        
-
+        console.log(document.activeElement);
+        document.getElementById('input').focus();
+        console.log(document.activeElement);
         this.setState((state) => ({
             quote_name: 'Phoblacht Na hÉireann',
             quote_body : 'This is the day you will always remember as the day you almost caught captain jack sparrow.', 
@@ -266,7 +280,6 @@ export default class TypingTest extends Component {
             count: 0,
             seconds : 0,
             input_disabled : false,
-            //tInterval : clearInterval(this.state.tInterval)
 
         }))
     }
@@ -274,7 +287,6 @@ export default class TypingTest extends Component {
     //Called when the end of the test is reached in compare()
     // Calculates word per minute
     endTest () {
-       // console.log('Test is over!')
         clearInterval(this.state.tInterval);
         console.log(this.state.error_count);
         let correctChars = this.state.char_array.length - this.state.total_error_count;
@@ -282,8 +294,6 @@ export default class TypingTest extends Component {
         let lastWPM = this.state.netWPM;
         let lastAccuracy = this.state.accuracy;
          
-        console.log(this.state.error_count)
-
         this.setState((state) => ({
             error_count : state.error_count,
             accuracy : Math.ceil((correctChars / state.char_array.length)*100),
