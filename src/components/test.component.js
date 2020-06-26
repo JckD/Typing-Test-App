@@ -97,7 +97,6 @@ export default class TypingTest extends Component {
 
     startTimer () {
         let seconds = this.state.seconds + 1;
-        console.log('seconds from timer ' + seconds)
         this.setState((state) => ({
             seconds : seconds,
         }))   
@@ -106,8 +105,7 @@ export default class TypingTest extends Component {
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
-        console.log(e.keyCode)
-        console.log('quote err0r ' + this.state.quote_error);
+        console.log('quote error ' + this.state.quote_error);
         console.log('err count ' + this.state.error_count);
         this.setState({
             soundStatus : Sound.status.PLAYING
@@ -331,11 +329,8 @@ export default class TypingTest extends Component {
                             <h4>High Scores</h4>
                             <Alert variant="info">
                                 <span>
-                                      Here are your results:<br></br>
                                     WPM : {this.state.highestWPM} <br></br>
                                     accuracy : {this.state.highestAcc}% <br></br>
-                                    current seconds {this.state.seconds}
-
                                 </span>
                                   
                             </Alert>
