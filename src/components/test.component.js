@@ -1,10 +1,10 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Collapse from 'react-bootstrap/Collapse';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import keySound from '../assets/cherry-mx-blue.mp3';
+//import keySound from '../assets/cherry-mx-blue.mp3';
 import Sound from 'react-sound';
 
 
@@ -97,7 +97,7 @@ export default class TypingTest extends Component {
 
     startTimer () {
         let seconds = this.state.seconds + 1;
-        console.log('seconds from timer' + seconds)
+        console.log('seconds from timer ' + seconds)
         this.setState((state) => ({
             seconds : seconds,
         }))   
@@ -117,10 +117,11 @@ export default class TypingTest extends Component {
 
             if (this.state.count === 0) {
                 //Start timer
+                let interval = setInterval(this.startTimer, 1000)
                 this.setState ((state) => ({
                     quote_start : '',
                     seconds : 0,
-                    tInterval : setInterval(this.startTimer, 1000),
+                    tInterval : interval
                     
                 }))
             
@@ -219,6 +220,8 @@ export default class TypingTest extends Component {
         console.log(chars)
         clearInterval(this.state.tInterval);
         document.getElementById('input').value = '';
+        document.getElementById('input').focus();
+        
 
         this.setState((state) => ({
             quote_name: 'Phoblacht Na hÉireann',
@@ -237,7 +240,7 @@ export default class TypingTest extends Component {
             quote_class : 'quote_current',
             total_error_count : 0,
             count: 0,
-            seconds : null,
+            seconds : 0,
             input_disabled : false,
             //tInterval : clearInterval(this.state.tInterval)
 
@@ -294,7 +297,7 @@ export default class TypingTest extends Component {
 
         let typedEntries = this.state.typed_chars.length;
 
-        console.log('typed entries : (' + typedEntries + '/' + '5) / ' + minutes);
+        console.log('typed entries : (' + typedEntries + '/  5) / ' + minutes);
         
 
         let grossWPM = (typedEntries/5) / minutes;
@@ -330,7 +333,9 @@ export default class TypingTest extends Component {
                                 <span>
                                       Here are your results:<br></br>
                                     WPM : {this.state.highestWPM} <br></br>
-                                    accuracy : {this.state.highestAcc}%
+                                    accuracy : {this.state.highestAcc}% <br></br>
+                                    current seconds {this.state.seconds}
+
                                 </span>
                                   
                             </Alert>
@@ -364,7 +369,7 @@ export default class TypingTest extends Component {
                                         <p>
                                             Here are your results:<br></br>
                                             WPM : {this.state.netWPM} <br></br>
-                                            accuracy : {this.state.accuracy}%
+                                            accuracy : {this.state.accuracy}% 
                                         </p>
                                     </Alert>
                                 </div>          
