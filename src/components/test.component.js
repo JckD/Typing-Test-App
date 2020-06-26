@@ -21,6 +21,7 @@ export default class TypingTest extends Component {
         this.startTimer = this.startTimer.bind(this);
         this.calculateWPM = this.calculateWPM.bind(this);
         this.calculateHighScore = this.calculateHighScore.bind(this);
+        this.backspace = this.backspace.bind(this);
 
 
 
@@ -111,48 +112,51 @@ export default class TypingTest extends Component {
             soundStatus : Sound.status.PLAYING
         })
 
-        if (e.keyCode !== 8 && e.location === 0) {
+        // if the key pressed is not backspace and is in the general keys location 0
+        if (e.keyCode !== 8 && e.keyCode !== 27 && e.location === 0) {
 
+            // if the user has started typing yet
             if (this.state.count === 0) {
                 //Start timer
                 let interval = setInterval(this.startTimer, 1000)
                 this.setState ((state) => ({
                     quote_start : '',
                     seconds : 0,
-                    tInterval : interval
-                    
+                    tInterval : interval      
                 }))
-            
             }
+            // update the current user_input state and call compare function
             this.setState({
                 user_input : e.key
             }, () => this.compare(this.state.current_quote_char))
         }
-        // Backspace conditions for changing the current char left and right spans
-        
+
+        // Backspace conditions for changing the current char left and right spans     
         else if (e.keyCode === 8 && this.state.quote_error !== '' && this.state.error_count  > 0) {
+            // if there are errors and the user presses backspace reduce the error count
             if (this.state.error_count > 0) {
                 this.setState ((state) => ({
-                    err_arr : state.err_arr.slice(0, state.err_arr.length-1),
                     error_count : state.error_count --,
-                    count : state.count - 1,
-                    current_quote_char : state.char_array[state.count -1],
-                    quote_left : state.typed_chars.slice(0, state.typed_chars.length-state.err_arr.length),
-                    typed_chars : state.typed_chars.slice(0, -1),
-                    quote_right :  state.char_array.slice(state.count, state.char_array.length)
-                }))      
+                }), () => this.backspace())      
             }
             else {
-                this.setState ((state) => ({
-                    err_arr : state.err_arr.slice(0, state.err_arr.length-1),
-                    count : state.count - 1,
-                    current_quote_char : state.char_array[state.count -1],
-                    quote_left : state.typed_chars.slice(0, state.typed_chars.length-state.err_arr.length),
-                    typed_chars : state.typed_chars.slice(0, -1),
-                    quote_right :  state.char_array.slice(state.count , state.char_array.length)
-                }), () => console.log(this.state.quote_left))      
+                this.backspace();
             }
         }
+        else if (e.keyCode === 27) {
+            this.resetTest();
+        }
+    }
+
+    backspace () {
+        this.setState ((state) => ({
+            err_arr : state.err_arr.slice(0, state.err_arr.length-1),
+            count : state.count - 1,
+            current_quote_char : state.char_array[state.count -1],
+            quote_left : state.typed_chars.slice(0, state.typed_chars.length-state.err_arr.length),
+            typed_chars : state.typed_chars.slice(0, -1),
+            quote_right :  state.char_array.slice(state.count , state.char_array.length)
+        }), () => console.log(this.state.quote_left))      
     }
 
     // Called in onInputChange
