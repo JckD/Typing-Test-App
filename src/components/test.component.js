@@ -189,19 +189,42 @@ export default class TypingTest extends Component {
         else {
 
             console.log(this.state.typed_chars + this.state.char_array[this.state.count+1])
-            this.setState((state) => ({
-                //quote_error : state.char_array[state.count+1],
-                current_quote_char : state.char_array[state.count + 1],
-                err_arr : state.err_arr + state.char_array[state.count],
-                count: state.count + 1,
-                quote_class : 'quote-error',
-                typed_chars : state.typed_chars + state.char_array[state.count],
-                quote_error : state.err_arr,
-                quote_right : state.char_array.slice(state.count +2, state.char_array.length),
-                error_count : state.error_count + 1,
-                total_error_count : state.total_error_count + 1,
+
+            // check the length of the current stat.count aginst the length of the quote to stop 'undefined' being injected into error array
+            if (this.state.count >= this.state.char_array.length) {
+                // if the length of the character array has been met 
+
+                this.setState((state) => ({
+                    //quote_error : state.char_array[state.count+1],
+                    current_quote_char : state.char_array[state.count + 1],
+                    err_arr : state.err_arr,
+                    count: state.count + 1,
+                    quote_class : 'quote-error',
+                    typed_chars : state.typed_chars + state.char_array[state.count],
+                    quote_error : state.err_arr,
+                    quote_right : state.char_array.slice(state.count +2, state.char_array.length),
+                    error_count : state.error_count + 1,
+                    total_error_count : state.total_error_count + 1,
                 
-            }), () => console.log(this.state.err_arr))
+                }))
+            }
+            else {
+
+                this.setState((state) => ({
+                    //quote_error : state.char_array[state.count+1],
+                    current_quote_char : state.char_array[state.count + 1],
+                    err_arr : state.err_arr + state.char_array[state.count],
+                    count: state.count + 1,
+                    quote_class : 'quote-error',
+                    typed_chars : state.typed_chars + state.char_array[state.count],
+                    quote_error : state.err_arr,
+                    quote_right : state.char_array.slice(state.count +2, state.char_array.length),
+                    error_count : state.error_count + 1,
+                    total_error_count : state.total_error_count + 1,
+                
+                }), () => console.log(this.state.err_arr))
+            }
+            
         }
     }
 
