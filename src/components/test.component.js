@@ -95,20 +95,16 @@ export default class TypingTest extends Component {
             quote_start : state.quote_body
         })) 
 
+        // add eventListener that checks if the esc key has been pressed on every keydown
         document.addEventListener("keydown", this.escFunction, false);
-    }
-
-    escFunction(event){
-        if(event.keyCode === 27) {
-          //Do whatever when esc is pressed
-          this.resetTest();
-        }
     }
      
     componentWillUnmount(){
         document.removeEventListener("keydown", this.escFunction, false);
     }
 
+    // startTimer function that is called every second by setInterval in onInputChance() 
+    // increments seconds by 1 and sets the state.
     startTimer () {
         let seconds = this.state.seconds + 1;
         this.setState((state) => ({
@@ -116,7 +112,13 @@ export default class TypingTest extends Component {
         }))
     }
 
-    
+    // escFunction that handles when the escape key is pressed
+    escFunction(event){
+        if(event.keyCode === 27) {
+          //Do whatever when esc is pressed
+          this.resetTest();
+        }
+    }
 
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
@@ -160,6 +162,7 @@ export default class TypingTest extends Component {
         }
     }
 
+    // backspace function that handles when the user enters a backspace into the input box
     backspace () {
         this.setState ((state) => ({
             err_arr : state.err_arr.slice(0, state.err_arr.length-1),
@@ -293,7 +296,9 @@ export default class TypingTest extends Component {
 
         let lastWPM = this.state.netWPM;
         let lastAccuracy = this.state.accuracy;
-         
+        
+        document.activeElement.blur();
+        document.getElementById('input').focus();
         this.setState((state) => ({
             error_count : state.error_count,
             accuracy : Math.ceil((correctChars / state.char_array.length)*100),
@@ -305,11 +310,11 @@ export default class TypingTest extends Component {
         }), () => this.calculateHighScore(lastAccuracy, lastWPM))
     }
 
+    // Function that updates the user's high score is the latest score was better than the last replace the scores
     calculateHighScore (lastAccuracy, lastWPM) {
         let latestAccuracy = this.state.accuracy;
         let latestWPM = this.state.netWPM;
-       // console.log('last: ' + lastAccuracy + ' ' + lastWPM);
-       // console.log('latest: ' + latestAccuracy + ' ' + latestWPM);
+
         if (latestWPM > lastWPM) {
 
             this.setState({
@@ -321,24 +326,17 @@ export default class TypingTest extends Component {
 
     }
 
+    // calculateWPM function calculates the user's WPM and returns the netWPM
     calculateWPM () {
        
         let seconds = this.state.seconds;
-        console.log('seconds: ' + seconds);
         let minutes = seconds/60;
-        console.log('minutes: ' + minutes);
         let errors = this.state.error_count;
-
         let typedEntries = this.state.typed_chars.length;
 
-        console.log('typed entries : (' + typedEntries + '/  5) / ' + minutes);
-        
 
         let grossWPM = (typedEntries/5) / minutes;
-        console.log('grossWPM = ' + grossWPM);
-        console.log('errors ' + errors);
         let netWPM = grossWPM - (errors/minutes);
-        console.log(grossWPM - (errors/minutes));
 
         return netWPM
     }
