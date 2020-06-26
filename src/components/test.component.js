@@ -215,7 +215,6 @@ export default class TypingTest extends Component {
 
         words = body.split(" ");
         chars = Array.from(body);
-        console.log(chars)
         clearInterval(this.state.tInterval);
         document.getElementById('input').value = '';
         document.getElementById('input').focus();
@@ -242,7 +241,7 @@ export default class TypingTest extends Component {
             input_disabled : false,
             //tInterval : clearInterval(this.state.tInterval)
 
-        }),() => {console.log(this.state)})
+        }))
     }
 
     //Called when the end of the test is reached in compare()
@@ -330,7 +329,7 @@ export default class TypingTest extends Component {
                             <Alert variant="info">
                                 <span>
                                     WPM : {this.state.highestWPM} <br></br>
-                                    accuracy : {this.state.highestAcc}% <br></br>
+                                    Accuracy : {this.state.highestAcc}% <br></br>
                                 </span>
                                   
                             </Alert>
@@ -364,7 +363,8 @@ export default class TypingTest extends Component {
                                         <p>
                                             Here are your results:<br></br>
                                             WPM : {this.state.netWPM} <br></br>
-                                            accuracy : {this.state.accuracy}% 
+                                            Accuracy : {this.state.accuracy}% <br></br>
+                                            Number of Errors : {this.state.error_count}
                                         </p>
                                     </Alert>
                                 </div>          
