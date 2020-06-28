@@ -19,9 +19,7 @@ const TestInput = styled.input.attrs(props => ({
     background: white;
     border-radius: 5px;
     border: 1px solid darkgray;
-
 `
-
 export default class TypingTest extends Component {
 
     constructor(props) {
@@ -45,7 +43,6 @@ export default class TypingTest extends Component {
             quote_name: 'Phoblacht Na hÉireann',
             // The text body of the quote
             quote_body : 'This is the day you will always remember as the day you almost caught Captain Jack Sparrow.',
-            // What the user inputs into the text input
             user_input : '',
             // An array of every word in the quote not currently used but might be useful later
             quote_words: [],
@@ -149,8 +146,10 @@ export default class TypingTest extends Component {
             soundStatus : Sound.status.PLAYING
         })
 
-        if (this.state.count >= this.state.char_array.length) {
+        // edge case if user ends test with error to just end the test if the total number of entries == the quote len.
+        if (this.state.count === this.state.char_array.length) {
             this.endTest();
+            return
         }
 
         // if the key pressed is not backspace and is in the general keys location 0
@@ -204,7 +203,6 @@ export default class TypingTest extends Component {
     // Checks the if the word count is equal to the length of the quote_words array; if it is the test is over and endTest() is called.
     // If it is not the state of the current word is changed, the count is incremented and the user_input is set back to empty
     compare (current_char) {
-
         if (current_char === this.state.user_input) {
             console.log("match");
             if (this.state.count >= this.state.char_array.length -1) {
@@ -214,65 +212,37 @@ export default class TypingTest extends Component {
             }
             else {
                 this.setState((state) => ({
-                    //current_quote_word : this.state.quote_words[this.state.count],
                     current_quote_char : state.char_array[state.count + 1],
                     count: state.count + 1,
-                    quote_class : 'quote-current',
                     typed_chars: state.typed_chars + state.user_input,
-                    quote_left : state.typed_chars + state.user_input,
                     quote_right : state.char_array.slice(state.count+2, state.char_array.length),
                     user_input : '',
-                    //quote_error: '',
-                    err_arr : ''
-
+                    quote_left : state.typed_chars + state.user_input,
+                    err_arr : '',
+                    quote_class : 'quote-current',
                 }));  
             }
-                document.getElementById('input').value = '';
+            document.getElementById('input').value = '';
         }
         else {
+            this.setState((state) => ({
+                err_arr : state.err_arr + state.char_array[state.count],
 
-            // check the length of the current stat.count aginst the length of the quote to stop 'undefined' being injected into error array
-            if (this.state.count >= this.state.char_array.length) {
-                // if the length of the character array has been met 
-
-                this.setState((state) => ({
-                    //quote_error : state.char_array[state.count+1],
-                    current_quote_char : state.char_array[state.count + 1],
-                    err_arr : state.err_arr,
-                    count: state.count + 1,
-                    quote_class : 'quote-warning',
-                    typed_chars : state.typed_chars + state.char_array[state.count],
-                    quote_error : state.err_arr,
-                    quote_right : state.char_array.slice(state.count +2, state.char_array.length),
-                    error_count : state.error_count + 1,
-                    total_error_count : state.total_error_count + 1,
-                
-                }))
-            }
-            else {
-
-                this.setState((state) => ({
-                    //quote_error : state.char_array[state.count+1],
-                    current_quote_char : state.char_array[state.count + 1],
-                    err_arr : state.err_arr + state.char_array[state.count],
-                    count: state.count + 1,
-                    quote_class : 'quote-warning',
-                    typed_chars : state.typed_chars + state.char_array[state.count],
-                    quote_error : state.err_arr,
-                    quote_right : state.char_array.slice(state.count +2, state.char_array.length),
-                    error_count : state.error_count + 1,
-                    total_error_count : state.total_error_count + 1,
-                
-                }))
-            }
-            
+                current_quote_char : state.char_array[state.count + 1],
+                count: state.count + 1,
+                quote_class : 'quote-warning',
+                typed_chars : state.typed_chars + state.char_array[state.count],
+                quote_error :  state.err_arr,
+                quote_right : state.char_array.slice(state.count +2, state.char_array.length),
+                error_count : state.error_count + 1,
+                total_error_count : state.total_error_count + 1,
+            }))
         }
     }
 
     //Called whenever the reset button is pressed
     //Resets the test by resetting the state to default.
     resetTest () {
-
         let body = this.state.quote_body;
         let words = [];
         let chars = [];
@@ -281,7 +251,6 @@ export default class TypingTest extends Component {
         chars = Array.from(body);
         clearInterval(this.state.tInterval);
         document.getElementById('input').value = '';
-
         document.getElementById('input').focus();
 
         this.setState((state) => ({
@@ -299,6 +268,7 @@ export default class TypingTest extends Component {
             typed_chars : '',
             error_count : 0,
             quote_class : 'quote_current',
+            quote_error : '',
             total_error_count : 0,
             count: 0,
             seconds : 0,
@@ -307,7 +277,7 @@ export default class TypingTest extends Component {
         }))
     }
 
-    //Called when the end of the test is reached in compare()
+    // Called when the end of the test is reached in compare()
     // Calculates word per minute
     endTest () {
         clearInterval(this.state.tInterval);
@@ -323,6 +293,7 @@ export default class TypingTest extends Component {
             accuracy : Math.ceil((correctChars / state.char_array.length)*100),
             input_disabled : true,
             current_quote_char : '',
+
             quote_left : state.quote_body,
             seconds : 0,
             err_arr : '',
@@ -361,6 +332,7 @@ export default class TypingTest extends Component {
         return netWPM
     }
 
+    // function to render button tooltips
     renderTooltip(props) {
         if (props.placement === 'right') {
             return (
