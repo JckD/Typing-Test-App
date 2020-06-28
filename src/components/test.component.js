@@ -9,8 +9,18 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 //import keySound from '../assets/cherry-mx-blue.mp3';
 import Sound from 'react-sound';
+import styled from 'styled-components';
 
 
+const TestInput = styled.input.attrs(props => ({
+    type : 'text',
+    
+}))`
+    background: white;
+    border-radius: 5px;
+    border: 1px solid darkgray;
+
+`
 
 export default class TypingTest extends Component {
 
@@ -352,7 +362,6 @@ export default class TypingTest extends Component {
     }
 
     renderTooltip(props) {
-        console.log(props.placement)
         if (props.placement === 'right') {
             return (
                 <Tooltip id="button-tooltip" {...props}>
@@ -377,8 +386,7 @@ export default class TypingTest extends Component {
                     <Row>
                         <Col sm={8}>
                             <h4>{this.state.quote_name}</h4>
-                            <Alert variant="secondary">
-                                
+                            <Alert variant="secondary">       
                                 <span className="quote-left">{this.state.quote_left}</span>
                                 <span className="quote-error">{this.state.err_arr}</span>
                                 <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
@@ -393,8 +401,7 @@ export default class TypingTest extends Component {
                                 <span>
                                     WPM : {this.state.highestWPM} <br></br>
                                     Accuracy : {this.state.highestAcc}% <br></br>
-                                </span>
-                                  
+                                </span>       
                             </Alert>
                         </Col>
                     </Row>
@@ -405,7 +412,7 @@ export default class TypingTest extends Component {
                     </Row>
                     <Row>
                         <Col sm={8}>
-                            <input type="text"  onKeyDown={this.onInputChange} id='input' disabled={this.state.input_disabled}></input>
+                            <TestInput  onKeyDown={this.onInputChange} id='input' disabled={this.state.input_disabled}/>
                             <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
                                 <Button onClick={this.resetTest} style={{marginLeft: 10}} variant="secondary" id="restartBtn">
                                     <svg className="bi bi-arrow-repeat" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -418,8 +425,8 @@ export default class TypingTest extends Component {
                         <Col sm={4}>
                             <OverlayTrigger placement="left" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
                                 <Button onClick={this.debugToggle} variant="outline-warning" style={{float : "right"}} id="debugBtn" name="debugBtn">
-                                    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-bug" fill="currentColor" xmlns="http://www.w3.org/2000/svg" >
-                                        <path fill-rule="evenodd" d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6H4a3.99 3.99 0 0 1 1.333-2.982A3.983 3.983 0 0 1 8 2c1.025 0 1.959.385 2.666 1.018A3.989 3.989 0 0 1 12 6z"/>
+                                    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-bug" fill="currentColor" xmlns="http://www.w3.org/2000/svg" >
+                                        <path fillRule="evenodd" d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6H4a3.99 3.99 0 0 1 1.333-2.982A3.983 3.983 0 0 1 8 2c1.025 0 1.959.385 2.666 1.018A3.989 3.989 0 0 1 12 6z"/>
                                     </svg>
                                 </Button>
                             </OverlayTrigger>
@@ -449,27 +456,26 @@ export default class TypingTest extends Component {
                                 <div>
                                     <Alert variant="warning">
                                         <Alert.Heading>Debug</Alert.Heading>
-                                            <p>
-                                                Error array : {this.state.err_arr}<br></br>
-                                                quote length : {this.state.char_array.length}<br></br>
-                                                Input count : {this.state.count}<br></br>
-                                                Error Count : {this.state.error_count}<br></br>
-                                                Total Error Count : {this.state.total_error_count}<br></br>
-                                                Previous character : {this.state.char_array[this.state.count-1]}<br></br>
-                                                Current character : {this.state.char_array[this.state.count]}<br></br>
-                                                Next character : {this.state.char_array[this.state.count+1]}<br></br> 
-                                                Quote left : {this.state.quote_left}<br></br>
-                                                Quote green : {this.state.current_quote_char}<br></br>
-                                                Quote right : {this.state.quote_right}<br></br>
-                                                Quote error : {this.state.quote_error}
-                                            </p>
+                                        <p>
+                                            Error array : {this.state.err_arr}<br></br>
+                                            quote length : {this.state.char_array.length}<br></br>
+                                            Input count : {this.state.count}<br></br>
+                                            Error Count : {this.state.error_count}<br></br>
+                                            Total Error Count : {this.state.total_error_count}<br></br>
+                                            Previous character : {this.state.char_array[this.state.count-1]}<br></br>
+                                            Current character : {this.state.char_array[this.state.count]}<br></br>
+                                            Next character : {this.state.char_array[this.state.count+1]}<br></br> 
+                                            Quote left : {this.state.quote_left}<br></br>
+                                            Quote green : {this.state.current_quote_char}<br></br>
+                                            Quote right : {this.state.quote_right}<br></br>
+                                            Quote error : {this.state.quote_error}
+                                        </p>
                                     </Alert>
                                 </div>
                             </Collapse>      
                         </Col>
                     </Row>
                 </Container>
-
                 {/*<Sound
                 url={keySound}
                 playStatus={this.state.soundStatus}
@@ -477,12 +483,8 @@ export default class TypingTest extends Component {
                 onLoading={this.handleSongLoading}
                 onPlaying={this.handleSongPlaying}
                 onFinishedPlaying={this.handleSongFinishedPlaying}
-                 /> 
-                 
+                 />      
                 */}
-
-                
-                
             </div>
         )
     }
