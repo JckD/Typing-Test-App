@@ -23,6 +23,7 @@ export default class TypingTest extends Component {
         this.calculateHighScore = this.calculateHighScore.bind(this);
         this.backspace = this.backspace.bind(this);
         this.escFunction = this.escFunction.bind(this);
+        this.debugToggle = this.debugToggle.bind(this);
 
 
         this.state = {
@@ -74,8 +75,9 @@ export default class TypingTest extends Component {
             highestAcc : 0, 
             highestWPM : 0,
             // Playing status of the key sounds currently not in use
-            soundStatus : Sound.status.STOPPED
+            soundStatus : Sound.status.STOPPED,
 
+            debug : false
         }
     }
 
@@ -115,19 +117,27 @@ export default class TypingTest extends Component {
     // escFunction that handles when the escape key is pressed
     escFunction(event){
         if(event.keyCode === 27) {
-          //Do whatever when esc is pressed
           this.resetTest();
         }
+    }
+
+    // Function that toggles the debug output
+    debugToggle() {
+        this.setState((state) => ({
+            debug : !state.debug
+        })) 
     }
 
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
-        console.log('quote error ' + this.state.quote_error);
-        console.log('err count ' + this.state.error_count);
         this.setState({
             soundStatus : Sound.status.PLAYING
         })
+
+        if (this.state.count >= this.state.char_array.length) {
+            this.endTest();
+        }
 
         // if the key pressed is not backspace and is in the general keys location 0
         if (e.keyCode !== 8 && e.location === 0) {
@@ -148,8 +158,8 @@ export default class TypingTest extends Component {
             }, () => this.compare(this.state.current_quote_char))
         }
 
-        // Backspace conditions for changing the current char left and right spans     
-        else if (e.keyCode === 8 && this.state.quote_error !== '' && this.state.error_count  > 0) {
+        // Backspace conditions for changing the current char, left and right spans     
+        else if (e.keyCode === 8 && this.state.err_arr !== '' && this.state.error_count  > 0) {
             // if there are errors and the user presses backspace reduce the error count
             if (this.state.error_count > 0) {
                 this.setState ((state) => ({
@@ -168,7 +178,7 @@ export default class TypingTest extends Component {
             err_arr : state.err_arr.slice(0, state.err_arr.length-1),
             count : state.count - 1,
             current_quote_char : state.char_array[state.count -1],
-            quote_left : state.typed_chars.slice(0, state.typed_chars.length-state.err_arr.length),
+            quote_left : state.typed_chars.slice(0, state.typed_chars.length - state.err_arr.length),
             typed_chars : state.typed_chars.slice(0, -1),
             quote_right :  state.char_array.slice(state.count , state.char_array.length)
         }), () => console.log(this.state.quote_left))      
@@ -198,7 +208,7 @@ export default class TypingTest extends Component {
                     quote_left : state.typed_chars + state.user_input,
                     quote_right : state.char_array.slice(state.count+2, state.char_array.length),
                     user_input : '',
-                    quote_error: '',
+                    //quote_error: '',
                     err_arr : ''
 
                 }));  
@@ -218,7 +228,7 @@ export default class TypingTest extends Component {
                     current_quote_char : state.char_array[state.count + 1],
                     err_arr : state.err_arr,
                     count: state.count + 1,
-                    quote_class : 'quote-error',
+                    quote_class : 'quote-warning',
                     typed_chars : state.typed_chars + state.char_array[state.count],
                     quote_error : state.err_arr,
                     quote_right : state.char_array.slice(state.count +2, state.char_array.length),
@@ -234,7 +244,7 @@ export default class TypingTest extends Component {
                     current_quote_char : state.char_array[state.count + 1],
                     err_arr : state.err_arr + state.char_array[state.count],
                     count: state.count + 1,
-                    quote_class : 'quote-error',
+                    quote_class : 'quote-warning',
                     typed_chars : state.typed_chars + state.char_array[state.count],
                     quote_error : state.err_arr,
                     quote_right : state.char_array.slice(state.count +2, state.char_array.length),
@@ -259,11 +269,9 @@ export default class TypingTest extends Component {
         chars = Array.from(body);
         clearInterval(this.state.tInterval);
         document.getElementById('input').value = '';
-        //document.activeElement.blur();
+
         document.getElementById('input').focus();
-        console.log(document.activeElement);
-        document.getElementById('input').focus();
-        console.log(document.activeElement);
+
         this.setState((state) => ({
             quote_name: 'Phoblacht Na hÉireann',
             quote_body : 'This is the day you will always remember as the day you almost caught captain jack sparrow.', 
@@ -306,6 +314,7 @@ export default class TypingTest extends Component {
             current_quote_char : '',
             quote_left : state.quote_body,
             seconds : 0,
+            err_arr : '',
             netWPM : Math.ceil(this.calculateWPM()),
         }), () => this.calculateHighScore(lastAccuracy, lastWPM))
     }
@@ -376,7 +385,7 @@ export default class TypingTest extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
+                        <Col sm={8}>
                             <input type="text"  onKeyDown={this.onInputChange} id='input' disabled={this.state.input_disabled}></input>
                             <button onClick={this.resetTest} style={{marginLeft: 10}} className="btn btn-secondary">
                                 <svg className="bi bi-arrow-repeat" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -385,25 +394,52 @@ export default class TypingTest extends Component {
                                 </svg>
                             </button>
                         </Col>
-                       
+                        <Col sm={4}>
+                            <button onClick={this.debugToggle} className="btn btn-outline-warning" style={{float : "right"}}>Debug</button>
+                        </Col>
                     </Row>
-
-                    <Row>
-                        <Col>
-                            <br></br>
+                    <br></br>
+                    <Row >   
+                        <Col sm={8}>
                             <Collapse in={this.state.input_disabled}>
                                 <div id="results">
                                     <Alert variant="success">
                                         <Alert.Heading>Well Done!</Alert.Heading>
-                                        <p>
-                                            Here are your results:<br></br>
-                                            WPM : {this.state.netWPM} <br></br>
-                                            Accuracy : {this.state.accuracy}% <br></br>
-                                            Number of Errors : {this.state.error_count}
-                                        </p>
+                                            <p>
+                                                Here are your results:<br></br>
+                                                WPM : {this.state.netWPM} <br></br>
+                                                Accuracy : {this.state.accuracy}% <br></br>
+                                                Errors : {this.state.total_error_count}<br></br>
+                                                Corrected Errors : {this.state.error_count}
+                                            </p>
                                     </Alert>
                                 </div>          
                              </Collapse>
+                        </Col>
+
+                        <Col sm={4}>
+                            <Collapse in={this.state.debug}>
+                                <div>
+                                    <Alert variant="warning">
+                                        <Alert.Heading>Debug</Alert.Heading>
+                                            <p>
+                                                Error array : {this.state.err_arr}<br></br>
+                                                quote length : {this.state.char_array.length}<br></br>
+                                                Input count : {this.state.count}<br></br>
+                                                Error Count : {this.state.error_count}<br></br>
+                                                Total Error Count : {this.state.total_error_count}<br></br>
+                                                Previous character : {this.state.char_array[this.state.count-1]}<br></br>
+                                                Current character : {this.state.char_array[this.state.count]}<br></br>
+                                                Next character : {this.state.char_array[this.state.count+1]}<br></br> 
+                                                Quote left : {this.state.quote_left}<br></br>
+                                                Quote green : {this.state.current_quote_char}<br></br>
+                                                Quote right : {this.state.quote_right}<br></br>
+                                                Quote error : {this.state.quote_error}<br></br>
+                                            </p>
+                                    </Alert>
+                                </div>
+                               
+                            </Collapse>      
                         </Col>
                     </Row>
                 </Container>
