@@ -7,10 +7,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-//import keySound from '../assets/cherry-mx-blue.mp3';
-import Sound from 'react-sound';
 import styled from 'styled-components';
-
 
 const TestInput = styled.input.attrs(props => ({
     type : 'text',
@@ -19,6 +16,8 @@ const TestInput = styled.input.attrs(props => ({
     background: white;
     border-radius: 5px;
     border: 1px solid darkgray;
+
+    :: disabled
 `
 export default class TypingTest extends Component {
 
@@ -36,7 +35,6 @@ export default class TypingTest extends Component {
         this.escFunction = this.escFunction.bind(this);
         this.debugToggle = this.debugToggle.bind(this);
         this.renderTooltip = this.renderTooltip.bind(this);
-
 
         this.state = {
             //The name of the quote
@@ -85,8 +83,6 @@ export default class TypingTest extends Component {
             // Highscores
             highestAcc : 0, 
             highestWPM : 0,
-            // Playing status of the key sounds currently not in use
-            soundStatus : Sound.status.STOPPED,
 
             debug : false
         }
@@ -142,10 +138,6 @@ export default class TypingTest extends Component {
     // Called whenever the user input is changed
     // Sets the state of user_input to the user's input and calls compare with the current word from state.
     onInputChange (e) {
-        this.setState({
-            soundStatus : Sound.status.PLAYING
-        })
-
         // edge case if user ends test with error to just end the test if the total number of entries == the quote len.
         if (this.state.count === this.state.char_array.length) {
             this.endTest();
@@ -170,7 +162,6 @@ export default class TypingTest extends Component {
                 user_input : e.key
             }, () => this.compare(this.state.current_quote_char))
         }
-
         // Backspace conditions for changing the current char, left and right spans     
         else if (e.keyCode === 8 && this.state.err_arr !== '' && this.state.error_count  > 0) {
             // if there are errors and the user presses backspace reduce the error count
@@ -227,7 +218,6 @@ export default class TypingTest extends Component {
         else {
             this.setState((state) => ({
                 err_arr : state.err_arr + state.char_array[state.count],
-
                 current_quote_char : state.char_array[state.count + 1],
                 count: state.count + 1,
                 quote_class : 'quote-warning',
@@ -273,7 +263,6 @@ export default class TypingTest extends Component {
             count: 0,
             seconds : 0,
             input_disabled : false,
-
         }))
     }
 
@@ -293,7 +282,6 @@ export default class TypingTest extends Component {
             accuracy : Math.ceil((correctChars / state.char_array.length)*100),
             input_disabled : true,
             current_quote_char : '',
-
             quote_left : state.quote_body,
             seconds : 0,
             err_arr : '',
@@ -307,28 +295,23 @@ export default class TypingTest extends Component {
         let latestWPM = this.state.netWPM;
 
         if (latestWPM > lastWPM) {
-
             this.setState({
                 highestAcc : latestAccuracy,
                 highestWPM : latestWPM
             })
         }
-        
-
     }
 
     // calculateWPM function calculates the user's WPM and returns the netWPM
     calculateWPM () {
-       
         let seconds = this.state.seconds;
         let minutes = seconds/60;
         let errors = this.state.error_count;
         let typedEntries = this.state.typed_chars.length;
-
-
         let grossWPM = (typedEntries/5) / minutes;
         let netWPM = grossWPM - (errors/minutes);
-
+        // Now do it all in one line for Duggan
+        netWPM = ((this.state.typed_chars.length/5) / (this.state.seconds/60)) - (this.state.error_count/(this.state.seconds/60))
         return netWPM
     }
 
@@ -403,8 +386,7 @@ export default class TypingTest extends Component {
                                 </Button>
                             </OverlayTrigger>
                         </Col>
-                    </Row>
-                    <br></br>
+                    </Row><br></br>
                     <Row >   
                         <Col sm={8}>
                             <Collapse in={this.state.input_disabled}>
@@ -448,15 +430,6 @@ export default class TypingTest extends Component {
                         </Col>
                     </Row>
                 </Container>
-                {/*<Sound
-                url={keySound}
-                playStatus={this.state.soundStatus}
-                playFromPosition={0 /* in milliseconds 
-                onLoading={this.handleSongLoading}
-                onPlaying={this.handleSongPlaying}
-                onFinishedPlaying={this.handleSongFinishedPlaying}
-                 />      
-                */}
             </div>
         )
     }
