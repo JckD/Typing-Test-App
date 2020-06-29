@@ -236,7 +236,6 @@ export default class TypingTest extends Component {
         let body = this.state.quote_body;
         let words = [];
         let chars = [];
-
         words = body.split(" ");
         chars = Array.from(body);
         clearInterval(this.state.tInterval);
@@ -337,7 +336,7 @@ export default class TypingTest extends Component {
         return (
             <div className="container">
                 <br></br>
-                <Container>
+                
                     <Row>
                         <Col sm={8}>
                             <h4>{this.state.quote_name}</h4>
@@ -348,7 +347,6 @@ export default class TypingTest extends Component {
                                 <span className="quote-start">{this.state.quote_start.slice(1) }</span>
                                 <span className="quote-right">{this.state.quote_right}</span>
                             </Alert>    
-
                         </Col>
                         <Col sm={4}>
                             <h4>High Scores</h4>
@@ -404,7 +402,6 @@ export default class TypingTest extends Component {
                                 </div>          
                              </Collapse>
                         </Col>
-
                         <Col sm={4}>
                             <Collapse in={this.state.debug}>
                                 <div>
@@ -429,7 +426,7 @@ export default class TypingTest extends Component {
                             </Collapse>      
                         </Col>
                     </Row>
-                </Container>
+                
             </div>
         )
     }
