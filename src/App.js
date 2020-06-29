@@ -17,7 +17,7 @@ import darkTheme from "./themes/dark";
 import Container from "./components/Container";
 import Card from "./components/Container";
 import Button from 'react-bootstrap/Button';
-import NavLink from './components/NavLink'
+import NavIcon from './components/NavIcon';
 
 const App = () => {
 
@@ -25,7 +25,7 @@ const App = () => {
   
   const [isDarkMode, setIsDarkMode] = useState(
     stored === "true" ? true : false
-    
+    // <img src={logo} width="30" height="30" alt="Typing Test" />
   );
 
   return (
@@ -35,7 +35,9 @@ const App = () => {
         <Router>
         <div className="container">
             <Navbar collapseOnSelect expand="lg" bg={isDarkMode ? 'dark' : 'light'} variant={isDarkMode ? 'dark' : 'light'}>
-              <NavbarBrand><img src={logo} width="30" height="30" alt="Typing Test" /></NavbarBrand>
+              <NavbarBrand>
+                <NavIcon></NavIcon>
+              </NavbarBrand>
               <NavbarBrand>Typing Test</NavbarBrand>
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
 
@@ -57,28 +59,6 @@ const App = () => {
               </Navbar.Collapse>
             </Navbar>
         </div>
-           <div className="container">
-              <NavLink className="navbar navbar-expand-lg navbar-light b-light">
-                <a className="navbar-brand">
-                  
-                </a>
-                
-                <div className="collpase navbar-collapse">
-                  <ul className="navbar-nav mr-auto">
-                    <li className="navbar-item">
-                      <Link prefetch to="/">
-                               
-                      </Link>
-                    </li>
-                    <li className="navbar-item">
-                      
-                    </li>
-                    
-                  </ul>
-                </div>
-                
-              </NavLink>
-          </div>
 
           <Route path="/" exact component={TypingTest} />
           <Route path="/createQuote" component={CreateQuote} />

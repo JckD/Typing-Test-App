@@ -3,8 +3,10 @@ export default {
         background : "white",
         cardBackground : "#E5E9F0",
         buttonBackground : "#5E81AC",
-        textColor : "#black",
+        textColor : "black",
         buttonColor : "ECEFF4",
-    }
+
+    },
+
     
 };
