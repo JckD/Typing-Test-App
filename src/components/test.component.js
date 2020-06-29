@@ -19,6 +19,8 @@ const TestInput = styled.input.attrs(props => ({
 
     :: disabled
 `
+
+
 export default class TypingTest extends Component {
 
     constructor(props) {
@@ -38,7 +40,7 @@ export default class TypingTest extends Component {
 
         this.state = {
             //The name of the quote
-            quote_name: 'Phoblacht Na hÉireann',
+            quote_name: 'Captain Jack Sparrow',
             // The text body of the quote
             quote_body : 'This is the day you will always remember as the day you almost caught Captain Jack Sparrow.',
             user_input : '',

@@ -17,7 +17,10 @@
     "react-sound": "^1.2.0",
     "styled-components": "^5.1.1"
   },
+  "homepage": "http://JckD.github.io/Typing-Test-App",
   "scripts": {
+    "predeploy" : "npm run build",
+    "deploy" : "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -39,6 +42,7 @@
     ]
   },
   "devDependencies": {
-    "babel-plugin-styled-components": "^1.10.7"
+    "babel-plugin-styled-components": "^1.10.7",
+    "gh-pages": "^3.1.0"
   }
 }
