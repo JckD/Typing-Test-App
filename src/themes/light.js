@@ -5,7 +5,6 @@ export default {
         buttonBackground : "#5E81AC",
         textColor : "#black",
         buttonColor : "ECEFF4",
-        navbar : "navbar navbar-expand-lg navbar-light b-light"
     }
     
 };

@@ -5,19 +5,27 @@ import { BrowserRouter as Router, Route, Link} from "react-router-dom";
 import TypingTest from './components/test.component';
 import CreateQuote from './components/CreateQuote.component';
 import './App.css';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import NavbarBrand from 'react-bootstrap/NavbarBrand';
+import NavDropdown from 'react-bootstrap/NavDropdown'
 import { ThemeProvider } from "styled-components";
 import lightTheme from "./themes/light";
 import darkTheme from "./themes/dark";
 
+
 import Container from "./components/Container";
-import Button from './components/Button';
+import Card from "./components/Container";
+import Button from 'react-bootstrap/Button';
 import NavLink from './components/NavLink'
 
 const App = () => {
 
   const stored = localStorage.getItem("isDarkMode");
+  
   const [isDarkMode, setIsDarkMode] = useState(
     stored === "true" ? true : false
+    
   );
 
   return (
@@ -25,27 +33,19 @@ const App = () => {
       <Container>
         
         <Router>
-          
-          <div className="container">
-              <NavLink className="navbar navbar-expand-lg navbar-light b-light">
-                <a className="navbar-brand">
-                  <img src={logo} width="30" height="30" alt="Typing Test" />
-                </a>
-                <Link to="/" className="navbar-brand">Typing Test</Link>
-                <div className="collpase navbar-collapse">
-                  <ul className="navbar-nav mr-auto">
-                    <li className="navbar-item">
-                      <Link prefetch to="/">
-                        <Link to="/" className="nav-link" id="navBarText">Test</Link>       
-                      </Link>
-                    </li>
-                    <li className="navbar-item">
-                      <Link to="/createQuote" className="nav-link">Create Quote</Link>
-                    </li>
-                    
-                  </ul>
-                </div>
-                <Button onClick={() => {
+        <div className="container">
+            <Navbar collapseOnSelect expand="lg" bg={isDarkMode ? 'dark' : 'light'} variant={isDarkMode ? 'dark' : 'light'}>
+              <NavbarBrand><img src={logo} width="30" height="30" alt="Typing Test" /></NavbarBrand>
+              <NavbarBrand>Typing Test</NavbarBrand>
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+
+              <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="mr-auto">
+                  <Link to="/" className="nav-link" id="navBarText">Test</Link>
+                  <Link to="/createQuote" className="nav-link">Create Quote</Link>
+                </Nav>
+                <Nav>
+                  <Button variant="outline-secondary" onClick={() => {
                   setIsDarkMode(!isDarkMode);
                   localStorage.setItem("isDarkMode", !isDarkMode);
                   }}>
@@ -53,6 +53,30 @@ const App = () => {
                     <path fill-rule="evenodd" d="M8 15V1a7 7 0 1 1 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
                   </svg>
                 </Button>
+                </Nav>
+              </Navbar.Collapse>
+            </Navbar>
+        </div>
+           <div className="container">
+              <NavLink className="navbar navbar-expand-lg navbar-light b-light">
+                <a className="navbar-brand">
+                  
+                </a>
+                
+                <div className="collpase navbar-collapse">
+                  <ul className="navbar-nav mr-auto">
+                    <li className="navbar-item">
+                      <Link prefetch to="/">
+                               
+                      </Link>
+                    </li>
+                    <li className="navbar-item">
+                      
+                    </li>
+                    
+                  </ul>
+                </div>
+                
               </NavLink>
           </div>
 
