@@ -245,7 +245,7 @@ export default class TypingTest extends Component {
         document.getElementById('input').focus();
 
         this.setState((state) => ({
-            quote_name: 'Phoblacht Na hÉireann',
+            quote_name: 'Captain Jack Sparrow',
             quote_body : 'This is the day you will always remember as the day you almost caught captain jack sparrow.', 
             quote_words : words,
             current_quote_word : words[0],
