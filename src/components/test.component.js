@@ -94,6 +94,8 @@ export default class TypingTest extends Component {
     }
 
     componentDidMount () {
+
+        // get quote from database and update state
         axios.get('http://localhost:8080/quotes/5f03c363571b085f459f8183')
             .then(response => {
                 console.log(response.data)
@@ -339,19 +341,37 @@ export default class TypingTest extends Component {
 
     // function to render button tooltips
     renderTooltip(props) {
-        if (props.placement === 'right') {
-            return (
-                <Tooltip id="button-tooltip" {...props}>
-                    Restart Test
-                </Tooltip>
-            );
-        } else {
-            return (
-                <Tooltip id="button-tooltip" {...props}>
-                    Debug Info
-                </Tooltip>
-            );
+        if (props.popper.state != null) {
+            //console.log(props.popper.state.elements)
+
+            if (props.popper.state.elements.reference.id === 'restartBtn') {
+                return (
+                    <Tooltip id="button-tooltip" {...props}>
+                        Restart Test
+                    </Tooltip>
+                );
+            } else if (props.popper.state.elements.reference.id === 'newTestBtn') {
+                return (
+                    <Tooltip id="button-tooltip" {...props}>
+                        Start New Test
+                    </Tooltip>
+                );
+            } else if (props.popper.state.elements.reference.id === 'debugBtn') {
+                return (
+                    <Tooltip id="button-tooltip" {...props}>
+                        Show debug Info
+                    </Tooltip>
+                )
+            } 
         }
+
+        return  (
+            <Tooltip {...props}>
+                test
+            </Tooltip>
+        )
+        
+       
         
       }
 
@@ -389,14 +409,23 @@ export default class TypingTest extends Component {
                     <Row>
                         <Col sm={8}>
                             <TestInput  onKeyDown={this.onInputChange} id='input' disabled={this.state.input_disabled}/>
-                            <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
+                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip} name="restartOverlay">
                                 <Button onClick={this.resetTest} style={{marginLeft: 10}} variant="secondary" id="restartBtn">
                                     <svg className="bi bi-arrow-repeat" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path fillRule="evenodd" d="M2.854 7.146a.5.5 0 00-.708 0l-2 2a.5.5 0 10.708.708L2.5 8.207l1.646 1.647a.5.5 0 00.708-.708l-2-2zm13-1a.5.5 0 00-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 00-.708.708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 000-.708z" clipRule="evenodd"/>
                                         <path fillRule="evenodd" d="M8 3a4.995 4.995 0 00-4.192 2.273.5.5 0 01-.837-.546A6 6 0 0114 8a.5.5 0 01-1.001 0 5 5 0 00-5-5zM2.5 7.5A.5.5 0 013 8a5 5 0 009.192 2.727.5.5 0 11.837.546A6 6 0 012 8a.5.5 0 01.501-.5z" clipRule="evenodd"/>
                                     </svg>
                                 </Button>
-                            </OverlayTrigger>   
+                            </OverlayTrigger>
+                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
+                                <Button onClick={this.debugToggle} variant="info" style={{marginLeft : 10}} id="newTestBtn" name="newTestBtn">
+                                    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
+                                        <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
+                                    </svg>
+                                </Button>
+                            </OverlayTrigger>
+                              
                         </Col>
                         <Col sm={4}>
                             <OverlayTrigger placement="left" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
