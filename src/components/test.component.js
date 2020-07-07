@@ -7,6 +7,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
+import axios from 'axios';
 
 
 const TestInput = styled.input.attrs(props => ({
@@ -40,8 +41,9 @@ export default class TypingTest extends Component {
         this.renderTooltip = this.renderTooltip.bind(this);
 
         this.state = {
+            quote: [],
             //The name of the quote
-            quote_name: 'Captain Jack Sparrow',
+            quote_Title: 'Captain Jack Sparrow',
             // The text body of the quote
             quote_body : 'This is the day you will always remember as the day you almost caught Captain Jack Sparrow.',
             user_input : '',
@@ -92,20 +94,35 @@ export default class TypingTest extends Component {
     }
 
     componentDidMount () {
-        let body = this.state.quote_body;
-        let words = [];
-        let chars = [];
+        axios.get('http://localhost:8080/quotes/5f03c363571b085f459f8183')
+            .then(response => {
+                console.log(response.data)
+                this.setState((state) => ({ 
+                    quote_Title : response.data.quoteTitle,
+                    quote_body : response.data.quoteBody,
+                    char_array : Array.from(response.data.quoteBody),
+                    current_quote_char : Array.from(response.data.quoteBody)[0],
+                    quote_start : response.data.quoteBody
+                }))
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
 
-        words = body.split(" ");
-        chars = Array.from(body);
+        // let body = this.state.quote_body;
+        // let words = [];
+        // let chars = [];
 
-        this.setState((state) => ({
-            quote_words : words,
-            current_quote_word : words[state.count],
-            char_array : Array.from(state.quote_body),
-            current_quote_char : chars[0],
-            quote_start : state.quote_body
-        })) 
+        // words = body.split(" ");
+        // chars = Array.from(body);
+
+        // this.setState((state) => ({
+        //     quote_words : words,
+        //     current_quote_word : words[state.count],
+        //     char_array : Array.from(state.quote_body),
+        //     current_quote_char : chars[0],
+        //     quote_start : state.quote_body
+        // })) 
 
         // add eventListener that checks if the esc key has been pressed on every keydown
         document.addEventListener("keydown", this.escFunction, false);
@@ -249,7 +266,7 @@ export default class TypingTest extends Component {
         document.getElementById('input').focus();
 
         this.setState((state) => ({
-            quote_name: 'Captain Jack Sparrow',
+            quote_Title: 'Captain Jack Sparrow',
             quote_body : 'This is the day you will always remember as the day you almost caught captain jack sparrow.', 
             quote_words : words,
             current_quote_word : words[0],
@@ -345,12 +362,12 @@ export default class TypingTest extends Component {
                 
                     <Row>
                         <Col sm={8}>
-                            <h4>{this.state.quote_name}</h4>
+                            <h4>{this.state.quote_Title}</h4>
                             <Alert variant="secondary">       
                                 <span className="quote-left">{this.state.quote_left}</span>
                                 <span className="quote-error">{this.state.err_arr}</span>
                                 <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
-                                <span className="quote-start">{this.state.quote_start.slice(1) }</span>
+                                <span className="quote-start">{this.state.quote_start.slice(1)}</span>
                                 <span className="quote-right">{this.state.quote_right}</span>
                             </Alert>    
                         </Col>
