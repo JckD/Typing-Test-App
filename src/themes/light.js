@@ -1,7 +1,7 @@
 export default {
     colors: {
         background : "white",
-        cardBackground : "#E5E9F0",
+        cardBackground : "#white",
         buttonBackground : "#5E81AC",
         textColor : "black",
         buttonColor : "ECEFF4",

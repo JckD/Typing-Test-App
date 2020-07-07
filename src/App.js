@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import { BrowserRouter as Router, Route, Link} from "react-router-dom"; 
 import TypingTest from './components/test.component';
 import CreateQuote from './components/CreateQuote.component';
+import Quotes from './components/quotes.component';
 import './App.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -21,9 +22,8 @@ const App = () => {
 
   const stored = localStorage.getItem("isDarkMode");
   
-  const [isDarkMode, setIsDarkMode] = useState(
+  const [isDarkMode, setIsDarkMode] = useState( 
     stored === "true" ? true : false
-    // <img src={logo} width="30" height="30" alt="Typing Test" />
   );
 
   return (
@@ -42,7 +42,9 @@ const App = () => {
               <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
                   <Link to="/" className="nav-link" id="navBarText">Test</Link>
+                  <Link to="/quotes" className="nav-link">Quotes</Link>
                   <Link to="/createQuote" className="nav-link">Create Quote</Link>
+                  
                 </Nav>
                 <Nav>
                   <Button variant="outline-secondary" onClick={() => {
@@ -60,6 +62,7 @@ const App = () => {
 
           <Route path="/" exact component={TypingTest} />
           <Route path="/createQuote" component={CreateQuote} />
+          <Route path="/quotes" component={Quotes} />
       
         </Router>  
       </Container>

@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
 import axios from 'axios';
+import Card from './Card'
 
 
 const TestInput = styled.input.attrs(props => ({
@@ -27,7 +28,7 @@ export default class TypingTest extends Component {
 
     constructor(props) {
         super(props);
-
+        console.log(props);
         this.onInputChange = this.onInputChange.bind(this);
         this.compare = this.compare.bind(this);
         this.resetTest = this.resetTest.bind(this);
@@ -47,6 +48,7 @@ export default class TypingTest extends Component {
             quote_Title: '',
             // The text body of the quote
             quote_body : '',
+            quote_author : '',
             user_input : '',
             // An array of every word in the quote not currently used but might be useful later
             quote_words: [],
@@ -95,16 +97,23 @@ export default class TypingTest extends Component {
     }
 
     componentDidMount () {
-
+        let query = '';
+        if (this.props.location.state != null) {
+            query = this.props.location.state.id
+        }
+        else {
+            query = 'random';
+        }
         // get quote from database and update state
-        axios.get('http://localhost:8080/quotes/random')
+        axios.get('http://localhost:8080/quotes/'+query)
             .then(response => {
                 this.setState((state) => ({ 
                     quote_Title : response.data.quoteTitle,
                     quote_body : response.data.quoteBody,
                     char_array : Array.from(response.data.quoteBody),
                     current_quote_char : Array.from(response.data.quoteBody)[0],
-                    quote_start : response.data.quoteBody
+                    quote_start : response.data.quoteBody,
+                    quote_author : response.data.quoteAuthor,
                 }))
             })
             .catch(function (err) {
@@ -249,12 +258,14 @@ export default class TypingTest extends Component {
                     quote_body : response.data.quoteBody,
                     char_array : Array.from(response.data.quoteBody),
                     current_quote_char : Array.from(response.data.quoteBody)[0],
-                    quote_start : response.data.quoteBody
+                    quote_start : response.data.quoteBody,
+                    quote_author : response.data.quoteAuthor
                 }))
             })
             .catch(function (err) {
                 console.log(err);
             })
+        this.resetTest()
     }
 
     //Called whenever the reset button is pressed
@@ -376,108 +387,114 @@ export default class TypingTest extends Component {
     render() {
         return (
             <div className="container">
-                <br></br>
-                
-                    <Row>
-                        <Col sm={8}>
-                            <h4>{this.state.quote_Title}</h4>
-                            <Alert variant="secondary">       
-                                <span className="quote-left">{this.state.quote_left}</span>
-                                <span className="quote-error">{this.state.err_arr}</span>
-                                <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
-                                <span className="quote-start">{this.state.quote_start.slice(1)}</span>
-                                <span className="quote-right">{this.state.quote_right}</span>
-                            </Alert>    
-                        </Col>
-                        <Col sm={4}>
-                            <h4>High Scores</h4>
-                            <Alert variant="info">
-                                <span>
-                                    WPM : {this.state.highestWPM} <br></br>
-                                    Accuracy : {this.state.highestAcc}% <br></br>
-                                </span>       
-                            </Alert>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <h5>Current Character: {this.state.current_quote_char}</h5>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm={8}>
-                            <TestInput  onKeyDown={this.onInputChange} id='input' disabled={this.state.input_disabled}/>
-                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip} name="restartOverlay">
-                                <Button onClick={this.resetTest} style={{marginLeft: 10}} variant="secondary" id="restartBtn">
-                                    <svg className="bi bi-arrow-repeat" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path fillRule="evenodd" d="M2.854 7.146a.5.5 0 00-.708 0l-2 2a.5.5 0 10.708.708L2.5 8.207l1.646 1.647a.5.5 0 00.708-.708l-2-2zm13-1a.5.5 0 00-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 00-.708.708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 000-.708z" clipRule="evenodd"/>
-                                        <path fillRule="evenodd" d="M8 3a4.995 4.995 0 00-4.192 2.273.5.5 0 01-.837-.546A6 6 0 0114 8a.5.5 0 01-1.001 0 5 5 0 00-5-5zM2.5 7.5A.5.5 0 013 8a5 5 0 009.192 2.727.5.5 0 11.837.546A6 6 0 012 8a.5.5 0 01.501-.5z" clipRule="evenodd"/>
-                                    </svg>
-                                </Button>
-                            </OverlayTrigger>
-                            <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
-                                <Button onClick={this.newTest} variant="info" style={{marginLeft : 10}} id="newTestBtn" name="newTestBtn">
-                                    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
-                                        <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
-                                    </svg>
-                                </Button>
-                            </OverlayTrigger>
-                              
-                        </Col>
-                        <Col sm={4}>
-                            <OverlayTrigger placement="left" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
-                                <Button onClick={this.debugToggle} variant="outline-warning" style={{float : "right"}} id="debugBtn" name="debugBtn">
-                                    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-bug" fill="currentColor" xmlns="http://www.w3.org/2000/svg" >
-                                        <path fillRule="evenodd" d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6H4a3.99 3.99 0 0 1 1.333-2.982A3.983 3.983 0 0 1 8 2c1.025 0 1.959.385 2.666 1.018A3.989 3.989 0 0 1 12 6z"/>
-                                    </svg>
-                                </Button>
-                            </OverlayTrigger>
-                        </Col>
-                    </Row><br></br>
-                    <Row >   
-                        <Col sm={8}>
-                            <Collapse in={this.state.input_disabled}>
-                                <div id="results">
-                                    <Alert variant="success">
-                                        <Alert.Heading>Well Done!</Alert.Heading>
+                <Card>
+                   
+                    
+                        <Row>
+                            <Col sm={8}>
+                                <h4>{this.state.quote_Title} - {this.state.quote_author}</h4>
+                                <Alert variant="secondary">       
+                                    <span className="quote-left">{this.state.quote_left}</span>
+                                    <span className="quote-error">{this.state.err_arr}</span>
+                                    <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
+                                    <span className="quote-start">{this.state.quote_start.slice(1)}</span>
+                                    <span className="quote-right">{this.state.quote_right}</span>
+                                </Alert>    
+                            </Col>
+                            <Col sm={4}>
+                                <h4>High Scores</h4>
+                                <Alert variant="info">
+                                    <span>
+                                        WPM : {this.state.highestWPM} <br></br>
+                                        Accuracy : {this.state.highestAcc}% <br></br>
+                                    </span>       
+                                </Alert>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <h5>Current Character: {this.state.current_quote_char}</h5>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm={8}>
+                                <TestInput  onKeyDown={this.onInputChange} id='input' disabled={this.state.input_disabled}/>
+                                <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip} name="restartOverlay">
+                                    <Button onClick={this.resetTest} style={{marginLeft: 10}} variant="secondary" id="restartBtn">
+                                        <svg className="bi bi-arrow-repeat" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" d="M2.854 7.146a.5.5 0 00-.708 0l-2 2a.5.5 0 10.708.708L2.5 8.207l1.646 1.647a.5.5 0 00.708-.708l-2-2zm13-1a.5.5 0 00-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 00-.708.708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 000-.708z" clipRule="evenodd"/>
+                                            <path fillRule="evenodd" d="M8 3a4.995 4.995 0 00-4.192 2.273.5.5 0 01-.837-.546A6 6 0 0114 8a.5.5 0 01-1.001 0 5 5 0 00-5-5zM2.5 7.5A.5.5 0 013 8a5 5 0 009.192 2.727.5.5 0 11.837.546A6 6 0 012 8a.5.5 0 01.501-.5z" clipRule="evenodd"/>
+                                        </svg>
+                                    </Button>
+                                </OverlayTrigger>
+                                <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
+                                    <Button onClick={this.newTest} variant="info" style={{marginLeft : 10}} id="newTestBtn" name="newTestBtn">
+                                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
+                                            <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
+                                        </svg>
+                                    </Button>
+                                </OverlayTrigger>
+                                
+                            </Col>
+                            <Col sm={4}>
+                                <OverlayTrigger placement="left" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
+                                    <Button onClick={this.debugToggle} variant="outline-warning" style={{float : "right"}} id="debugBtn" name="debugBtn">
+                                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-bug" fill="currentColor" xmlns="http://www.w3.org/2000/svg" >
+                                            <path fillRule="evenodd" d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6H4a3.99 3.99 0 0 1 1.333-2.982A3.983 3.983 0 0 1 8 2c1.025 0 1.959.385 2.666 1.018A3.989 3.989 0 0 1 12 6z"/>
+                                        </svg>
+                                    </Button>
+                                </OverlayTrigger>
+                            </Col>
+                        </Row><br></br>
+                        
+                        <Row> 
+                            <Col sm={8}>
+                                <Collapse in={this.state.input_disabled}>
+                                    <div id="results">
+                                        <Alert variant="success">
+                                            <Alert.Heading>Well Done!</Alert.Heading>
+                                                <p>
+                                                    Here are your results:<br></br>
+                                                    WPM : {this.state.netWPM} <br></br>
+                                                    Accuracy : {this.state.accuracy}% <br></br>
+                                                    Errors : {this.state.total_error_count}<br></br>
+                                                    Corrected Errors : {this.state.error_count}
+                                                </p>
+                                        </Alert>
+                                    </div>          
+                                </Collapse>
+                            </Col>
+                            <Col sm={4}>
+                                <Collapse in={this.state.debug}>
+                                    <div>
+                                        <Alert variant="warning">
+                                            <Alert.Heading>Debug</Alert.Heading>
                                             <p>
-                                                Here are your results:<br></br>
-                                                WPM : {this.state.netWPM} <br></br>
-                                                Accuracy : {this.state.accuracy}% <br></br>
-                                                Errors : {this.state.total_error_count}<br></br>
-                                                Corrected Errors : {this.state.error_count}
+                                                Error array : {this.state.err_arr}<br></br>
+                                                quote length : {this.state.char_array.length}<br></br>
+                                                Input count : {this.state.count}<br></br>
+                                                Error Count : {this.state.error_count}<br></br>
+                                                Total Error Count : {this.state.total_error_count}<br></br>
+                                                Previous character : {this.state.char_array[this.state.count-1]}<br></br>
+                                                Current character : {this.state.char_array[this.state.count]}<br></br>
+                                                Next character : {this.state.char_array[this.state.count+1]}<br></br> 
+                                                Quote left : {this.state.quote_left}<br></br>
+                                                Quote green : {this.state.current_quote_char}<br></br>
+                                                Quote right : {this.state.quote_right}<br></br>
+                                                Quote error : {this.state.quote_error}
                                             </p>
-                                    </Alert>
-                                </div>          
-                             </Collapse>
-                        </Col>
-                        <Col sm={4}>
-                            <Collapse in={this.state.debug}>
-                                <div>
-                                    <Alert variant="warning">
-                                        <Alert.Heading>Debug</Alert.Heading>
-                                        <p>
-                                            Error array : {this.state.err_arr}<br></br>
-                                            quote length : {this.state.char_array.length}<br></br>
-                                            Input count : {this.state.count}<br></br>
-                                            Error Count : {this.state.error_count}<br></br>
-                                            Total Error Count : {this.state.total_error_count}<br></br>
-                                            Previous character : {this.state.char_array[this.state.count-1]}<br></br>
-                                            Current character : {this.state.char_array[this.state.count]}<br></br>
-                                            Next character : {this.state.char_array[this.state.count+1]}<br></br> 
-                                            Quote left : {this.state.quote_left}<br></br>
-                                            Quote green : {this.state.current_quote_char}<br></br>
-                                            Quote right : {this.state.quote_right}<br></br>
-                                            Quote error : {this.state.quote_error}
-                                        </p>
-                                    </Alert>
-                                </div>
-                            </Collapse>      
-                        </Col>
-                    </Row>
-                
+                                        </Alert>
+                                    </div>
+                                </Collapse>      
+                            </Col>
+                        </Row> 
+                </Card>    
+                <div style={{ height : 600}}></div>
+                <br></br>
+                <br></br>
             </div>
+            
         )
     }
 }
