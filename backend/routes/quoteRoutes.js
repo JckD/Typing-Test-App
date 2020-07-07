@@ -1,7 +1,10 @@
 const express = require("express");
 const QuoteRoutes = express.Router();
 
+
 let Quote = require('../schemas/quote.model');
+const { useCallback } = require("react");
+
 
 //Route that returns all quotes
 QuoteRoutes.route('/').get(function(req, res){
@@ -15,6 +18,21 @@ QuoteRoutes.route('/').get(function(req, res){
     });
 });
 
+// Get a random quote
+QuoteRoutes.get('/random', async (req, res) => {
+    try {
+        let count = await Quote.count()
+        let rand = Math.floor(Math.random() * count)
+        let randomQuote = await Quote.findOne().skip(rand)
+
+        res.send(randomQuote);
+    } catch (err) {
+        console.log(err);
+    }
+    
+})
+
+
 
 // Ruote that returns one book that matches the requested id
 QuoteRoutes.get('/:id', async (req, res) => {
@@ -26,6 +44,8 @@ QuoteRoutes.get('/:id', async (req, res) => {
         console.log(err);
     }
 })
+
+
 
 // Route that find's a quote by its id and updates it with the
 // contents of the body of the request

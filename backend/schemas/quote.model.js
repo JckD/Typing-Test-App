@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
-let Quote = new Schema({
+let QuoteSchema = new Schema({
     quoteTitle: {
         type: String
     },
@@ -16,4 +17,4 @@ let Quote = new Schema({
     }
 })
 
-module.exports = mongoose.model('Quote', Quote);
+module.exports = mongoose.model('Quote', QuoteSchema);
