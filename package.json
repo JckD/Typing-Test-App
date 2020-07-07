@@ -9,6 +9,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "cs-add-candidate-btn": "^1.0.0",
+    "i": "^0.3.6",
     "mongodb-stitch-browser-sdk": "^4.6.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",

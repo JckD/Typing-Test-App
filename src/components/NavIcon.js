@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import logo from "../assets/logo.png";
 import React from 'react';
-import Image from 'react-bootstrap/Image';
 
 
 const Svg = styled.svg`

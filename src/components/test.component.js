@@ -39,13 +39,14 @@ export default class TypingTest extends Component {
         this.escFunction = this.escFunction.bind(this);
         this.debugToggle = this.debugToggle.bind(this);
         this.renderTooltip = this.renderTooltip.bind(this);
+        this.newTest = this.newTest.bind(this);
 
         this.state = {
             quote: [],
             //The name of the quote
-            quote_Title: 'Captain Jack Sparrow',
+            quote_Title: '',
             // The text body of the quote
-            quote_body : 'This is the day you will always remember as the day you almost caught Captain Jack Sparrow.',
+            quote_body : '',
             user_input : '',
             // An array of every word in the quote not currently used but might be useful later
             quote_words: [],
@@ -96,9 +97,8 @@ export default class TypingTest extends Component {
     componentDidMount () {
 
         // get quote from database and update state
-        axios.get('http://localhost:8080/quotes/5f03c363571b085f459f8183')
+        axios.get('http://localhost:8080/quotes/random')
             .then(response => {
-                console.log(response.data)
                 this.setState((state) => ({ 
                     quote_Title : response.data.quoteTitle,
                     quote_body : response.data.quoteBody,
@@ -110,21 +110,6 @@ export default class TypingTest extends Component {
             .catch(function (err) {
                 console.log(err);
             })
-
-        // let body = this.state.quote_body;
-        // let words = [];
-        // let chars = [];
-
-        // words = body.split(" ");
-        // chars = Array.from(body);
-
-        // this.setState((state) => ({
-        //     quote_words : words,
-        //     current_quote_word : words[state.count],
-        //     char_array : Array.from(state.quote_body),
-        //     current_quote_char : chars[0],
-        //     quote_start : state.quote_body
-        // })) 
 
         // add eventListener that checks if the esc key has been pressed on every keydown
         document.addEventListener("keydown", this.escFunction, false);
@@ -255,6 +240,23 @@ export default class TypingTest extends Component {
         }
     }
 
+    newTest () {
+        // get quote from database and update state
+        axios.get('http://localhost:8080/quotes/random')
+            .then(response => {
+                this.setState((state) => ({ 
+                    quote_Title : response.data.quoteTitle,
+                    quote_body : response.data.quoteBody,
+                    char_array : Array.from(response.data.quoteBody),
+                    current_quote_char : Array.from(response.data.quoteBody)[0],
+                    quote_start : response.data.quoteBody
+                }))
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+    }
+
     //Called whenever the reset button is pressed
     //Resets the test by resetting the state to default.
     resetTest () {
@@ -268,8 +270,8 @@ export default class TypingTest extends Component {
         document.getElementById('input').focus();
 
         this.setState((state) => ({
-            quote_Title: 'Captain Jack Sparrow',
-            quote_body : 'This is the day you will always remember as the day you almost caught captain jack sparrow.', 
+            quote_Title: state.quote_Title,
+            quote_body : state.quote_body, 
             quote_words : words,
             current_quote_word : words[0],
             char_array : chars,
@@ -364,15 +366,11 @@ export default class TypingTest extends Component {
                 )
             } 
         }
-
         return  (
             <Tooltip {...props}>
                 tes
             </Tooltip>
-        )
-        
-       
-        
+        )     
       }
 
     render() {
@@ -418,7 +416,7 @@ export default class TypingTest extends Component {
                                 </Button>
                             </OverlayTrigger>
                             <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
-                                <Button onClick={this.debugToggle} variant="info" style={{marginLeft : 10}} id="newTestBtn" name="newTestBtn">
+                                <Button onClick={this.newTest} variant="info" style={{marginLeft : 10}} id="newTestBtn" name="newTestBtn">
                                     <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
                                         <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
