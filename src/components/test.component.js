@@ -8,8 +8,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
 
-import * as RealmWeb from "realm-web";
-import { StitchRequestError } from 'mongodb-stitch-browser-sdk';
 
 const TestInput = styled.input.attrs(props => ({
     type : 'text',
@@ -21,16 +19,6 @@ const TestInput = styled.input.attrs(props => ({
 
     :: disabled
 `
-
-const QuoteSchema = {
-    name: 'Quote',
-    properties: {
-        quoteTitle:  'string',
-        quoteBody:  'string',
-        quoteAuthor: 'string',
-        quoteUser : 'string',
-    }
-};
 
 
 
@@ -118,20 +106,6 @@ export default class TypingTest extends Component {
             current_quote_char : chars[0],
             quote_start : state.quote_body
         })) 
-
-        const app = new RealmWeb.App({ id: "typingtestapp-lpqmn" });
-        const credentials = RealmWeb.Credentials.anonymous();
-        
-        try {
-            const loginAnon = async () => {
-                const user = await app.logIn(credentials);
-                console.log("login successful")
-                
-                return user;
-            }
-        } catch(err) {
-            console.error("Failed to log in", err);
-        }
 
         // add eventListener that checks if the esc key has been pressed on every keydown
         document.addEventListener("keydown", this.escFunction, false);
