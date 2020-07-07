@@ -12,7 +12,6 @@ QuoteRoutes.route('/').get(function(req, res){
         if (err) {
             console.log(err);
         }else {
-            console.log(quotes)
             res.json(quotes);
         }
     });
@@ -21,15 +20,13 @@ QuoteRoutes.route('/').get(function(req, res){
 // Get a random quote
 QuoteRoutes.get('/random', async (req, res) => {
     try {
-        let count = await Quote.count()
+        let count = await Quote.countDocuments()
         let rand = Math.floor(Math.random() * count)
         let randomQuote = await Quote.findOne().skip(rand)
-
         res.send(randomQuote);
     } catch (err) {
         console.log(err);
     }
-    
 })
 
 
