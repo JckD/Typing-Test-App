@@ -367,7 +367,7 @@ export default class TypingTest extends Component {
 
         return  (
             <Tooltip {...props}>
-                test
+                tes
             </Tooltip>
         )
         
