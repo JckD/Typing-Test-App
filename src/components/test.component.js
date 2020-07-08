@@ -22,8 +22,6 @@ const TestInput = styled.input.attrs(props => ({
     :: disabled
 `
 
-
-
 export default class TypingTest extends Component {
 
     constructor(props) {
@@ -249,6 +247,9 @@ export default class TypingTest extends Component {
         }
     }
 
+    // Called by newTestBtn 
+    // queries the db for a random quote and updates the state
+    // then calls resettest to reset other counters and timers
     newTest () {
         // get quote from database and update state
         axios.get('http://localhost:8080/quotes/random')
@@ -490,11 +491,10 @@ export default class TypingTest extends Component {
                             </Col>
                         </Row> 
                 </Card>    
-                <div style={{ height : 600}}></div>
+                <div style={{ height : 1000}}></div>
                 <br></br>
                 <br></br>
-            </div>
-            
+            </div>  
         )
     }
 }

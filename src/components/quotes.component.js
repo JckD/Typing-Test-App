@@ -63,7 +63,7 @@ export default class QuoteList extends Component {
         return (
             <div className="container">
                 <Card>
-                    <br></br>
+        
                     <Row>
                         <Col sm={8}>
                             <h4>Quotes</h4>
@@ -76,7 +76,9 @@ export default class QuoteList extends Component {
                     </Row>
 
                 </Card>
-                
+                <br></br>
+                <br></br>
+                <br></br>
             </div>
         )
     }
