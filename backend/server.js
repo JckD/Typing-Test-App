@@ -5,7 +5,9 @@ const cors = require ('cors');
 const mongoose = require('mongoose');
 const PORT = 8080;
 const router = express.Router();
-let uri = 'mongodb+srv://JDoyle:tirganteangatirgananam@cluster0-jfz0g.mongodb.net/TypingTestApp?retryWrites=true&w=majority';
+
+
+const { dbURI } = require('../config.json');
 
 
 // Routes
@@ -14,7 +16,7 @@ const quoteRoutes = require('./routes/quoteRoutes');
 app.use(cors({ credentials : true, origin: 'http://localhost:3000'}));
 app.use(bodyParser.json());
 
-mongoose.connect(uri, { useNewUrlParser: true });
+mongoose.connect(dbURI, { useNewUrlParser: true });
 const connection = mongoose.connection;
 
 connection.once('open', function() {
