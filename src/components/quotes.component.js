@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
-import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Card from "./Card";
 import styled from 'styled-components';
@@ -34,7 +33,7 @@ const Quote = props => (
             <hr />
             <Row>
                 <Col sm={8}>
-                    <span>Added by: {props.quote.quoteUser}</span>
+                    <span>Added by: <Alert.Link>{props.quote.quoteUser}</Alert.Link></span>
                 </Col>
                 <Col sm={4}>
                     <div style={{float : 'right'}}>
@@ -89,9 +88,12 @@ export default class QuoteList extends Component {
     
 
     render() {
+        // filter funtion that works so amazingly well without needing more requests
         let filteredQuotes = this.state.quotes.filter(
             (quote) => {
-                return quote.quoteTitle.indexOf(this.state.search) !== -1 || quote.quoteAuthor.indexOf(this.state.search) !== -1 || quote.quoteUser.indexOf(this.state.search) !== -1;
+                return  quote.quoteTitle.toLowerCase().indexOf(this.state.search) !== -1 ||
+                        quote.quoteAuthor.toLowerCase().indexOf(this.state.search) !== -1 || 
+                        quote.quoteUser.indexOf(this.state.search) !== -1;
             }
         )
         return (
@@ -114,9 +116,8 @@ export default class QuoteList extends Component {
                     </Row>
 
                 </Card>
-                <br/>
-                <br/>
-                <br/>
+                <div style={{ height : 800}}></div>
+
             </div>
         )
     }

@@ -491,9 +491,7 @@ export default class TypingTest extends Component {
                             </Col>
                         </Row> 
                 </Card>    
-                <div style={{ height : 1000}}></div>
-                <br></br>
-                <br></br>
+                <div style={{ height : 800}}></div>
             </div>  
         )
     }

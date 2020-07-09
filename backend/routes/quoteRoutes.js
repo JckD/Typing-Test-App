@@ -29,22 +29,7 @@ QuoteRoutes.get('/random', async (req, res) => {
     }
 })
 
-QuoteRoutes.get('/search', async (req, res) => {
-    try {
 
-       let query = req.query.search;
-       Quote.find( {$or:[ {"quoteUser" : { $regex : query}}, {"quoteTitle" : { $regex : query}} , {"quoteAuthor" : { $regex : query}} ]} , function(err, result) {
-           if (err) {
-               res.send(err);
-           }
-           else {
-               res.json(result);
-           }
-       })
-    } catch {
-
-    }
-})
 
 // Ruote that returns one book that matches the requested id
 QuoteRoutes.get('/:id', async (req, res) => {
