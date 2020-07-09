@@ -26,7 +26,7 @@ export default class TypingTest extends Component {
 
     constructor(props) {
         super(props);
-        console.log(props);
+        
         this.onInputChange = this.onInputChange.bind(this);
         this.compare = this.compare.bind(this);
         this.resetTest = this.resetTest.bind(this);
@@ -383,7 +383,7 @@ export default class TypingTest extends Component {
                 tes
             </Tooltip>
         )     
-      }
+    }
 
     render() {
         return (
