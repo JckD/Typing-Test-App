@@ -7,11 +7,14 @@ const PORT = 8080;
 const router = express.Router();
 
 
+//mongo db URI
 const { dbURI } = require('../config.json');
+
 
 
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
+
 
 app.use(cors({ credentials : true, origin: 'http://localhost:3000'}));
 app.use(bodyParser.json());
@@ -23,7 +26,10 @@ connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
 })
 
+
+
 app.use('/Quotes', quoteRoutes);
+
 
 app.listen(PORT, function() {
     console.log('Sever is running on Port: ' + PORT);
