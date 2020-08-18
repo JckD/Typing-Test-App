@@ -3,7 +3,7 @@ const app  = express();
 const bodyParser = require('body-parser');
 const cors = require ('cors');
 const mongoose = require('mongoose');
-const PORT = 8080;
+const PORT = 5000;
 const router = express.Router();
 
 
@@ -15,7 +15,6 @@ const { dbURI } = require('../config.json');
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
 
-
 app.use(cors({ credentials : true, origin: 'http://localhost:3000'}));
 app.use(bodyParser.json());
 
@@ -26,6 +25,21 @@ connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
 })
 
+//Passport
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+      User.findOne({ username: username }, function(err, user) {
+        if (err) { return done(err); }
+        if (!user) {
+          return done(null, false, { message: 'Incorrect username.' });
+        }
+        if (!user.validPassword(password)) {
+          return done(null, false, { message: 'Incorrect password.' });
+        }
+        return done(null, user);
+      });
+    }
+  ));
 
 
 app.use('/Quotes', quoteRoutes);
