@@ -11,12 +11,10 @@ const router = express.Router();
 //mongo db URI
 const { dbURI } = require('../config.json');
 
-
-
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
 
-//app.use(cors({ credentials : true, origin: 'http://localhost:3000'}));
+app.use(cors({ credentials : true, origin: 'http://localhost:8080'}));
 app.use(express.static(path.join(__dirname, '/build')))
 
 
