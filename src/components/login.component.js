@@ -30,7 +30,7 @@ export default class Login extends Component {
     login() {
         axios({
             method: 'get',
-            url: 'http://localhost:8080/api/public',
+            url: 'http://jdoyle.ie/api/public',
              responseType : 'stream'
         })
         .then(function(response) {

@@ -63,7 +63,7 @@ export default class QuoteList extends Component {
     }
 
     componentDidMount(){
-        axios.get('http://localhost:8080/quotes')
+        axios.get('http://jdoyle.ie/quotes')
             .then(response => {
                 this.setState({ quotes : response.data});
             })
