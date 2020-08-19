@@ -15,9 +15,12 @@ const { dbURI } = require('../config.json');
 const quoteRoutes = require('./routes/quoteRoutes');
 
 app.use(cors({ credentials : true, origin: 'http://localhost:8080'}));
+<<<<<<< HEAD
 app.use(express.static(path.join(__dirname, '/build')))
 
 
+=======
+>>>>>>> 9335a1b7c522ce74eed3aec218ccf8372d22a1e7
 app.use(bodyParser.json());
 
 mongoose.connect(dbURI, { useNewUrlParser: true });
