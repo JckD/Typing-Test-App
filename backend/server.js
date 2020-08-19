@@ -13,7 +13,7 @@ const { dbURI } = require('../config.json');
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
 
-app.use(cors({ credentials : true, origin: 'http://localhost:3000'}));
+app.use(cors({ credentials : true, origin: 'http://localhost:8080'}));
 app.use(bodyParser.json());
 
 mongoose.connect(dbURI, { useNewUrlParser: true });
