@@ -103,7 +103,7 @@ export default class TypingTest extends Component {
             query = 'random';
         }
         // get quote from database and update state
-        axios.get('http://localhost:8080/quotes/'+query)
+        axios.get('http://jdoyle.ie/quotes/'+query)
             .then(response => {
                 this.setState((state) => ({ 
                     quote_Title : response.data.quoteTitle,
@@ -252,7 +252,7 @@ export default class TypingTest extends Component {
     // then calls resettest to reset other counters and timers
     newTest () {
         // get quote from database and update state
-        axios.get('http://localhost:8080/quotes/random')
+        axios.get('http://jdoyle.ie/quotes/random')
             .then(response => {
                 this.setState((state) => ({ 
                     quote_Title : response.data.quoteTitle,
