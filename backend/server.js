@@ -2,6 +2,7 @@ const express = require('express');
 const app  = express();
 const bodyParser = require('body-parser');
 const cors = require ('cors');
+const path = require('path');
 const mongoose = require('mongoose');
 const PORT = 8080;
 const router = express.Router();
@@ -13,7 +14,12 @@ const { dbURI } = require('../config.json');
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
 
-app.use(cors({ credentials : true, origin: 'http://localhost:3000'}));
+
+app.use(cors({ credentials : true, origin: 'http://localhost:8080'}));
+
+app.use(express.static(path.join(__dirname, '/build')))
+
+
 app.use(bodyParser.json());
 
 mongoose.connect(dbURI, { useNewUrlParser: true });
@@ -25,6 +31,9 @@ connection.once('open', function() {
 
 app.use('/Quotes', quoteRoutes);
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build','index.html'))
+})
 
 app.listen(PORT, function() {
     console.log('Sever is running on Port: ' + PORT);
