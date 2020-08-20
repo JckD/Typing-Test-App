@@ -90,6 +90,9 @@ export default class TypingTest extends Component {
             highestAcc : 0, 
             highestWPM : 0,
 
+            //api url
+            apiUrl : '',
+
             debug : false
         }
     }
@@ -102,8 +105,20 @@ export default class TypingTest extends Component {
         else {
             query = 'random';
         }
+        let APIURL = ''
+        if (process.env.NODE_ENV == 'production') {
+            this.setState((state) => ({
+                apiUrl : 'jdoyle.ie',
+            }))
+            APIURL = 'jdoyle.ie'
+        } else if (process.env.NODE_ENV == 'development') {
+            this.setState((state) => ({
+               apiUrl : 'localhost:8080',
+            }))
+            APIURL = 'localhost:8080'
+        }
         // get quote from database and update state
-        axios.get('http://jdoyle.ie/quotes/'+query)
+        axios.get('http://'+ APIURL +'/quotes/'+query)
             .then(response => {
                 this.setState((state) => ({ 
                     quote_Title : response.data.quoteTitle,
@@ -184,7 +199,7 @@ export default class TypingTest extends Component {
             // if there are errors and the user presses backspace reduce the error count
             if (this.state.error_count > 0) {
                 this.setState ((state) => ({
-                    error_count : state.error_count --,
+                    error_count : state.error_count -1,
                 }), () => this.backspace())      
             }
             else {
@@ -252,7 +267,7 @@ export default class TypingTest extends Component {
     // then calls resettest to reset other counters and timers
     newTest () {
         // get quote from database and update state
-        axios.get('http://jdoyle.ie/quotes/random')
+        axios.get('http://' + this.state.apiUrl + '/quotes/random')
             .then(response => {
                 this.setState((state) => ({ 
                     quote_Title : response.data.quoteTitle,

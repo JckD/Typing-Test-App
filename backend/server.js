@@ -3,7 +3,7 @@ const app  = express();
 const bodyParser = require('body-parser');
 const cors = require ('cors');
 const mongoose = require('mongoose');
-const PORT = 5000;
+const PORT = 8080;
 const router = express.Router();
 
 
@@ -13,7 +13,7 @@ const { dbURI } = require('../config.json');
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
 
-app.use(cors({ credentials : true, origin: 'http://localhost:8080'}));
+app.use(cors({ credentials : true, origin: 'http://localhost:3000'}));
 app.use(bodyParser.json());
 
 mongoose.connect(dbURI, { useNewUrlParser: true });
