@@ -111,7 +111,7 @@ export default class TypingTest extends Component {
             this.setState((state) => ({
                 apiUrl : 'https://jdoyle.ie',
             }))
-            APIURL = 'jdoyle.ie'
+            APIURL = 'https://jdoyle.ie'
         } else if (process.env.NODE_ENV === 'development') {
             this.setState((state) => ({
                apiUrl : 'http://localhost:8080',
