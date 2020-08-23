@@ -64,12 +64,12 @@ export default class QuoteList extends Component {
 
     componentDidMount(){
         let APIURL = ''
-        if (process.env.NODE_ENV == 'production') {
-            APIURL = 'jdoyle.ie'
-        } else if (process.env.NODE_ENV == 'development') { 
-            APIURL = 'localhost:8080'
+        if (process.env.NODE_ENV === 'production') {
+            APIURL = 'https://jdoyle.ie'
+        } else if (process.env.NODE_ENV === 'development') { 
+            APIURL = 'http://localhost:8080'
         }
-        axios.get('http://' + APIURL + '/quotes')
+        axios.get(APIURL + '/quotes')
             .then(response => {
                 this.setState({ quotes : response.data});
             })

@@ -14,8 +14,11 @@ const { dbURI } = require('../config.json');
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
 
-
-app.use(cors({ credentials : true, origin: 'http://localhost:8080'}));
+const CORSorigin = 'localhost:3000';
+if ( process.env.NODE_ENV === 'development'){
+  CORSorigin = 'localhost:8080'
+}
+app.use(cors({ credentials : true, origin: 'http://' + CORSorigin}));
 
 app.use(express.static(path.join(__dirname, '/build')))
 

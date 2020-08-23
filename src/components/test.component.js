@@ -106,19 +106,20 @@ export default class TypingTest extends Component {
             query = 'random';
         }
         let APIURL = ''
-        if (process.env.NODE_ENV == 'production') {
+        // Check if in dev or production environment
+        if (process.env.NODE_ENV === 'production') {
             this.setState((state) => ({
-                apiUrl : 'jdoyle.ie',
+                apiUrl : 'https://jdoyle.ie',
             }))
             APIURL = 'jdoyle.ie'
-        } else if (process.env.NODE_ENV == 'development') {
+        } else if (process.env.NODE_ENV === 'development') {
             this.setState((state) => ({
-               apiUrl : 'localhost:8080',
+               apiUrl : 'http://localhost:8080',
             }))
-            APIURL = 'localhost:8080'
+            APIURL = 'http://localhost:8080'
         }
         // get quote from database and update state
-        axios.get('http://'+ APIURL +'/quotes/'+query)
+        axios.get(APIURL +'/quotes/'+query)
             .then(response => {
                 this.setState((state) => ({ 
                     quote_Title : response.data.quoteTitle,
@@ -267,7 +268,7 @@ export default class TypingTest extends Component {
     // then calls resettest to reset other counters and timers
     newTest () {
         // get quote from database and update state
-        axios.get('http://' + this.state.apiUrl + '/quotes/random')
+        axios.get(this.state.apiUrl + '/quotes/random')
             .then(response => {
                 this.setState((state) => ({ 
                     quote_Title : response.data.quoteTitle,
