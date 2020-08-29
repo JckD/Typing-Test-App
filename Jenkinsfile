@@ -10,7 +10,7 @@ pipeline {
         stage("Deploy") {
             steps {
                 sh "sudo rm -rf /var/www/Typing-Test-App"
-                sh "sudo cp -r ${WORKSPACE}/build/ /var/www/Tping-Test-App/"
+                sh "sudo cp -r ${WORKSPACE}/build/ /var/www/Typing-Test-App/"
             }
         }
     }
