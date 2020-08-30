@@ -20,7 +20,7 @@ if ( process.env.NODE_ENV === 'development'){
 }
 app.use(cors({ credentials : true, origin: 'http://' + CORSorigin}));
 
-app.use(express.static(path.join(__dirname, '/build')))
+//app.use(express.static(path.join(__dirname, '/build')))
 
 
 app.use(bodyParser.json());
