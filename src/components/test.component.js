@@ -174,6 +174,7 @@ export default class TypingTest extends Component {
         // edge case if user ends test with error to just end the test if the total number of entries == the quote len.
         if (this.state.count === this.state.char_array.length) {
             this.endTest();
+            console.log('testing jenkins')
             return
         }
 
