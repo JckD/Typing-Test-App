@@ -105,7 +105,6 @@ export default class QuoteList extends Component {
         return (
             <div className="container">
                 <Card>
-        
                     <Row>
                         <Col sm={8}>
                             <h4>Quotes</h4>  

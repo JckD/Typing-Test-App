@@ -61,7 +61,6 @@ export default class Account extends Component {
 
     onChangeAccountPassword(e) {
         const fieldName = e.target.name;
-        console.log(e.target.value);
         this.setState({
             account_password: e.target.value},
             () => {this.validateField(fieldName, this.state.account_password)
@@ -114,7 +113,6 @@ export default class Account extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        console.log('test')
         const newAccount = {
             userName: this.state.account_username,
             userEmail : this.state.account_email,
@@ -123,6 +121,11 @@ export default class Account extends Component {
         }
         
         axios.post('http://localhost:8080/user/register', newAccount, {withCredentials:true})
+        .then(res => {
+            if(res.status(400)){
+                console.log('email in use')
+            }
+        })
             
         this.setState = ({
             account_username:'',
@@ -159,9 +162,8 @@ export default class Account extends Component {
         return (
             <div className="container">
                 <Card>
-                    <Row>  
-                        <Col sm={3}></Col>     
-                        <Col sm={6}>
+                    <Row>      
+                        <Col sm={5}>
                             <Form>
                                 <Form.Group >
                                     <h4>Create Account</h4>
@@ -196,7 +198,34 @@ export default class Account extends Component {
                                 </Button>
                             </Form>
                         </Col>
-                        <Col sm={3}></Col>
+                        <Col sm={2}></Col>
+                        <Col sm={5}>
+                            <Form>
+                                <Form.Group >
+                                    <h4>Login</h4>
+                                    <Form.Label>User Name / Email: </Form.Label>
+                                    <Form.Control 
+                                        value={this.state.account_username}
+                                        id = "inputUserName"
+                                        onChange = {this.onChangeAccountUsername}
+                                        name = "Username"
+                                    /><br />
+                                    
+                                    <Form.Label>Password: </Form.Label>
+                                    <Form.Control
+                                        type = "password"
+                                        value={this.state.account_password}
+                                        id = "inputPassword"
+                                        onChange = {this.onChangeAccountPassword}
+                                        name = "Password"
+                                    />
+                                      
+                                </Form.Group>
+                                <Button type="submit" variant="info" onClick={this.onSubmit} disabled={!this.state.formValid}>
+                                    Login
+                                </Button>
+                            </Form>
+                        </Col>
                         
                     </Row>
 

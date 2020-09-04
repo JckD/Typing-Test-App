@@ -57,9 +57,8 @@ UserRoutes.post('/register',
                 userEmail
             });
             if (user) {
-                return res.status(400).json({
-                    message : "That email is alredy in use"
-                });
+                
+                return res.status(400).send('email in use');
             }
 
             user = new User(
