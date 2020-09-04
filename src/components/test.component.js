@@ -109,9 +109,9 @@ export default class TypingTest extends Component {
         // Check if in dev or production environment
         if (process.env.NODE_ENV === 'production') {
             this.setState((state) => ({
-                apiUrl : 'https://jdoyle.ie',
+                apiUrl : 'https://typingtest.jdoyle.ie',
             }))
-            APIURL = 'https://jdoyle.ie'
+            APIURL = 'https://typingtest.jdoyle.ie'
         } else if (process.env.NODE_ENV === 'development') {
             this.setState((state) => ({
                apiUrl : 'http://localhost:8080',
