@@ -28,14 +28,7 @@ export default class Login extends Component {
     }
 
     login() {
-        axios({
-            method: 'get',
-            url: 'http://jdoyle.ie/api/public',
-             responseType : 'stream'
-        })
-        .then(function(response) {
-            console.log(response.data)
-        })
+        
     }
     render() {
         return (

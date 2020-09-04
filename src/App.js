@@ -5,6 +5,7 @@ import TypingTest from './components/test.component';
 import CreateQuote from './components/CreateQuote.component';
 import Quotes from './components/quotes.component';
 import Login from './components/login.component';
+import Account from './components/account.component';
 import './App.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -47,18 +48,20 @@ const App = () => {
                   <Link to="/quotes" className="nav-link">Quotes</Link>
                   <Link to="/createQuote" className="nav-link">Create Quote</Link>
                   <NavDropdown title="Account">
-                    <NavDropdown.Item href="/login">      
+                    <NavDropdown.Item href="/account">   
+                      
                         Profile
                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                          <path fillRule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                         </svg> 
+                      
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="http://localhost:8080/logout">Logout
                       <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-door-closed" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2zm1 0v13h8V2H4z"/>
+                        <path fillRule="evenodd" d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2zm1 0v13h8V2H4z"/>
                         <path d="M7 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                        <path fill-rule="evenodd" d="M1 15.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5z"/>
+                        <path fillRule="evenodd" d="M1 15.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5z"/>
                       </svg>
                     </NavDropdown.Item>
                   </NavDropdown>
@@ -81,6 +84,7 @@ const App = () => {
           <Route path="/createQuote" component={CreateQuote} />
           <Route path="/quotes" component={Quotes} />
           <Route path="/login" component={Login} />
+          <Route path="/account" component={Account} />
       
         </Router>  
       </Container>

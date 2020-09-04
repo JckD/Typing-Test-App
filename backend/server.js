@@ -13,6 +13,7 @@ const { dbURI } = require('../config.json');
 
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const CORSorigin = 'localhost:3000';
 if ( process.env.NODE_ENV === 'development'){
@@ -33,6 +34,7 @@ connection.once('open', function() {
 })
 
 app.use('/Quotes', quoteRoutes);
+app.use('/user', userRoutes);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build','index.html'))
