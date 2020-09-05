@@ -157,6 +157,7 @@ export default class TypingTest extends Component {
     // escFunction that handles when the escape key is pressed
     escFunction(event){
         if(event.keyCode === 27) {
+            
           this.resetTest();
         }
     }
