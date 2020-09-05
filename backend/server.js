@@ -20,7 +20,7 @@ if ( process.env.NODE_ENV === 'development'){
 }
 app.use(cors({ credentials : true, origin: 'http://' + CORSorigin}));
 
-app.use(express.static(path.join(__dirname, '../build')))
+app.use(express.static(path.join('../build')))
 
 
 app.use(bodyParser.json());
@@ -39,6 +39,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(PORT, function() {
-    console.log('Sever is running on Port: ' + PORT);
-
+    console.log('Sever is running on Port: ' + __dirname);
 })
