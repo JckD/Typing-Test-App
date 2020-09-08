@@ -39,9 +39,13 @@ export default class Account extends Component {
             passwordValid: false,
             formValid: false,
             loggedUser : {},
+
+            inputLoginPassword: '',
+            inputLoginUserName: ''
         }
     }
 
+    // Create Account inputs
     onChangeAccountUsername(e) {
         const fieldName = e.target.name;
         this.setState({
@@ -119,8 +123,14 @@ export default class Account extends Component {
             userPassword : this.state.account_password,
             
         }
+        let APIURL = ''
+        if (process.env.NODE_ENV === 'production') {
+            APIURL = 'https://typingtest.jdoyle.ie'
+        } else if (process.env.NODE_ENV === 'development') { 
+            APIURL = 'http://localhost:8080'
+        }
         
-        axios.post('http://localhost:8080/user/register', newAccount, {withCredentials:true})
+        axios.post( APIURL + '/user/register', newAccount, {withCredentials:true})
         .then(res => {
             if(res.status(400)){
                 console.log('email in use')
@@ -139,6 +149,7 @@ export default class Account extends Component {
             });
     }
 
+  
     componentDidMount() {
 
         // axios.get('http://localhost:8080/user/',{withCredentials:true})
@@ -156,13 +167,12 @@ export default class Account extends Component {
     }
 
 
-   
-
     render() {
         return (
             <div className="container">
                 <Card>
-                    <Row>      
+                    <Row>  
+                           
                         <Col sm={5}>
                             <Form>
                                 <Form.Group >
@@ -196,36 +206,17 @@ export default class Account extends Component {
                                 <Button type="submit" variant="info" onClick={this.onSubmit} disabled={!this.state.formValid}>
                                     Create Account
                                 </Button>
+                               
+                                <Link to="/login">
+                                    <Button variant="secondary" style={{ marginLeft : 10}}>
+                                        Login
+                                    </Button>
+                                </Link>
+                                
                             </Form>
                         </Col>
                         <Col sm={2}></Col>
-                        <Col sm={5}>
-                            <Form>
-                                <Form.Group >
-                                    <h4>Login</h4>
-                                    <Form.Label>User Name / Email: </Form.Label>
-                                    <Form.Control 
-                                        value={this.state.account_username}
-                                        id = "inputUserName"
-                                        onChange = {this.onChangeAccountUsername}
-                                        name = "Username"
-                                    /><br />
-                                    
-                                    <Form.Label>Password: </Form.Label>
-                                    <Form.Control
-                                        type = "password"
-                                        value={this.state.account_password}
-                                        id = "inputPassword"
-                                        onChange = {this.onChangeAccountPassword}
-                                        name = "Password"
-                                    />
-                                      
-                                </Form.Group>
-                                <Button type="submit" variant="info" onClick={this.onSubmit} disabled={!this.state.formValid}>
-                                    Login
-                                </Button>
-                            </Form>
-                        </Col>
+                        
                         
                     </Row>
 

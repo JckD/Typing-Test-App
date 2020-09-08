@@ -75,7 +75,59 @@ UserRoutes.post('/register',
             console.log(err.message);
             res.status(500).send("Error in saving");
         }
-    }    
+    }  
 )
+
+UserRoutes.post(
+    "/login",
+    [
+        check("userName", "please enter a valid username").not().isEmpty(),
+        check("userPassword", "please enter a valid password").isLength({ min : 6 }),
+    ],
+
+    async (req, res) => {
+       
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ 
+                errors: errors.array()
+            });
+        }
+        
+        const { userName, userPassword } = req.body;
+        try {
+            let account = await User.findOne({
+                userName
+            });
+            console.log(account)
+            if(!account) {
+                return res.status(400).json({
+                    message: "User Does Not Exist"
+                });
+            }
+
+            const isMatch = await bcrypt.compare(userPassword, account.userPassword);
+            if (!isMatch) {
+                return res.status(400).json({
+                    message : "Incorrect Password!"
+                });
+            }
+            else {
+               
+                req.session.account = account;
+                req.session.save();
+                res.send(account)
+                 
+            }
+
+        } catch (e)  {
+            console.error(e);
+            res.status(500).json({
+                message : "Server Error"
+            });
+        }
+    }
+);
 
 module.exports = UserRoutes;

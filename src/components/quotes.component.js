@@ -65,7 +65,7 @@ export default class QuoteList extends Component {
     componentDidMount(){
         let APIURL = ''
         if (process.env.NODE_ENV === 'production') {
-            APIURL = 'https://jdoyle.ie'
+            APIURL = 'https://typingtest.jdoyle.ie'
         } else if (process.env.NODE_ENV === 'development') { 
             APIURL = 'http://localhost:8080'
         }
