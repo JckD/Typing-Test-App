@@ -1,7 +1,9 @@
 const express = require("express");
-const { check, validationResult } = require("express-validator/check");
+const { check, validationResult } = require("express-validator");
 const UserRoutes = express.Router();
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const verify = require('./verifyToken');
 
 
 let User = require("../schemas/user.model");
@@ -115,10 +117,12 @@ UserRoutes.post(
             }
             else {
                
-                req.session.account = account;
-                req.session.save();
-                res.send(account)
-                 
+                const token = jwt.sign({_id : account._id}, process.env.SEC)
+                res.header('auth-token', token).send(token);
+                
+                // req.session.account = account;
+                // req.session.save();
+                // res.send(account)
             }
 
         } catch (e)  {
@@ -129,5 +133,9 @@ UserRoutes.post(
         }
     }
 );
+
+UserRoutes.post('/logout',verify , async (req, res) => {
+
+})
 
 module.exports = UserRoutes;

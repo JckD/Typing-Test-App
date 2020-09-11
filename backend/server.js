@@ -6,7 +6,9 @@ const path = require('path');
 const mongoose = require('mongoose');
 const PORT = 8080;
 const router = express.Router();
+const dotenv = require('dotenv');
 
+dotenv.config();
 
 //mongo db URI
 const { dbURI } = require('../config.json');
@@ -15,7 +17,7 @@ const { dbURI } = require('../config.json');
 const quoteRoutes = require('./routes/quoteRoutes');
 const userRoutes = require('./routes/userRoutes');
 
-const CORSorigin = 'localhost:3000';
+let CORSorigin = 'localhost:3000';
 if ( process.env.NODE_ENV === 'development'){
   CORSorigin = 'localhost:8080'
 }
@@ -26,7 +28,7 @@ app.use(express.static(path.join(__dirname, '../build')))
 
 app.use(bodyParser.json());
 
-mongoose.connect(dbURI, { useNewUrlParser: true });
+mongoose.connect(process.env.DBURI, { useNewUrlParser: true,  useUnifiedTopology: true });
 const connection = mongoose.connection;
 
 connection.once('open', function() {

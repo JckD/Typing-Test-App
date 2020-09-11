@@ -103,8 +103,6 @@ export default class Login extends Component {
             userPassword : this.state.inputPassword,
         }
 
-        console.log(loginAccount);
-
         let APIURL = ''
         if (process.env.NODE_ENV === 'production') {
             APIURL = 'https://typingtest.jdoyle.ie'
