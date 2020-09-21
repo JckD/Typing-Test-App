@@ -10,22 +10,31 @@ let User = require("../schemas/user.model");
 
 UserRoutes.get('/', async (req, res) => {
     console.log(req.data);
-    User.find(function(err, notUsers){
+    User.find(function(err, users){
         if (err) {
             console.log(err);
         } else {
-           // res.json(notUsers);
-           console.log('/getting')
+            res.json(users);
+           //console.log('/getting')
         }
     });
 });
+
+UserRoutes.get('/profile', verify , async(req, res) => {
+    
+    console.log(req.user._id)
+    let  id = req.user._id
+    let user = await User.findById(id)
+
+    res.send(user);
+})
 
 UserRoutes.get('/:id' , async (req, res) => {
     let id = req.params.id
 
     try {
         let account = await User.findById(id)
-        console.log(account)
+        //console.log(account)
         res.send(account)
     }
     catch (err) {
@@ -102,7 +111,7 @@ UserRoutes.post(
             let account = await User.findOne({
                 userName
             });
-            console.log(account)
+            //console.log(account)
             if(!account) {
                 return res.status(400).json({
                     message: "User Does Not Exist"
@@ -135,7 +144,7 @@ UserRoutes.post(
 );
 
 UserRoutes.post('/logout',verify , async (req, res) => {
-
+    
 })
 
 module.exports = UserRoutes;

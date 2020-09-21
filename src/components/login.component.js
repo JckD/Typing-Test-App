@@ -111,9 +111,15 @@ export default class Login extends Component {
         }
         
         axios.post(APIURL + '/user/login' , loginAccount, {withCredentials:true})
-        .then(res => this.setState ({
-           loggedInUser : res.data
-        }));
+        .then(res => {
+            //console.log(res.data)
+
+            this.props.history.push({
+                             pathname : "/profile",
+                             state : { loggedInUser : res.data}
+            });
+        });
+        
     }
 
 
