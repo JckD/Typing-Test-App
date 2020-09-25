@@ -46,7 +46,7 @@ export default class Login extends Component {
         const fieldName = e.target.name;
         this.setState({
             inputUsername : e.target.value},
-            () => {this.validateField(fieldName, this.state.inputEmail)
+            () => {this.validateField(fieldName, this.state.inputUsername)
         });
     }
 

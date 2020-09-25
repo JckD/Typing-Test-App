@@ -30,6 +30,8 @@ const App = () => {
     stored === "true" ? true : false
   );
 
+  
+
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <Container>
