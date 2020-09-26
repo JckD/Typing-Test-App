@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import Image from 'react-bootstrap/Image';
-import BoldAndBrash from '../assets/B&B.png'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Card from "./Card";
-import Form, { FormLabel } from "react-bootstrap/Form";
-
+import Form from "react-bootstrap/Form";
+import axios from "axios";
 
 export default class TypingTest extends Component {
 
@@ -22,9 +20,11 @@ export default class TypingTest extends Component {
         this.validateField = this.validateField.bind(this);
         this.validateForm = this.validateForm.bind(this);
 
+        this.addQuote = this.addQuote.bind(this);
+
         this.state = {
             // validation
-            loggedIn : true,
+            loggedIn : false,
             quoteTitleValid : false,
             quoteBodyValid : false,
             quoteAuthorValid : false,
@@ -44,8 +44,58 @@ export default class TypingTest extends Component {
         }
     }
 
+
     componentDidMount(){
-        console.log(this.props.location.state)
+        if (localStorage.getItem('beepboop')) {
+            this.checkLogin()
+
+            let token = localStorage.getItem('beepboop')
+             let APIURL = ''
+            if (process.env.NODE_ENV === 'production') {
+                APIURL = 'https://typingtest.jdoyle.ie'
+            } else if (process.env.NODE_ENV === 'development') { 
+                APIURL = 'http://localhost:8080'
+            }
+            axios.get(APIURL + '/user/profile',{ headers : { 'auth-token' : token}}  )
+            .then( res => {
+                console.log(this.state)
+                if (res.data) {
+                    this.setState({
+                        userName : res.data.userName,
+                    })
+                }
+            })
+        }
+    }
+
+    addQuote(e) {
+        e.preventDefault();
+
+        const quote = {
+            quoteTitle : this.state.quoteTitle,
+            quoteBody : this.state.quoteBody,
+            quoteAuthor : this.state.quoteAuthor,
+            quoteUser : this.state.userName
+        }
+        console.log(quote)
+        let token = localStorage.getItem('beepboop');
+        let APIURL = ''
+        if (process.env.NODE_ENV === 'production') {
+            APIURL = 'https://typingtest.jdoyle.ie'
+        } else if (process.env.NODE_ENV === 'development') { 
+            APIURL = 'http://localhost:8080'
+        }
+        axios.post(APIURL + '/quotes/add', quote, { headers : { 'auth-token' : token}})
+        .then(res => {
+            //console.log(res)
+            let path = '/' + res.data;
+            console.log(res.data)
+            this.props.history.push({
+                pathname : '/',
+                id : res.data,
+            })
+        }).catch (err => err)
+        
     }
 
     // Check if user is logged in
@@ -102,7 +152,7 @@ export default class TypingTest extends Component {
 
             case 'quoteAuthor':
 
-                if (value.length == 0){
+                if (value.length === 0){
                     quoteAuthorValid = true;
                     this.setState((state) => ({
                         quoteAuthor : state.username
@@ -112,6 +162,9 @@ export default class TypingTest extends Component {
                 else if (value.length <= 10) {
                     quoteAuthorValid = true
                     fieldValidateErrors.quoteAuthor = quoteAuthorValid ? '' : ' is short long';
+                    break;
+                }
+                else {
                     break;
                 }
 
@@ -137,7 +190,7 @@ export default class TypingTest extends Component {
             formValid:  this.state.quoteTitleValid &&
                         this.state.quoteBodyValid && 
                         this.state.quoteAuthorValid,
-            
+            formValidAndUser : this.state.formValid && this.state.loggedIn
                     });
 
         
@@ -184,7 +237,7 @@ export default class TypingTest extends Component {
                                     />   
                                 </Form.Group>
 
-                                <Button type="submit" variant="info" onClick={this.login} disabled={!this.state.formValid}>
+                                <Button type="submit" variant="info" onClick={this.addQuote} disabled={!this.state.formValidAndUser}>
                                     Create Quote
                                 </Button>
                             </Form>

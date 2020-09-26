@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Alert from 'react-bootstrap/Alert';
 import Card from "./Card";
 import Button from "react-bootstrap/Button";
-import Form, { FormLabel } from "react-bootstrap/Form";
-import styled from 'styled-components';
+import Form from "react-bootstrap/Form";
+
 
 //import { FormErrors } from './FormErrors';
 
@@ -152,6 +151,13 @@ export default class Account extends Component {
   
     componentDidMount() {
 
+        if (localStorage.getItem('beepboop')) {
+            this.props.history.push({
+                pathname : "/profile",
+                
+});
+        }
+
         // axios.get('http://localhost:8080/user/',{withCredentials:true})
         // .then(res => {
         //     console.log(res.data)
@@ -206,7 +212,7 @@ export default class Account extends Component {
                                 <Button type="submit" variant="info" onClick={this.onSubmit} disabled={!this.state.formValid}>
                                     Create Account
                                 </Button>
-                               
+                                
                                 <Link to="/login">
                                     <Button variant="secondary" style={{ marginLeft : 10}}>
                                         Login

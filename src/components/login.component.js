@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Alert from 'react-bootstrap/Alert';
 import axios from 'axios';
 import Card from "./Card";
 import Button from "react-bootstrap/Button";
-import Form, { FormLabel } from "react-bootstrap/Form";
-import styled from 'styled-components';
+import Form  from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
+import Collapse from "react-bootstrap/Collapse";
+import Alert from "react-bootstrap/Alert"
 
 export default class Login extends Component {
 
@@ -30,8 +30,9 @@ export default class Login extends Component {
             emailValid: false,
             passwordValid: false,
             formValid: false,
-            loggedInUser : {}
+            loggedInUser : {},
 
+            error : false,
             
         }
     }
@@ -112,12 +113,17 @@ export default class Login extends Component {
         
         axios.post(APIURL + '/user/login' , loginAccount, {withCredentials:true})
         .then(res => {
-            //console.log(res.data)
-
+            console.log(res.data)
+            localStorage.setItem("beepboop", res.data);
             this.props.history.push({
                              pathname : "/profile",
-                             state : { loggedInUser : res.data}
+                             
             });
+        })
+        .catch(err => {
+            this.setState({
+                error : true
+            })
         });
         
     }
@@ -161,6 +167,21 @@ export default class Login extends Component {
                                 </Link>
                             </Form>
                         </Col> 
+                    </Row>
+                    <br></br>
+                    <Row>
+                        <Col sm={5}>
+                            <Collapse in={this.state.error}>
+                                <div>
+                                     <Alert variant={'danger'}>
+                                    <p>Username or Password Incorrect</p>
+                                </Alert>
+                                </div>
+                               
+                            </Collapse>
+                        </Col>
+                        
+                        
                     </Row>
                 </Card>
                 <div style={{ height : 800}}></div>

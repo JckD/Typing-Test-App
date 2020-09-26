@@ -3,13 +3,15 @@ import axios from 'axios';
 import Card from "./Card";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
+import Button from 'react-bootstrap/Button';
 
 export default class Profile extends Component {
 
     constructor(props) {
         super(props);
         
+        this.logout = this.logout.bind(this);
+
         this.state = {
 
             id: '',
@@ -21,7 +23,7 @@ export default class Profile extends Component {
     }
 
     componentDidMount() {
-        let token = this.props.location.state.loggedInUser
+        let token = localStorage.getItem('beepboop')
         let APIURL = ''
         if (process.env.NODE_ENV === 'production') {
             APIURL = 'https://typingtest.jdoyle.ie'
@@ -30,15 +32,23 @@ export default class Profile extends Component {
         }
         axios.get(APIURL + '/user/profile',{ headers : { 'auth-token' : token}}  )
         .then( res => {
-            console.log(this.state)
+            //console.log(this.state)
             if (res.data) {
                 this.setState({
                     id : res.data._id,
                     username : res.data.userName,
                     email : res.data.userEmail,
-                    signUpDate : res.data.signUpDate
-                }, ()=> {console.log(this.state)})
+                    signUpDate : res.data.signUpDate.slice(0, 15)
+                })
             }
+        })
+    }
+
+    logout() {
+        localStorage.removeItem("beepboop")
+
+        this.props.history.push({
+            pathname : "/login",
         })
     }
 
@@ -53,6 +63,14 @@ export default class Profile extends Component {
                             <h5>Email:  {this.state.email}</h5>
                             <h5>Date Joined:  {this.state.signUpDate}</h5>
                         </Col> 
+                        
+                    </Row>
+                    <Row>
+                        <Col >
+                            <Button variant="danger" onClick={this.logout}>
+                                Logout
+                            </Button>
+                        </Col>
                     </Row>
                 </Card>
                 <div style={{ height : 800}}></div>

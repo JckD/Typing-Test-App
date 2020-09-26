@@ -9,7 +9,7 @@ const verify = require('./verifyToken');
 let User = require("../schemas/user.model");
 
 UserRoutes.get('/', async (req, res) => {
-    console.log(req.data);
+    //console.log(req.data);
     User.find(function(err, users){
         if (err) {
             console.log(err);
@@ -22,7 +22,7 @@ UserRoutes.get('/', async (req, res) => {
 
 UserRoutes.get('/profile', verify , async(req, res) => {
     
-    console.log(req.user._id)
+    //console.log(req.user._id)
     let  id = req.user._id
     let user = await User.findById(id)
 

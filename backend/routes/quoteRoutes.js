@@ -1,6 +1,7 @@
 const express = require("express");
 const QuoteRoutes = express.Router();
-
+const jwt = require("jsonwebtoken");
+const verify = require('./verifyToken');
 
 let Quote = require('../schemas/quote.model');
 const { useCallback } = require("react");
@@ -69,16 +70,18 @@ QuoteRoutes.post('/update/:id', async (req, res) => {
 
 // Route that adds a quote to the database with the body of the request
 // containing the data for the quote 
-QuoteRoutes.route('/add').post(function (req, res){
-    let quote = new Quote(req.body);
+QuoteRoutes.post('/add', verify , async(req, res) => {
+    quote = new Quote(req.body);
+    //console.log(quote)
 
-    quote.save()
-    .then(quote => {
-        res.status(200).json({'quote' : 'quote added successfully!'});
-    })
-    .catch(err => {
-        res.status(400).send('Failed to add new book');
-    });
+    try {
+        await quote.save()
+        res.send(quote.id)
+    } catch(err) {
+        res.status(500).send('Error saving quote')
+    }
+    
+   
 });
 
 module.exports = QuoteRoutes;
