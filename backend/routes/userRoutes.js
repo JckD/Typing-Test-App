@@ -143,8 +143,24 @@ UserRoutes.post(
     }
 );
 
-UserRoutes.post('/delete',verify , async (req, res) => {
+// UserRoutes.post('/update/:id', verify, async(req, res) => {
+
+// })
+
+UserRoutes.post('/addQuote', verify , async(req, res) => {
     console.log(req.body)
+    try {
+        await User.updateOne(
+            { _id: req.body.userId},
+            { $push: { 'quotesAdded' : [req.body.quoteId]}}
+        )
+    } catch (e) {
+        res.send({message : "Error adding quote to user's quotes"})
+    }
+})
+
+UserRoutes.post('/delete',verify , async (req, res) => {
+
     try {
         await User.findOneAndDelete({ 'userName' : req.body.userName})
 

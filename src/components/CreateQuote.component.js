@@ -35,7 +35,7 @@ export default class TypingTest extends Component {
 
             // user
             userName : '',
-
+            id : '',
 
             // Quote state
             quoteTitle : '',
@@ -62,6 +62,7 @@ export default class TypingTest extends Component {
                 if (res.data) {
                     this.setState({
                         userName : res.data.userName,
+                        id : res.data._id
                     })
                 }
             })
@@ -85,12 +86,22 @@ export default class TypingTest extends Component {
         } else if (process.env.NODE_ENV === 'development') { 
             APIURL = 'http://localhost:8080'
         }
+        let id = this.state.id
+        console.log(id)
+        
         axios.post(APIURL + '/quotes/add', quote, { headers : { 'auth-token' : token}})
         .then(res => {
-            this.props.history.push({
-                pathname : '/',
-                id : res.data,
-            })
+
+            const reqObj = {
+                userId : this.state.id,
+                quoteId : res.data
+            }
+            axios.post(APIURL + '/user/addQuote', reqObj, {headers : {'auth-token' : token}})
+
+            // this.props.history.push({
+            //     pathname : '/' + res.data,
+                
+            // })
         }).catch (err => err)
         
     }
