@@ -143,8 +143,16 @@ UserRoutes.post(
     }
 );
 
-UserRoutes.post('/logout',verify , async (req, res) => {
-    
+UserRoutes.post('/delete',verify , async (req, res) => {
+    console.log(req.body)
+    try {
+        await User.findOneAndDelete({ 'userName' : req.body.userName})
+
+        res.send({message : 'account deleted'})
+    } catch (err) {
+        res.send({message : "Error deleting account"});
+    }
+
 })
 
 module.exports = UserRoutes;

@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { Link } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
 
 // Quote component
 const Quote = props => (
@@ -47,7 +48,9 @@ export default class Profile extends Component {
         this.logout = this.logout.bind(this);
         this.getQuotes = this.getQuotes.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
-        this.isApproved = this.isApproved.bind(this);
+        this.deleteAccountModal = this.deleteAccountModal.bind(this);
+        this.editAccount = this.editAccount.bind(this);
+        this.handleClose = this.handleClose.bind(this);
 
         this.state = {
 
@@ -58,6 +61,8 @@ export default class Profile extends Component {
             quoteIds : [],
             quotes : [],
             APIURL : '',
+
+            deleteAccountModal : false,
         }
     }
 
@@ -130,21 +135,60 @@ export default class Profile extends Component {
         })
     }
 
-    deleteAccount() {
-
+    deleteAccountModal() {
+       this.handleClose()
     }
 
-    isApproved(bool) {
-        if(bool) {
-            return 'Yes'
-        } else {
-            return 'No'
+    handleClose (){
+        this.setState({
+            deleteAccountModal : !this.state.deleteAccountModal
+        })
+    }
+
+    deleteAccount() {
+        let token = localStorage.getItem('beepboop')
+        localStorage.removeItem('beepboop')
+       
+        const user = {
+            userName : this.state.username,
+            userEmail : this.state.email
         }
+        console.log(user)
+        axios.post(this.state.APIURL + '/user/delete', user , {headers : {'auth-token' : token}})
+        
+
+        this.props.history.push({
+            pathname : '/login'
+        });
+    }
+
+    editAccount() {
+
     }
 
     render() {
         return (
+            
             <div className="container">
+                <Modal
+                    show={this.state.deleteAccountModal}
+                    backdrop="static"
+                    keyboard={false}
+                    centered
+                >
+                    <Modal.Header>
+                    <Modal.Title>Delete Account?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    Are you sure you want to delete your account? This is not reversable.
+                    </Modal.Body>
+                    <Modal.Footer>
+                    <Button variant="secondary" onClick={this.handleClose}>
+                        Nevermind
+                    </Button>
+                    <Button variant="danger" onClick={this.deleteAccount}>Delete Account</Button>
+                    </Modal.Footer>
+                </Modal>
                 <Card>
                     <Row>  
                         <Col sm={5}>
@@ -163,7 +207,7 @@ export default class Profile extends Component {
                             <Button variant="outline-warning" onClick={this.logout} style={{marginRight : 10}}>
                                 Logout
                             </Button>
-                            <Button variant="outline-danger" onClick={this.deleteAccount}>
+                            <Button variant="outline-danger" onClick={this.deleteAccountModal}>
                                 Delete Account
                             </Button>
                         </Col>
