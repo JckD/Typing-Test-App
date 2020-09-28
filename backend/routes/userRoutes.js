@@ -80,7 +80,7 @@ UserRoutes.post('/register',
             user.userPassword = await bcrypt.hash(userPassword, salt);
 
             await user.save();
-
+            
 
         } catch (err) {
             console.log(err.message);

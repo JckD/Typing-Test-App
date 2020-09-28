@@ -25,7 +25,21 @@ let UserSchema = new Schema({
     },
     highAccScore : {
         type : String,
+    },
+    quotesAdded : {
+        type : [String]
+    },
+    latestWPMScores : {
+        type : [Number]
+    },
+    latestAccScores : {
+        type : [Number]
+    },
+    isAdmin : {
+        type : Boolean,
+        default : false
     }
+
 });
 
 

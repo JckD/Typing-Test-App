@@ -11,7 +11,6 @@ import './App.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavbarBrand from 'react-bootstrap/NavbarBrand';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import { ThemeProvider } from "styled-components";
 import lightTheme from "./themes/light";
 import darkTheme from "./themes/dark";

@@ -87,9 +87,6 @@ export default class TypingTest extends Component {
         }
         axios.post(APIURL + '/quotes/add', quote, { headers : { 'auth-token' : token}})
         .then(res => {
-            //console.log(res)
-            let path = '/' + res.data;
-            console.log(res.data)
             this.props.history.push({
                 pathname : '/',
                 id : res.data,
@@ -214,7 +211,9 @@ export default class TypingTest extends Component {
                                         onChange = {this.onChangeQuoteTitle}
                                         name ="quoteTitle"
                                         
-                                    /><br />
+                                    />
+                                    
+                                    <br />
                                     
                                     <Form.Label>Quote: </Form.Label>
                                     <Form.Control
@@ -242,6 +241,34 @@ export default class TypingTest extends Component {
                                 </Button>
                             </Form>
                         </Col> 
+                        <Col sm = {4}>
+                            {/* This is afwul i Know */}
+                            <br />
+                            <br />
+                            <br />
+                            <Form.Text className="text-muted">
+                                Quotes require a title and must be shorter than 40 characters.
+                            </Form.Text>
+                            <br />
+                            <br />
+                            
+                            <Form.Text className="text-muted">
+                                Main text of the Quote must be between 200 and 350 characters.
+                            </Form.Text>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <Form.Text className="text-muted">
+                                Add the original Author of the Quote.
+                            </Form.Text>
+
+                            <br />
+                            <Form.Text className="text-muted">
+                                You must be logged in to add a Quote.
+                            </Form.Text>
+                        </Col>
                     </Row>
                 </Card>
                 <div style={{ height : 800}}></div>

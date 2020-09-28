@@ -143,7 +143,7 @@ export default class Account extends Component {
         });
 
         this.props.history.push({
-            pathname : "/account/login",
+            pathname : "/login",
             
             });
     }
