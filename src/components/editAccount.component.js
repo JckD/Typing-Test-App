@@ -35,8 +35,8 @@ export default class EditAccount extends Component {
             newInput : {
                 userName : '',
                 email : '',
-                Password : '',
-                confirmPassowrd : ''
+                password : '',
+                confirmPassword : ''
             },
 
             newUser : {
@@ -86,53 +86,44 @@ export default class EditAccount extends Component {
     }
 
     editAccount() {
-
+        //console.log(this.state.oldUser.password)
         // Check if user has entered a new passowrd
-        if (this.state.newInput.Password != '' && this.passwordsMatch) {
+        if (this.state.newInput.password === "" ) {
+            console.log('bruh')
             this.setState({
-                newUser :{
-                    password : this.state.newInput.Password
-                }
-            })
-        } else {
-            this.setState({
-                newUser : {
-                    password : this.state.oldUser.password
+                newInput : {
+                    password : this.state.oldUser.password,
+                    userName : this.state.newInput.userName,
+                    email : this.state.newInput.email,
                 }
             })
         }
 
         // check if user has entered a new username
-        if (this.state.newInput.userName != '') {
-            this.setState({
-                newUser : {
-                    userName : this.state.newInput.userName
+        if (this.state.newInput.userName === '') {
+            this.setState((state) => ({
+                newInput : {
+                    userName : state.oldUser.userName,
+                    email : this.state.newInput.email,
+                    password : this.state.newInput.password,
+
                 }
-            })
-        } else {
-            this.setState({
-                newUser : {
-                    userName :this.state.oldUser.userName
-                }
-            })
-        }
+            }))
+          
+        } 
 
         // check if users has enetered a new email
-        if (this.state.newInput.email != '') {
+        if (this.state.newInput.email === '') {
             this.setState({
-                newUser : {
-                    email : this.state.newInput.email
+                newInput : {
+                    email : this.state.oldUser.email,
+                    password : this.state.newInput.password,
+                    userName : this.state.newInput.userName,
                 }
             })
-        } else {
-            this.setState({
-                newUser : {
-                    email : this.state.oldUser.email
-                }
-            })
-        }
+        } 
 
-        //console.log(this.state.newUser)
+        console.log(this.state.newUser)
         console.log(this.state.newInput)
     }
 
@@ -142,7 +133,10 @@ export default class EditAccount extends Component {
         const fieldName = e.target.name;
         this.setState({
             newInput : {
-                userName : e.target.value
+                userName : e.target.value,
+                email : this.state.newInput.email,
+                password : this.state.newInput.password,
+                confirmPassword : this.state.newInput.confirmPassword,
             }},
            // () => {this.validateField(fieldName, this.state.newUserName)} 
         );
@@ -153,7 +147,11 @@ export default class EditAccount extends Component {
         //console.log(fieldName);
         this.setState({
             newInput : {
-               email: e.target.value 
+
+               email: e.target.value,
+               userName : this.state.newInput.userName,
+               password : this.state.newInput.password,
+               confirmPassword : this.state.newInput.confirmPassword,
             }},
            // () => {this.validateField(fieldName, this.state.newEmail)}
         );  
@@ -163,7 +161,10 @@ export default class EditAccount extends Component {
         const fieldName = e.target.name;
         this.setState({
             newInput : {
-                Password: e.target.value
+                password: e.target.value,
+                confirmPassword : this.state.newInput.confirmPassword,
+                userName : this.state.newInput.userName,
+                email : this.state.newInput.email,
             }},
            // () => {this.validateField(fieldName, this.state.newPassword)}
         );
@@ -173,7 +174,10 @@ export default class EditAccount extends Component {
         const fieldName = e.target.name;
         this.setState({
             newInput : {
-                confirmPassword: e.target.value
+                confirmPassword: e.target.value,
+                userName : this.state.newInput.userName,
+                email : this.state.newInput.email,
+                passowrd : this.state.newInput.password,
             }},
            // () => {this.validateField(fieldName, this.state.newConfirmPassword)}
         );
@@ -191,12 +195,21 @@ export default class EditAccount extends Component {
             userName : this.state.oldUser.userName,
             userPassword : this.state.onChangeCurrentPassword
         }
+
+        this.setState((state) => ({
+            oldUser : {
+                ...state.oldUser,
+                password : loginAccount.userPassword
+            }
+        })
+
+        )
         //console.log(loginAccount)
         axios.post(this.state.APIURL + '/user/login' , loginAccount, {withCredentials:true})
         .then(res => {
             
             if (res.data) {
-                console.log('beep')
+                //console.log('beep')
                 this.setState({
                     Modal : false
                 })
@@ -261,7 +274,7 @@ export default class EditAccount extends Component {
                                     <h4>Edit Account</h4>
                                     <Form.Label>User Name:</Form.Label>
                                     <Form.Control 
-                                        value={this.state.newUserName}
+                                        value={this.state.newInput.userName}
                                         id = "inputUserName"
                                         onChange = {this.onChangeAccountUsername}
                                         name = "Username"
@@ -270,7 +283,7 @@ export default class EditAccount extends Component {
 
                                     <Form.Label>Email: </Form.Label>
                                     <Form.Control 
-                                        value={this.state.newEmail}
+                                        value={this.state.newInput.email}
                                         id = "inputUserEmail"
                                         onChange = {this.onChangeAccountEmail}
                                         name = "Email"
@@ -280,7 +293,7 @@ export default class EditAccount extends Component {
                                     <Form.Label>Password: </Form.Label>
                                     <Form.Control
                                         type = "password"
-                                        value={this.state.newPassword}
+                                        value={this.state.newInput.password}
                                         id = "inputPassword"
                                         onChange = {this.onChangeAccountPassword}
                                         name = "Password"
@@ -288,7 +301,7 @@ export default class EditAccount extends Component {
                                     <Form.Label>Confirm Password: </Form.Label>
                                     <Form.Control
                                         type = "password"
-                                        value={this.state.newConfirmPassword}
+                                        value={this.state.newInput.confirmPassword}
                                         id = "inputConfirmPassword"
                                         onChange = {this.onChangeAccountConfirmPassword}
                                         name = "ConfirmPassword"
