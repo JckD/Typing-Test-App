@@ -7,7 +7,7 @@ import Card from "./Card";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 
-export default class TypingTest extends Component {
+export default class CreateQuote extends Component {
 
     constructor(props){
         super(props)
@@ -78,7 +78,7 @@ export default class TypingTest extends Component {
             quoteAuthor : this.state.quoteAuthor,
             quoteUser : this.state.userName
         }
-        console.log(quote)
+        //console.log(quote)
         let token = localStorage.getItem('beepboop');
         let APIURL = ''
         if (process.env.NODE_ENV === 'production') {
@@ -86,8 +86,6 @@ export default class TypingTest extends Component {
         } else if (process.env.NODE_ENV === 'development') { 
             APIURL = 'http://localhost:8080'
         }
-        let id = this.state.id
-        console.log(id)
         
         axios.post(APIURL + '/quotes/add', quote, { headers : { 'auth-token' : token}})
         .then(res => {
@@ -98,10 +96,10 @@ export default class TypingTest extends Component {
             }
             axios.post(APIURL + '/user/addQuote', reqObj, {headers : {'auth-token' : token}})
 
-            // this.props.history.push({
-            //     pathname : '/' + res.data,
+            this.props.history.push({
+                pathname : '/' + res.data,
                 
-            // })
+            })
         }).catch (err => err)
         
     }

@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { BrowserRouter as Router, Route, Link} from "react-router-dom"; 
+
 import TypingTest from './components/test.component';
 import CreateQuote from './components/CreateQuote.component';
 import Quotes from './components/quotes.component';
 import Login from './components/login.component';
 import Account from './components/account.component';
 import Profile from './components/profile.component';
+import EditAccount from './components/editAccount.component';
+
 import './App.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -71,6 +74,7 @@ const App = () => {
           <Route path="/login" component={Login} />
           <Route path="/account"exact component={Account} />
           <Route path="/profile" component={Profile} />
+          <Route path="/editAccount" component={EditAccount} />
       
         </Router>  
       </Container>

@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
+import Form from 'react-bootstrap/Form';
 
 // Quote component
 const Quote = props => (
@@ -117,8 +118,7 @@ export default class Profile extends Component {
         if (this.state.quotes.length > 0)
         {
             return this.state.quotes.map(function(currentQuote, i) {
-            console.log(currentQuote.quoteApproved)
-            return <Quote quote={currentQuote} key={i} index={i} />
+                return <Quote quote={currentQuote} key={i} index={i} />
             })
         }
         else {
@@ -153,7 +153,7 @@ export default class Profile extends Component {
             userName : this.state.username,
             userEmail : this.state.email
         }
-        console.log(user)
+        //console.log(user)
         axios.post(this.state.APIURL + '/user/delete', user , {headers : {'auth-token' : token}})
         
 
@@ -163,7 +163,20 @@ export default class Profile extends Component {
     }
 
     editAccount() {
+        let token = localStorage.getItem('beepboop')
+        
+        const user = {
+            userName : this.state.username,
+            userEmail : this.state.email,
+            userId : this.state.id,
+        }
 
+        this.props.history.push({
+            pathname : '/editAccount',
+            state : { id : this.state.id }
+        })
+
+       
     }
 
     render() {
@@ -180,7 +193,7 @@ export default class Profile extends Component {
                     <Modal.Title>Delete Account?</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                    Are you sure you want to delete your account? This is not reversable.
+                        Are you sure you want to delete your account? This is not reversable.
                     </Modal.Body>
                     <Modal.Footer>
                     <Button variant="secondary" onClick={this.handleClose}>
@@ -189,6 +202,7 @@ export default class Profile extends Component {
                     <Button variant="danger" onClick={this.deleteAccount}>Delete Account</Button>
                     </Modal.Footer>
                 </Modal>
+                
                 <Card>
                     <Row>  
                         <Col sm={5}>
@@ -201,9 +215,12 @@ export default class Profile extends Component {
                     <Row>
                         <Col >
                             <br/>
-                            <Button variant="outline-info" onClick={this.logout} style={{marginRight : 10}}>
-                                Edit Account
-                            </Button>
+                            <Link to='/editAccount'>
+                                <Button variant="outline-info" onClick={this.editAccount} style={{marginRight : 10}}>
+                                    Edit Account
+                                </Button>
+                            </Link>
+                            
                             <Button variant="outline-warning" onClick={this.logout} style={{marginRight : 10}}>
                                 Logout
                             </Button>

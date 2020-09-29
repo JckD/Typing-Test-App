@@ -143,12 +143,25 @@ UserRoutes.post(
     }
 );
 
-// UserRoutes.post('/update/:id', verify, async(req, res) => {
+UserRoutes.post('/update', verify, async(req, res) => {
+    const {
+        userName,
+        userEmail,
+        _id
+        
+    } = req.body
+    // try {
+    //     await User.updateOne(
+    //         { _id : _id}
+    //     )
+    // }
 
-// })
+    console.log(req.body)
+    res.send(req.body)
+})
 
 UserRoutes.post('/addQuote', verify , async(req, res) => {
-    console.log(req.body)
+    //console.log(req.body)
     try {
         await User.updateOne(
             { _id: req.body.userId},
