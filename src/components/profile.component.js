@@ -52,6 +52,7 @@ export default class Profile extends Component {
         this.deleteAccountModal = this.deleteAccountModal.bind(this);
         this.editAccount = this.editAccount.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.approveButton = this.approveButton.bind(this);
 
         this.state = {
 
@@ -83,7 +84,12 @@ export default class Profile extends Component {
         }
         axios.get(APIURL + '/user/profile',{ headers : { 'auth-token' : token}}  )
         .then( res => {
+
             //console.log(this.state)
+            if (res.data.isAdmin) {
+                localStorage.setItem("nimdAis", res.data.isAdmin)
+            }
+
             if (res.data) {
                 this.setState({
                     id : res.data._id,
@@ -129,7 +135,7 @@ export default class Profile extends Component {
 
     logout() {
         localStorage.removeItem("beepboop")
-
+        localStorage.removeItem('nimdAis')
         this.props.history.push({
             pathname : "/login",
         })
@@ -179,6 +185,12 @@ export default class Profile extends Component {
        
     }
 
+    approveButton () {
+        if (localStorage.getItem('nimdAis')) {
+            return <Link to='/approveQuote'><Button variant="outline-success" style={{marginLeft : 10}}>Approve Quotes</Button></Link>
+        }
+    }
+
     render() {
         return (
             
@@ -216,7 +228,7 @@ export default class Profile extends Component {
                         <Col >
                             <br/>
                             <Link to='/editAccount'>
-                                <Button variant="outline-info" onClick={this.editAccount} style={{marginRight : 10}}>
+                                <Button variant="outline-info" onClick={this.editAccount} style={{marginRight : 10}} disabled={true}>
                                     Edit Account
                                 </Button>
                             </Link>
@@ -227,6 +239,8 @@ export default class Profile extends Component {
                             <Button variant="outline-danger" onClick={this.deleteAccountModal}>
                                 Delete Account
                             </Button>
+
+                            {this.approveButton()}
                         </Col>
                     </Row>
                     <br/>

@@ -23,14 +23,48 @@ QuoteRoutes.get('/random', async (req, res) => {
     try {
         let count = await Quote.countDocuments()
         let rand = Math.floor(Math.random() * count)
-        let randomQuote = await Quote.findOne().skip(rand)
+        let randomQuote = await Quote.findOne({ quoteApproved : true}).skip(rand)
         res.send(randomQuote);
     } catch (err) {
         console.log(err);
     }
 })
 
+QuoteRoutes.get('/unapproved', verify , async(req, res) =>{
 
+    await Quote.find({ quoteApproved : false },function(err, quotes){
+        if (err)
+        {
+            res.send(err)
+        } else {
+            res.json(quotes);
+        }
+    })
+})
+
+QuoteRoutes.get('/approved', async(req, res) =>{
+
+    Quote.find({ quoteApproved : true },function(err, quotes){
+        if (err)
+        {
+            res.send(err)
+        } else {
+            res.json(quotes);
+        }
+    })
+})
+
+QuoteRoutes.post('/approve', verify, async(req, res) =>{
+    //console.log(req.body)
+    await Quote.findOneAndUpdate({ _id : req.body._id}, { quoteApproved : true}, function(err, quotes) {
+        if(err) {
+            res.send(err)
+        } else {
+            res.send(quotes)
+        }
+    })
+
+})
 
 // Ruote that returns one book that matches the requested id
 QuoteRoutes.get('/:id', async (req, res) => {

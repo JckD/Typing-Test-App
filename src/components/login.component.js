@@ -115,6 +115,7 @@ export default class Login extends Component {
         .then(res => {
             console.log(res.data)
             localStorage.setItem("beepboop", res.data);
+            
             this.props.history.push({
                              pathname : "/profile",
                              

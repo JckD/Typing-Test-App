@@ -12,7 +12,7 @@ dotenv.config();
 
 //mongo db URI
 const { dbURI } = require('../config.json');
-
+mongoose.set('useFindAndModify', false);
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
 const userRoutes = require('./routes/userRoutes');
