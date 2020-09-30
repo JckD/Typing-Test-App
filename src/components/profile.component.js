@@ -8,6 +8,7 @@ import Alert from 'react-bootstrap/Alert';
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Form from 'react-bootstrap/Form';
+import Badge from 'react-bootstrap/Badge';
 
 // Quote component
 const Quote = props => (
@@ -65,7 +66,7 @@ export default class Profile extends Component {
             quoteIds : [],
             quotes : [],
             APIURL : '',
-
+            unapprovedQuotesCount : 0,
             deleteAccountModal : false,
         }
     }
@@ -106,6 +107,25 @@ export default class Profile extends Component {
                 this.getQuotes();
             }
         })
+
+        //get unapproved quotes
+        axios.get(APIURL + '/quotes/unapproved', {headers : {'auth-token' : token}})
+            .then(response => {
+                if (response.data.length > 0) {
+                    this.setState({ 
+                    unapprovedQuotesCount : response.data.length
+                });
+                } else {
+                    this.setState({
+                        unapprovedQuotesCount : null
+                    })
+                }
+                
+
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
     }
 
     getQuotes() {
@@ -192,7 +212,11 @@ export default class Profile extends Component {
 
     approveButton () {
         if (localStorage.getItem('nimdAis')) {
-            return <Link to='/approveQuote'><Button variant="outline-success" style={{marginLeft : 10}}>Approve Quotes</Button></Link>
+        return <Link to='/approveQuote'>
+                    <Button variant="outline-success" style={{marginLeft : 10}}>Approve Quotes 
+                        <Badge  variant="danger" style={{marginLeft : 5}}>{this.state.unapprovedQuotesCount}</Badge>
+                    </Button>
+                </Link>
         }
     }
 
