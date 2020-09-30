@@ -122,8 +122,12 @@ export default class QuoteList extends Component {
         axios.post(this.state.APIURL + '/quotes/approve', currentQuote, { headers : {'auth-token' : this.state.token}})
         .then(res => {
             console.log(res.data)
+            this.setState({
+                quotes : []
+            })
         })
         console.log(currentQuote.quoteApproved)
+
     }
 
     deleteQuote() {
