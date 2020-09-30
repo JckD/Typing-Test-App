@@ -39,6 +39,7 @@ export default class TypingTest extends Component {
         this.debugToggle = this.debugToggle.bind(this);
         this.renderTooltip = this.renderTooltip.bind(this);
         this.newTest = this.newTest.bind(this);
+        this.sendHighscores = this.sendHighscores.bind(this);
 
         this.state = {
             quote: [],
@@ -92,7 +93,9 @@ export default class TypingTest extends Component {
 
             //api url
             apiUrl : '',
+            token : '',
 
+            user : {},
             debug : false
         }
     }
@@ -134,6 +137,21 @@ export default class TypingTest extends Component {
                 console.log(err);
             })
 
+        //if there is a use logged in get their account info
+        if (localStorage.getItem('beepboop')) {
+            let token = localStorage.getItem('beepboop')
+            this.setState({
+                token : token
+            })
+
+            axios.get( APIURL + '/user/profile', { headers : { 'auth-token' : token }})
+            .then(res => {
+               // console.log(res.data)
+               this.setState({
+                   user : res.data
+               })
+            })
+        }
         // add eventListener that checks if the esc key has been pressed on every keydown
         document.addEventListener("keydown", this.escFunction, false);
         
@@ -348,14 +366,47 @@ export default class TypingTest extends Component {
     calculateHighScore (lastAccuracy, lastWPM) {
         let latestAccuracy = this.state.accuracy;
         let latestWPM = this.state.netWPM;
+        let highestWPM = 0;
+        let highestAcc = 0;
+
 
         if (latestWPM > lastWPM) {
             this.setState({
                 highestAcc : latestAccuracy,
-                highestWPM : latestWPM
+                highestWPM : latestWPM,
+                
             })
+
+            highestWPM = latestWPM;
+            highestAcc = latestAccuracy
+            if (this.state.token != '') {
+
+                console.log(highestWPM)
+                if(highestWPM > this.state.user.personalBestWPM ) {
+                    console.log('you were better')
+                    this.setState(state => ({
+                        user : {
+                            ...this.state.user,
+                            personalBestWPM : highestWPM,
+                            personalBestAcc : highestAcc,
+                            
+                        }
+                    }), () => this.sendHighscores(this.state.user))
+                }          
+            }
+
         }
+    
     }
+
+    sendHighscores(user) {
+        axios.post(this.state.apiUrl + '/user/updateHS', user , { headers : {'auth-token' : this.state.token}})
+        .then(res =>
+            console.log(res.data)    
+        )
+    }
+
+
 
     // calculateWPM function calculates the user's WPM and returns the netWPM
     calculateWPM () {

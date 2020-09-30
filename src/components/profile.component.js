@@ -60,6 +60,8 @@ export default class Profile extends Component {
             username : '',
             email : '',
             signUpDate : '',
+            personalBestWPM : 0, 
+            personalBestAcc : 0,
             quoteIds : [],
             quotes : [],
             APIURL : '',
@@ -91,11 +93,14 @@ export default class Profile extends Component {
             }
 
             if (res.data) {
+                console.log(res.data)
                 this.setState({
                     id : res.data._id,
                     username : res.data.userName,
                     email : res.data.userEmail,
                     signUpDate : res.data.signUpDate.slice(0, 15),
+                    personalBestWPM : res.data.personalBestWPM, 
+                    personalBestAcc : res.data.personalBestAcc,
                     quoteIds : res.data.quotesAdded
                 })
                 this.getQuotes();
@@ -217,11 +222,20 @@ export default class Profile extends Component {
                 
                 <Card>
                     <Row>  
-                        <Col sm={5}>
+                        <Col sm={9}>
                             <h3>{this.state.username}'s Profile</h3>
                             <h5>Email:  {this.state.email}</h5>
                             <h5>Date Joined:  {this.state.signUpDate}</h5>
                         </Col> 
+                        <Col sm={3}>
+                            <h4>Personal Best:</h4>
+                            <Alert variant="info">
+                                <span>
+                                    WPM : {this.state.personalBestWPM} <br></br>
+                                    Accuracy : {this.state.personalBestAcc}% <br></br>
+                                </span>       
+                            </Alert>
+                        </Col>
                         
                     </Row>
                     <Row>

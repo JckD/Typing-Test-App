@@ -38,7 +38,17 @@ let UserSchema = new Schema({
     isAdmin : {
         type : Boolean,
         default : false
-    }
+    },
+    personalBestWPM : {
+        type : Number,
+        default : 0
+
+    },
+    personalBestAcc : {
+        type : Number,
+        default : 0
+
+    },
 
 });
 

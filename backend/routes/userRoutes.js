@@ -160,6 +160,21 @@ UserRoutes.post('/update', verify, async(req, res) => {
     res.send(req.body)
 })
 
+UserRoutes.post('/updateHS', verify , async(req, res) => {
+    console.log(req.body)
+    await User.findByIdAndUpdate(
+        { _id : req.body._id}, 
+        { personalBestWPM : req.body.personalBestWPM
+},
+          function(err, user) {
+        if (err) {
+            res.send(err)
+        } else {
+            res.send(user)
+        }
+    })
+})
+
 UserRoutes.post('/addQuote', verify , async(req, res) => {
     //console.log(req.body)
     try {

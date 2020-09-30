@@ -26,13 +26,13 @@ let QuoteSchema = new Schema({
         required : true
     },
     highWPMScore : {
-        type : String,
+        type : Number,
         default : 0,
         required : true
         
     },
     highAccScore : {
-        type : String,
+        type : Number,
         default : 0,
         required : true
     },
