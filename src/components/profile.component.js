@@ -266,7 +266,7 @@ export default class Profile extends Component {
                         <Col >
                             <br/>
                             <Link to='/editAccount'>
-                                <Button variant="outline-info" onClick={this.editAccount} style={{marginRight : 10}} disabled={true}>
+                                <Button variant="outline-info" onClick={this.editAccount} style={{marginRight : 10}} disabled={false}>
                                     Edit Account
                                 </Button>
                             </Link>

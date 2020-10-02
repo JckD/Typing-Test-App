@@ -7,6 +7,8 @@ const verify = require('./verifyToken');
 
 
 let User = require("../schemas/user.model");
+const e = require("express");
+const { find, findById } = require("../schemas/user.model");
 
 UserRoutes.get('/', async (req, res) => {
     //console.log(req.data);
@@ -144,21 +146,31 @@ UserRoutes.post(
 );
 
 UserRoutes.post('/update', verify, async(req, res) => {
-    const {
-        userName,
-        userEmail,
-        _id
-        
-    } = req.body
-    // try {
-    //     await User.updateOne(
-    //         { _id : _id}
-    //     )
-    // }
+        const {
+            userName,
+            email,
+            id,
+            password
+            
+        } = req.body
+        //console.log(req.body)
+        const salt = await bcrypt.genSalt(10);
 
-    console.log(req.body)
-    res.send(req.body)
-})
+        User.findByIdAndUpdate(id,
+                            { userName : userName , 
+                              userEmai : email,
+                              userPassword : await bcrypt.hash(password,salt)
+                            },
+                            function(err, result) {
+                                if (err) {
+                                    res.send(err);
+                                } else {
+                                    res.send(result)
+                                }
+                            }
+            );
+        }) 
+
 
 UserRoutes.post('/updateHS', verify , async(req, res) => {
     console.log(req.body)

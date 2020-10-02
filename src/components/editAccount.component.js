@@ -36,7 +36,8 @@ export default class EditAccount extends Component {
                 userName : '',
                 email : '',
                 password : '',
-                confirmPassword : ''
+                confirmPassword : '',
+                id : ''
             },
 
             newUser : {
@@ -48,7 +49,7 @@ export default class EditAccount extends Component {
             onChangeCurrentPassword : '',
             Modal : true,
 
-           
+           token : ''
         }
     }
 
@@ -76,8 +77,8 @@ export default class EditAccount extends Component {
                         id : res.data._id,
                         userName : res.data.userName,
                         email : res.data.userEmail,
-                    }
-
+                    },
+                    token : token
                 })
 
             }
@@ -86,45 +87,32 @@ export default class EditAccount extends Component {
     }
 
     editAccount() {
+
+        const tempUser = this.state.newInput
+        console.log(tempUser)
         //console.log(this.state.oldUser.password)
         // Check if user has entered a new passowrd
-        if (this.state.newInput.password === "" ) {
-            console.log('bruh')
-            this.setState({
-                newInput : {
-                    password : this.state.oldUser.password,
-                    userName : this.state.newInput.userName,
-                    email : this.state.newInput.email,
-                }
-            })
+        if (this.state.newInput.password === "" && this.passwordsMatch) {
+            tempUser.password  = this.state.oldUser.password   
         }
-
+        
         // check if user has entered a new username
         if (this.state.newInput.userName === '') {
-            this.setState((state) => ({
-                newInput : {
-                    userName : state.oldUser.userName,
-                    email : this.state.newInput.email,
-                    password : this.state.newInput.password,
-
-                }
-            }))
-          
+            tempUser.userName = this.state.oldUser.userName
         } 
 
         // check if users has enetered a new email
         if (this.state.newInput.email === '') {
-            this.setState({
-                newInput : {
-                    email : this.state.oldUser.email,
-                    password : this.state.newInput.password,
-                    userName : this.state.newInput.userName,
-                }
-            })
+            tempUser.email = this.state.oldUser.email
         } 
-
-        console.log(this.state.newUser)
-        console.log(this.state.newInput)
+            
+        tempUser.id = this.state.oldUser.id
+        console.log(tempUser)
+        // post req
+        axios.post(this.state.APIURL + '/user/update', tempUser, { headers : {'auth-token' : this.state.token }})
+        .then(res => {
+            console.log(res.data)
+        }).catch(err => err)
     }
 
 
