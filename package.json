@@ -17,11 +17,10 @@
     "react-bootstrap": "^1.0.1",
     "react-compound-timer": "^1.2.0",
     "react-dom": "^16.13.1",
+    "react-input-autosize": "^2.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^3.4.3",
     "react-sound": "^1.2.0",
-    "realm": "^6.0.2",
-    "realm-web": "^0.6.0",
     "styled-components": "^5.1.1"
   },
   "homepage": "http://JckD.github.io/Typing-Test-App",

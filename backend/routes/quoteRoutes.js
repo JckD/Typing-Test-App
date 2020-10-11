@@ -81,25 +81,29 @@ QuoteRoutes.get('/:id', async (req, res) => {
 
 // Route that find's a quote by its id and updates it with the
 // contents of the body of the request
-QuoteRoutes.post('/update/:id', async (req, res) => {
-    Quote.findById(req.params.id, function(err, quote) {
-        if (!quote) {
-            res.status(404).send("No quotes matching that id");
-        }
-        else {
-            quote.quoteTitle = req.body.quoteTitle;
-            quote.quoteBody = req.body.quoteBody;
-            quote.quoteAuthor = req.body.quoteAuthor;
-            quote.quoteUser = req.body.quoteUser;
+QuoteRoutes.post('/update', verify,  async (req, res) => {
+    const {
+        quoteTitle,
+        quoteBody,
+        quoteAuthor,
+        _id
+    } = req.body
 
-            quote.save().then(quote => {
-                res.json("Quote Updated!");
-            })
-            .catch(err => {
-                res.status(400).send("Quote not updated :(");
-            });
-        }
-    });
+    Quote.findByIdAndUpdate(_id,
+                        { quoteTitle : quoteTitle , 
+                          quoteBody : quoteBody,
+                          quoteAuthor : quoteAuthor,
+                        },
+                        function(err, result) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                res.send(result)
+                            }
+                        }
+    );
+
+    
 });
 
 // Route that adds a quote to the database with the body of the request
