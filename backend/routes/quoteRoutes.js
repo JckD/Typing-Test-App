@@ -122,4 +122,14 @@ QuoteRoutes.post('/add', verify , async(req, res) => {
    
 });
 
+
+QuoteRoutes.post('/delete', verify, async (req, res) => {
+    try {
+        await Quote.findOneAndDelete({ _id : req.body._id })
+        res.send({ message : "Quote Deleted"})
+    } catch (err) {
+        res.send({ message : "Error deleting Quote"})
+    }
+})
+
 module.exports = QuoteRoutes;

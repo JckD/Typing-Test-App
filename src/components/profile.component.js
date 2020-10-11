@@ -51,12 +51,15 @@ export default class Profile extends Component {
         this.logout = this.logout.bind(this);
         this.getQuotes = this.getQuotes.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
-        //this.deleteAccountModal = this.deleteAccountModal.bind(this);
+        
         this.editAccount = this.editAccount.bind(this);
-        this.handleDeleteQuoteClose = this.handleDeleteQuoteClose.bind(this);
         this.approveButton = this.approveButton.bind(this);
         this.editQuote = this.editQuote.bind(this);
         this.deleteQuote = this.deleteQuote.bind(this);
+        this.deleteThisQuote = this.deleteThisQuote.bind(this);
+
+        this.handleDeleteAccountClose = this.handleDeleteAccountClose.bind(this);
+        this.handleDeleteQuoteClose = this.handleDeleteQuoteClose.bind(this);
         this.handleEditQuoteClose = this.handleEditQuoteClose.bind(this);
         this.saveQuote = this.saveQuote.bind(this);
         this.validateField = this.validateField.bind(this);
@@ -78,8 +81,11 @@ export default class Profile extends Component {
             quotes : [],
             APIURL : '',
             unapprovedQuotesCount : 0,
+
             deleteAccountModal : false,
+            deleteQuoteModal : false,
             editQuoteModal : false,
+
 
             quoteTitleValid : false,
             quoteBodyValid : false,
@@ -92,6 +98,10 @@ export default class Profile extends Component {
                 quoteAuthor : '',
                 quoteBody : '',
             },
+
+            deletingQuote : {
+                quoteTitle : '',
+            }
         }
     }
 
@@ -196,8 +206,26 @@ export default class Profile extends Component {
     }
 
     // Function that lets users delete a quote
-    deleteQuote() {
-        console.log('delete quote')
+    deleteQuote(quote) {
+        this.setState({
+            deletingQuote : quote
+        }, () => this.handleDeleteQuoteClose())
+    }
+
+    deleteThisQuote() {
+        const quote = this.state.deletingQuote;
+
+        let token = localStorage.getItem('beepboop');
+        axios.post(this.state.APIURL + '/quotes/delete',  quote , { headers: { 'auth-token' : token}})
+        .then(res => {
+            console.log(res.data)
+            this.setState({
+                editQuoteModal : false
+            })
+            window.location.reload()
+        })
+        .catch(err => err)
+
     }
 
     //#region Edit Quote Modal Functions
@@ -327,7 +355,7 @@ export default class Profile extends Component {
 
 
     //#region Modal Handlers
-        handleDeleteQuoteClose (){
+        handleDeleteAccountClose (){
                 this.setState({
                     deleteAccountModal : !this.state.deleteAccountModal
                 })
@@ -336,6 +364,12 @@ export default class Profile extends Component {
         handleEditQuoteClose () {
             this.setState({
                 editQuoteModal : !this.state.editQuoteModal
+            })
+        }
+
+        handleDeleteQuoteClose() {
+            this.setState({
+                deleteQuoteModal : !this.state.deleteQuoteModal
             })
         }
     //#endregion
@@ -414,12 +448,34 @@ export default class Profile extends Component {
                         Are you sure you want to delete your account? This is not reversable.
                     </Modal.Body>
                     <Modal.Footer>
-                    <Button variant="secondary" onClick={this.handleDeleteQuoteClose}>
+                    <Button variant="secondary" onClick={this.handleDeleteAccountClose}>
                         Nevermind
                     </Button>
                     <Button variant="danger" onClick={this.deleteAccount}>Delete Account</Button>
                     </Modal.Footer>
                 </Modal>
+
+                {/* Delete Quote Modal */}
+                <Modal
+                    show={this.state.deleteQuoteModal}
+                    backdrop="static"
+                    keyboard={false}
+                    centered
+                >
+                    <Modal.Header>
+                    <Modal.Title>Delete Quote?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Are you sure you want to delete {this.state.deletingQuote.quoteTitle}? This is not reversable and will delete the quotes top score and WPM.
+                    </Modal.Body>
+                    <Modal.Footer>
+                    <Button variant="secondary" onClick={this.handleDeleteQuoteClose}>
+                        Nevermind
+                    </Button>
+                    <Button variant="danger" onClick={this.deleteThisQuote}>Delete Quote</Button>
+                    </Modal.Footer>
+                </Modal>
+
                 {/* Edit Quote Modal */}
                 <Modal
                     show={this.state.editQuoteModal}
