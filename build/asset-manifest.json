@@ -1,26 +1,25 @@
 {
   "files": {
-    "main.css": "/Typing-Test-App/static/css/main.c9bde769.chunk.css",
-    "main.js": "/Typing-Test-App/static/js/main.4be5dfc8.chunk.js",
-    "main.js.map": "/Typing-Test-App/static/js/main.4be5dfc8.chunk.js.map",
+    "main.css": "/Typing-Test-App/static/css/main.dbfc6d2a.chunk.css",
+    "main.js": "/Typing-Test-App/static/js/main.1fe5197a.chunk.js",
+    "main.js.map": "/Typing-Test-App/static/js/main.1fe5197a.chunk.js.map",
     "runtime-main.js": "/Typing-Test-App/static/js/runtime-main.c39adce7.js",
     "runtime-main.js.map": "/Typing-Test-App/static/js/runtime-main.c39adce7.js.map",
-    "static/css/2.af3c1da9.chunk.css": "/Typing-Test-App/static/css/2.af3c1da9.chunk.css",
-    "static/js/2.be75f733.chunk.js": "/Typing-Test-App/static/js/2.be75f733.chunk.js",
-    "static/js/2.be75f733.chunk.js.map": "/Typing-Test-App/static/js/2.be75f733.chunk.js.map",
+    "static/css/2.d9ad5f5c.chunk.css": "/Typing-Test-App/static/css/2.d9ad5f5c.chunk.css",
+    "static/js/2.30e4b572.chunk.js": "/Typing-Test-App/static/js/2.30e4b572.chunk.js",
+    "static/js/2.30e4b572.chunk.js.map": "/Typing-Test-App/static/js/2.30e4b572.chunk.js.map",
     "index.html": "/Typing-Test-App/index.html",
-    "precache-manifest.c51d09c944f43e21b700c58e37bb8a06.js": "/Typing-Test-App/precache-manifest.c51d09c944f43e21b700c58e37bb8a06.js",
+    "precache-manifest.26fdfe3f80d44f7ada6f8e3a9e4e1a0e.js": "/Typing-Test-App/precache-manifest.26fdfe3f80d44f7ada6f8e3a9e4e1a0e.js",
     "service-worker.js": "/Typing-Test-App/service-worker.js",
-    "static/css/2.af3c1da9.chunk.css.map": "/Typing-Test-App/static/css/2.af3c1da9.chunk.css.map",
-    "static/css/main.c9bde769.chunk.css.map": "/Typing-Test-App/static/css/main.c9bde769.chunk.css.map",
-    "static/js/2.be75f733.chunk.js.LICENSE.txt": "/Typing-Test-App/static/js/2.be75f733.chunk.js.LICENSE.txt",
-    "static/media/B&B.png": "/Typing-Test-App/static/media/B&B.352de28d.png"
+    "static/css/2.d9ad5f5c.chunk.css.map": "/Typing-Test-App/static/css/2.d9ad5f5c.chunk.css.map",
+    "static/css/main.dbfc6d2a.chunk.css.map": "/Typing-Test-App/static/css/main.dbfc6d2a.chunk.css.map",
+    "static/js/2.30e4b572.chunk.js.LICENSE.txt": "/Typing-Test-App/static/js/2.30e4b572.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.c39adce7.js",
-    "static/css/2.af3c1da9.chunk.css",
-    "static/js/2.be75f733.chunk.js",
-    "static/css/main.c9bde769.chunk.css",
-    "static/js/main.4be5dfc8.chunk.js"
+    "static/css/2.d9ad5f5c.chunk.css",
+    "static/js/2.30e4b572.chunk.js",
+    "static/css/main.dbfc6d2a.chunk.css",
+    "static/js/main.1fe5197a.chunk.js"
   ]
 }
