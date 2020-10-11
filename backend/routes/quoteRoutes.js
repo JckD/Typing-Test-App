@@ -1,6 +1,7 @@
 const express = require("express");
 const QuoteRoutes = express.Router();
-
+const jwt = require("jsonwebtoken");
+const verify = require('./verifyToken');
 
 let Quote = require('../schemas/quote.model');
 const { useCallback } = require("react");
@@ -22,14 +23,48 @@ QuoteRoutes.get('/random', async (req, res) => {
     try {
         let count = await Quote.countDocuments()
         let rand = Math.floor(Math.random() * count)
-        let randomQuote = await Quote.findOne().skip(rand)
+        let randomQuote = await Quote.findOne({ quoteApproved : true}).skip(rand)
         res.send(randomQuote);
     } catch (err) {
         console.log(err);
     }
 })
 
+QuoteRoutes.get('/unapproved', verify , async(req, res) =>{
 
+    await Quote.find({ quoteApproved : false },function(err, quotes){
+        if (err)
+        {
+            res.send(err)
+        } else {
+            res.json(quotes);
+        }
+    })
+})
+
+QuoteRoutes.get('/approved', async(req, res) =>{
+
+    Quote.find({ quoteApproved : true },function(err, quotes){
+        if (err)
+        {
+            res.send(err)
+        } else {
+            res.json(quotes);
+        }
+    })
+})
+
+QuoteRoutes.post('/approve', verify, async(req, res) =>{
+    //console.log(req.body)
+    await Quote.findOneAndUpdate({ _id : req.body._id}, { quoteApproved : true}, function(err, quotes) {
+        if(err) {
+            res.send(err)
+        } else {
+            res.send(quotes)
+        }
+    })
+
+})
 
 // Ruote that returns one book that matches the requested id
 QuoteRoutes.get('/:id', async (req, res) => {
@@ -46,39 +81,72 @@ QuoteRoutes.get('/:id', async (req, res) => {
 
 // Route that find's a quote by its id and updates it with the
 // contents of the body of the request
-QuoteRoutes.post('/update/:id', async (req, res) => {
-    Quote.findById(req.params.id, function(err, quote) {
-        if (!quote) {
-            res.status(404).send("No quotes matching that id");
-        }
-        else {
-            quote.quoteTitle = req.body.quoteTitle;
-            quote.quoteBody = req.body.quoteBody;
-            quote.quoteAuthor = req.body.quoteAuthor;
-            quote.quoteUser = req.body.quoteUser;
+QuoteRoutes.post('/update', verify,  async (req, res) => {
+    const {
+        quoteTitle,
+        quoteBody,
+        quoteAuthor,
+        _id
+    } = req.body
 
-            quote.save().then(quote => {
-                res.json("Quote Updated!");
-            })
-            .catch(err => {
-                res.status(400).send("Quote not updated :(");
-            });
-        }
-    });
+    Quote.findByIdAndUpdate(_id,
+                        { quoteTitle : quoteTitle , 
+                          quoteBody : quoteBody,
+                          quoteAuthor : quoteAuthor,
+                        },
+                        function(err, result) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                res.send(result)
+                            }
+                        }
+    );
 });
+
+QuoteRoutes.post('/updateHS', verify, async(req, res) => {
+    const {
+        quoteWPM,
+        quoteAcc,
+        _id
+    } = req.body
+    console.log(req.body)
+    Quote.findByIdAndUpdate(_id, 
+        { highWPMScore : quoteWPM, 
+          highAccScore : quoteAcc}, 
+        function(err, result) {
+        if (err) {
+            res.send(err)
+        } else {
+            res.send(result)
+        }
+    })
+})
 
 // Route that adds a quote to the database with the body of the request
 // containing the data for the quote 
-QuoteRoutes.route('/add').post(function (req, res){
-    let quote = new Quote(req.body);
+QuoteRoutes.post('/add', verify , async(req, res) => {
+    quote = new Quote(req.body);
+    //console.log(quote)
 
-    quote.save()
-    .then(quote => {
-        res.status(200).json({'quote' : 'quote added successfully!'});
-    })
-    .catch(err => {
-        res.status(400).send('Failed to add new book');
-    });
+    try {
+        await quote.save()
+        res.send(quote.id)
+    } catch(err) {
+        res.status(500).send('Error saving quote')
+    }
+    
+   
 });
+
+
+QuoteRoutes.post('/delete', verify, async (req, res) => {
+    try {
+        await Quote.findOneAndDelete({ _id : req.body._id })
+        res.send({ message : "Quote Deleted"})
+    } catch (err) {
+        res.send({ message : "Error deleting Quote"})
+    }
+})
 
 module.exports = QuoteRoutes;

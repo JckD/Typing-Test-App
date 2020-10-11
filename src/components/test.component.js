@@ -39,6 +39,8 @@ export default class TypingTest extends Component {
         this.debugToggle = this.debugToggle.bind(this);
         this.renderTooltip = this.renderTooltip.bind(this);
         this.newTest = this.newTest.bind(this);
+        this.sendHighscores = this.sendHighscores.bind(this);
+
 
         this.state = {
             quote: [],
@@ -89,10 +91,16 @@ export default class TypingTest extends Component {
             // Highscores
             highestAcc : 0, 
             highestWPM : 0,
+            quote_score : 0,
+            quoteWPM : 0,
+            quoteAcc : 0,
+            quoteID : 0,
 
             //api url
             apiUrl : '',
+            token : '',
 
+            user : {},
             debug : false
         }
     }
@@ -128,12 +136,31 @@ export default class TypingTest extends Component {
                     current_quote_char : Array.from(response.data.quoteBody)[0],
                     quote_start : response.data.quoteBody,
                     quote_author : response.data.quoteAuthor,
+                    quote_score : response.data.quoteScore,
+                    quotWPM : response.data.highWPMScore,
+                    quoteAcc : response.data.highAccScore,
+                    quoteID : response.data._id
                 }))
             })
             .catch(function (err) {
                 console.log(err);
             })
 
+        //if there is a use logged in get their account info
+        if (localStorage.getItem('beepboop')) {
+            let token = localStorage.getItem('beepboop')
+            this.setState({
+                token : token
+            })
+
+            axios.get( APIURL + '/user/profile', { headers : { 'auth-token' : token }})
+            .then(res => {
+               // console.log(res.data)
+               this.setState({
+                   user : res.data
+               })
+            })
+        }
         // add eventListener that checks if the esc key has been pressed on every keydown
         document.addEventListener("keydown", this.escFunction, false);
         
@@ -349,14 +376,74 @@ export default class TypingTest extends Component {
     calculateHighScore (lastAccuracy, lastWPM) {
         let latestAccuracy = this.state.accuracy;
         let latestWPM = this.state.netWPM;
+        let highestWPM = 0;
+        let highestAcc = 0;
+
+        console.log(lastWPM, this.state.quoteWPM)
+        
 
         if (latestWPM > lastWPM) {
             this.setState({
                 highestAcc : latestAccuracy,
-                highestWPM : latestWPM
+                highestWPM : latestWPM,
+                
             })
+
+            highestWPM = latestWPM;
+            highestAcc = latestAccuracy
+            if (this.state.token != '') {
+
+                console.log(highestWPM)
+                console.log(highestAcc)
+                if(highestWPM > this.state.user.personalBestWPM ) {
+                    console.log('you were better')
+                    this.setState(state => ({
+                        user : {
+                            ...this.state.user,
+                            
+                            personalBestAcc : highestAcc,
+                            personalBestWPM : highestWPM,
+                        }
+                    }), () => this.sendHighscores(this.state.user))
+                }
+
+                if (lastWPM >= this.state.quoteWPM) {
+                    console.log('calling')
+                    this.setState({
+                        quoteWPM : highestWPM,
+                        quoteAcc : highestAcc
+                    }, () => this.sendQuoteScores())
+                }
+                
+                
+            }
+
         }
+    
     }
+
+    sendHighscores(user) {
+        console.log(user)
+        axios.post(this.state.apiUrl + '/user/updateHS', user , { headers : {'auth-token' : this.state.token}})
+        .then(res =>
+            console.log(res.data)    
+        ) .catch(err => err)
+    }
+
+    sendQuoteScores() {
+        const scores = {
+            quoteWPM : this.state.quoteWPM,
+            quoteAcc : this.state.quoteAcc,
+            _id : this.state.quoteID
+        }
+
+        axios.post(this.state.apiUrl + '/quotes/updateHS', scores, {headers : {'auth-token' : this.state.token}})
+        .then(res => 
+            console.log(res.data)
+        ) .catch(err => err)
+    }
+
+
 
     // calculateWPM function calculates the user's WPM and returns the netWPM
     calculateWPM () {
@@ -370,6 +457,8 @@ export default class TypingTest extends Component {
         //netWPM = ((this.state.typed_chars.length/5) / (this.state.seconds/60)) - (this.state.error_count/(this.state.seconds/60))
         return netWPM
     }
+
+
 
     // function to render button tooltips
     renderTooltip(props) {
@@ -418,6 +507,8 @@ export default class TypingTest extends Component {
                                     <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
                                     <span className="quote-start">{this.state.quote_start.slice(1)}</span>
                                     <span className="quote-right">{this.state.quote_right}</span>
+                                    <hr/>
+                                    <span>Best Score: {this.state.quoteWPM}WPM {this.state.quoteAcc}% Accuracy</span>
                                 </Alert>    
                             </Col>
                             <Col sm={4}>
@@ -448,9 +539,9 @@ export default class TypingTest extends Component {
                                 </OverlayTrigger>
                                 <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
                                     <Button onClick={this.newTest} variant="info" style={{marginLeft : 10}} id="newTestBtn" name="newTestBtn">
-                                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
+                                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
+                                            <path fillRule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
                                         </svg>
                                     </Button>
                                 </OverlayTrigger>
