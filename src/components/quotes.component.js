@@ -69,7 +69,7 @@ export default class QuoteList extends Component {
         } else if (process.env.NODE_ENV === 'development') { 
             APIURL = 'http://localhost:8080'
         }
-        axios.get(APIURL + '/quotes')
+        axios.get(APIURL + '/quotes/approved')
             .then(response => {
                 this.setState({ quotes : response.data});
             })
@@ -105,7 +105,6 @@ export default class QuoteList extends Component {
         return (
             <div className="container">
                 <Card>
-        
                     <Row>
                         <Col sm={8}>
                             <h4>Quotes</h4>  

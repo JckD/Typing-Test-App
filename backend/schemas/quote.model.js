@@ -14,7 +14,28 @@ let QuoteSchema = new Schema({
     },
     quoteUser: {
         type: String
-    }
+    },
+    quoteScore: {
+        type : Number,
+        default : 0,
+        required : true
+    },
+    quoteApproved : {
+        type : Boolean,
+        default : false,
+        required : true
+    },
+    highWPMScore : {
+        type : Number,
+        default : 0,
+        required : true
+        
+    },
+    highAccScore : {
+        type : Number,
+        default : 0,
+        required : true
+    },
 })
 
 module.exports = mongoose.model('Quote', QuoteSchema);

@@ -53,10 +53,13 @@
   color: white;
 }
 
+
+
 body {
   margin : 0;
 }
 
 .dropDownLink {
   color: #282c34;
+  width : 100px;
 }

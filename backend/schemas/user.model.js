@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Schema = mongoos.Schema;
+const Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
     userName : {
@@ -17,8 +17,39 @@ let UserSchema = new Schema({
     },
     signUpDate : {
         type : String,
-        default : Date.now
-    }
+        default : Date(Date.now())
+    },
+    highWPMScore : {
+        type : String,
+        
+    },
+    highAccScore : {
+        type : String,
+    },
+    quotesAdded : {
+        type : [String]
+    },
+    latestWPMScores : {
+        type : [Number]
+    },
+    latestAccScores : {
+        type : [Number]
+    },
+    isAdmin : {
+        type : Boolean,
+        default : false
+    },
+    personalBestWPM : {
+        type : Number,
+        default : 0
+
+    },
+    personalBestAcc : {
+        type : Number,
+        default : 0
+
+    },
+
 });
 
 
