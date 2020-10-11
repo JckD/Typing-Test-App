@@ -176,7 +176,8 @@ UserRoutes.post('/updateHS', verify , async(req, res) => {
     console.log(req.body)
     await User.findByIdAndUpdate(
         { _id : req.body._id}, 
-        { personalBestWPM : req.body.personalBestWPM
+        { personalBestWPM : req.body.personalBestWPM,
+          personalBestAcc : req.body.personalBestAcc
 },
           function(err, user) {
         if (err) {

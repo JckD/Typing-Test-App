@@ -41,6 +41,7 @@ export default class TypingTest extends Component {
         this.newTest = this.newTest.bind(this);
         this.sendHighscores = this.sendHighscores.bind(this);
 
+
         this.state = {
             quote: [],
             //The name of the quote
@@ -90,6 +91,10 @@ export default class TypingTest extends Component {
             // Highscores
             highestAcc : 0, 
             highestWPM : 0,
+            quote_score : 0,
+            quoteWPM : 0,
+            quoteAcc : 0,
+            quoteID : 0,
 
             //api url
             apiUrl : '',
@@ -131,6 +136,10 @@ export default class TypingTest extends Component {
                     current_quote_char : Array.from(response.data.quoteBody)[0],
                     quote_start : response.data.quoteBody,
                     quote_author : response.data.quoteAuthor,
+                    quote_score : response.data.quoteScore,
+                    quotWPM : response.data.highWPMScore,
+                    quoteAcc : response.data.highAccScore,
+                    quoteID : response.data._id
                 }))
             })
             .catch(function (err) {
@@ -369,6 +378,8 @@ export default class TypingTest extends Component {
         let highestWPM = 0;
         let highestAcc = 0;
 
+        console.log(lastWPM, this.state.quoteWPM)
+        
 
         if (latestWPM > lastWPM) {
             this.setState({
@@ -382,17 +393,28 @@ export default class TypingTest extends Component {
             if (this.state.token != '') {
 
                 console.log(highestWPM)
+                console.log(highestAcc)
                 if(highestWPM > this.state.user.personalBestWPM ) {
                     console.log('you were better')
                     this.setState(state => ({
                         user : {
                             ...this.state.user,
-                            personalBestWPM : highestWPM,
-                            personalBestAcc : highestAcc,
                             
+                            personalBestAcc : highestAcc,
+                            personalBestWPM : highestWPM,
                         }
                     }), () => this.sendHighscores(this.state.user))
-                }          
+                }
+
+                if (lastWPM >= this.state.quoteWPM) {
+                    console.log('calling')
+                    this.setState({
+                        quoteWPM : highestWPM,
+                        quoteAcc : highestAcc
+                    }, () => this.sendQuoteScores())
+                }
+                
+                
             }
 
         }
@@ -400,10 +422,24 @@ export default class TypingTest extends Component {
     }
 
     sendHighscores(user) {
+        console.log(user)
         axios.post(this.state.apiUrl + '/user/updateHS', user , { headers : {'auth-token' : this.state.token}})
         .then(res =>
             console.log(res.data)    
-        )
+        ) .catch(err => err)
+    }
+
+    sendQuoteScores() {
+        const scores = {
+            quoteWPM : this.state.quoteWPM,
+            quoteAcc : this.state.quoteAcc,
+            _id : this.state.quoteID
+        }
+
+        axios.post(this.state.apiUrl + '/quotes/updateHS', scores, {headers : {'auth-token' : this.state.token}})
+        .then(res => 
+            console.log(res.data)
+        ) .catch(err => err)
     }
 
 
@@ -420,6 +456,8 @@ export default class TypingTest extends Component {
         //netWPM = ((this.state.typed_chars.length/5) / (this.state.seconds/60)) - (this.state.error_count/(this.state.seconds/60))
         return netWPM
     }
+
+
 
     // function to render button tooltips
     renderTooltip(props) {
@@ -468,6 +506,8 @@ export default class TypingTest extends Component {
                                     <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
                                     <span className="quote-start">{this.state.quote_start.slice(1)}</span>
                                     <span className="quote-right">{this.state.quote_right}</span>
+                                    <hr/>
+                                    <span>Best Score: {this.state.quoteWPM}WPM {this.state.quoteAcc}% Accuracy</span>
                                 </Alert>    
                             </Col>
                             <Col sm={4}>

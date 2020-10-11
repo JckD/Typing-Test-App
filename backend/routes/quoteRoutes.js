@@ -102,9 +102,26 @@ QuoteRoutes.post('/update', verify,  async (req, res) => {
                             }
                         }
     );
-
-    
 });
+
+QuoteRoutes.post('/updateHS', verify, async(req, res) => {
+    const {
+        quoteWPM,
+        quoteAcc,
+        _id
+    } = req.body
+    console.log(req.body)
+    Quote.findByIdAndUpdate(_id, 
+        { highWPMScore : quoteWPM, 
+          highAccScore : quoteAcc}, 
+        function(err, result) {
+        if (err) {
+            res.send(err)
+        } else {
+            res.send(result)
+        }
+    })
+})
 
 // Route that adds a quote to the database with the body of the request
 // containing the data for the quote 
