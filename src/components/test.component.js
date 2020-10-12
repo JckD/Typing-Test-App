@@ -144,6 +144,7 @@ export default class TypingTest extends Component {
             })
             .catch(function (err) {
                 console.log(err);
+                
             })
 
         //if there is a use logged in get their account info
