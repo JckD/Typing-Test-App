@@ -137,7 +137,7 @@ export default class TypingTest extends Component {
                     quote_start : response.data.quoteBody,
                     quote_author : response.data.quoteAuthor,
                     quote_score : response.data.quoteScore,
-                    quotWPM : response.data.highWPMScore,
+                    quoteWPM : response.data.highWPMScore,
                     quoteAcc : response.data.highAccScore,
                     quoteID : response.data._id
                 }))
@@ -391,7 +391,7 @@ export default class TypingTest extends Component {
 
             highestWPM = latestWPM;
             highestAcc = latestAccuracy
-            if (this.state.token != '') {
+            if (this.state.token !== '') {
 
                 console.log(highestWPM)
                 console.log(highestAcc)
