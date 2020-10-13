@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
 import axios from 'axios';
 import Card from './Card'
+import Spinner from 'react-bootstrap/Spinner'
 
 
 const TestInput = styled.input.attrs(props => ({
@@ -40,6 +41,7 @@ export default class TypingTest extends Component {
         this.renderTooltip = this.renderTooltip.bind(this);
         this.newTest = this.newTest.bind(this);
         this.sendHighscores = this.sendHighscores.bind(this);
+        this.renderSpinner = this.renderSpinner.bind(this);
 
 
         this.state = {
@@ -492,6 +494,14 @@ export default class TypingTest extends Component {
         )     
     }
 
+    renderSpinner() {
+        if (!this.state.quote_Title) {
+            return <Spinner animation="border" />
+        } else {
+            return <></>
+        }
+    }
+
     render() {
         return (
             <div className="container">
@@ -501,7 +511,8 @@ export default class TypingTest extends Component {
                         <Row>
                             <Col sm={8}>
                                 <h4>{this.state.quote_Title} - {this.state.quote_author}</h4>
-                                <Alert variant="secondary">       
+                                <Alert variant="secondary">   
+                                    <span>{this.renderSpinner()}</span>
                                     <span className="quote-left">{this.state.quote_left}</span>
                                     <span className="quote-error">{this.state.err_arr}</span>
                                     <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
