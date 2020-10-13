@@ -3,6 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert"
 import Card from "./Card";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
@@ -97,7 +98,7 @@ export default class CreateQuote extends Component {
             axios.post(APIURL + '/user/addQuote', reqObj, {headers : {'auth-token' : token}})
 
             this.props.history.push({
-                pathname : '/' + res.data,
+                pathname : '/profile' 
                 
             })
         }).catch (err => err)
@@ -209,75 +210,77 @@ export default class CreateQuote extends Component {
             <div className="container">
                <Card>
                     <Row>  
-                        <Col sm={7}>
-                            <Form>
-                                <Form.Group >
-                                    <h4>Create Quote</h4>
-                                    <Form.Label>Quote Title: </Form.Label>
-                                    <Form.Control 
-                                        value={this.state.quoteTitle}
-                                        id = "quoteTitle"
-                                        onChange = {this.onChangeQuoteTitle}
-                                        name ="quoteTitle"
-                                        
-                                    />
+                        <Col>
+                            
+                        <h4>Create Quote</h4>
+                        <br />
+                            <Alert variant="secondary">
+                                <Form>
                                     
-                                    <br />
-                                    
-                                    <Form.Label>Quote: </Form.Label>
+                                    <Alert.Heading>
+                                            <Row>
+                                                <Col m="auto">
+                                                    <Form.Control
+                                                        value={this.state.quoteTitle}
+                                                        type='text'
+                                                        size='lg'
+                                                        onChange={this.onChangeQuoteTitle}
+                                                        name = 'quoteTitle'
+                                                        placeholder = "Quote Title"
+                                                    />
+                                                    
+                                                </Col>
+                                                <Col xs="auto"> -</Col>
+                                                <Col xs="auto">
+
+                                                    <Form.Control
+                                                            value={this.state.quoteAuthor}
+                                                            type='text'
+                                                            // style={{width : String(this.state.quoteAuthor.length)}}
+                                                            size='lg'
+                                                            onChange={this.onChangeQuoteAuthor}
+                                                            name = 'quoteAuthor'
+                                                            placeholder = 'Quote Author'
+                                                    />
+                                                    
+                                                </Col>
+                                            </Row>
+                                    </Alert.Heading>
+                                    <Form.Text className="text-muted" style={{ float : "left"}}>
+                                        Quote titles must be shorter than 40 characters.
+                                    </Form.Text>
+                                    <Form.Text className="text-muted" style={{float : "right"}}>
+                                        Add the original Author of the Quote.
+                                    </Form.Text>
+
                                     <Form.Control
-                                        
-                                       value={this.state.quoteBody}
+                                        value={this.state.quoteBody}
                                         id = "quoteBody"
-                                        onChange = {this.onChangeQuoteBody}
                                         name = "quoteBody"
                                         as="textarea" rows = "4"
+                                        onChange={this.onChangeQuoteBody}
+                                        placeholder = 'Main Body of Quote'
                                     />
-
-                                    <Form.Label>Quote Author: </Form.Label>
-                                    <Form.Control
-                                        
-                                        value={this.state.quoteAuthor}
-                                        id = "quoteAuthor"
-                                        onChange = {this.onChangeQuoteAuthor}
-                                        name = "quoteAuthor"
-                                        
-                                    />   
-                                </Form.Group>
-
-                                <Button type="submit" variant="info" onClick={this.addQuote} disabled={!this.state.formValidAndUser}>
-                                    Create Quote
-                                </Button>
-                            </Form>
-                        </Col> 
-                        <Col sm = {4}>
-                            {/* This is afwul i Know */}
-                            <br />
-                            <br />
-                            <br />
-                            <Form.Text className="text-muted">
-                                Quotes require a title and must be shorter than 40 characters.
+                                    <Form.Text className="text-muted">
+                                    Main text of the Quote must be between 200 and 350 characters.
+                                    </Form.Text>
+                                    <Form.Text className="text-muted">
+                                All Quotes will be approved by an admin before they can be used for testing. 
                             </Form.Text>
-                            <br />
-                            <br />
+
+                                </Form>
+                                
+                            </Alert>
                             
-                            <Form.Text className="text-muted">
-                                Main text of the Quote must be between 200 and 350 characters.
-                            </Form.Text>
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <Form.Text className="text-muted">
-                                Add the original Author of the Quote.
-                            </Form.Text>
-
-                            <br />
+                            
+                            <Button type="submit" variant="info" onClick={this.addQuote} disabled={!this.state.formValidAndUser}>
+                                    Create Quote
+                            </Button>
                             <Form.Text className="text-muted">
                                 You must be logged in to add a Quote.
                             </Form.Text>
-                        </Col>
+                   
+                        </Col> 
                     </Row>
                 </Card>
                 <div style={{ height : 800}}></div>

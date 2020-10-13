@@ -209,7 +209,7 @@ export default class EditAccount extends Component {
 
     // check if both entries of passwords match returns true / false
     passwordsMatch() {
-        if (this.state.newPassword == this.state.newConfirmPassowrd) {
+        if (this.state.newPassword === this.state.newConfirmPassowrd) {
             return true
         }
         else {
