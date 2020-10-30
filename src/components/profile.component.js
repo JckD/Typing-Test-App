@@ -57,6 +57,7 @@ export default class Profile extends Component {
         this.editQuote = this.editQuote.bind(this);
         this.deleteQuote = this.deleteQuote.bind(this);
         this.deleteThisQuote = this.deleteThisQuote.bind(this);
+        this.showEditErrors = this.showEditErrors.bind(this);
 
         this.handleDeleteAccountClose = this.handleDeleteAccountClose.bind(this);
         this.handleDeleteQuoteClose = this.handleDeleteQuoteClose.bind(this);
@@ -128,7 +129,7 @@ export default class Profile extends Component {
             }
 
             if (res.data) {
-                console.log(res.data)
+                //console.log(res.data)
                 this.setState({
                     id : res.data._id,
                     username : res.data.userName,
@@ -264,13 +265,13 @@ export default class Profile extends Component {
     saveQuote() {
         let token = localStorage.getItem('beepboop');
         let APIURL = ''
-       console.log(token)
+       //console.log(token)
         const editedQuote = this.state.editQuote;
         console.log(editedQuote)
         console.log(this.state.APIURL)
         axios.post(this.state.APIURL + '/quotes/update', editedQuote, { headers: { 'auth-token' : token}})
         .then(res => {
-            console.log(res.data)
+            //onsole.log(res.data)
             this.setState({
                 editQuoteModal : false
             })
@@ -285,19 +286,19 @@ export default class Profile extends Component {
         let quoteBodyValid = this.state.quoteBodyValid;
         let quoteAuthorValid = this.state.quoteAuthorValid;
 
-        console.log(value)
+        //console.log(value)
         switch(fieldName) {
             
             case 'quoteTitle':
                 
                 quoteTitleValid = value.length >= 0 && value.length < 40;
-                fieldValidateErrors.quoteTitle = quoteTitleValid ? '' : ' must not be empty or greater than 20 characters.';
+                fieldValidateErrors.quoteTitle = quoteTitleValid ? '' : 'Quote Title must not be empty or greater than 20 characters.';
                 break;
             
             case 'quoteBody':
                 
                 quoteBodyValid = value.length >= 200  && value.length <= 350 ;
-                fieldValidateErrors.quoteBody = quoteBodyValid ? '' : ' is too short';
+                fieldValidateErrors.quoteBody = quoteBodyValid ? '' : 'Quote Body is too short';
                 
                 break;
 
@@ -310,9 +311,9 @@ export default class Profile extends Component {
                     }), () => {fieldValidateErrors.quoteAuthor = quoteAuthorValid ? '' : ''})
                     break;
                 }
-                else if (value.length <= 10) {
+                else if (value.length <= 20) {
                     quoteAuthorValid = true
-                    fieldValidateErrors.quoteAuthor = quoteAuthorValid ? '' : ' is short long';
+                    fieldValidateErrors.quoteAuthor = quoteAuthorValid ? '' : 'Quote Author is short long';
                     break;
                 }
                 else {
@@ -328,21 +329,33 @@ export default class Profile extends Component {
             formErrors : fieldValidateErrors, 
             quoteTitleValid : quoteTitleValid, 
             quoteBodyValid : quoteBodyValid,
-            quoteAuthorValid : quoteAuthorValid
+            quoteAuthorValid : quoteAuthorValid,
         },    
             this.validateForm);
         
     }
 
      // ValidaateForm function sets the current state of the fields of the form.
-     validateForm() {
-        console.log(this.state.quoteTitleValid, this.state.quoteBodyValid, this.state.quoteAuthorValid)
+    validateForm() {
+        console.log(this.state.quoteTitleValid, this.state.quoteAuthorValid, this.state.quoteBodyValid )
+
         this.setState({
             formValid:  this.state.quoteTitleValid &&
                         this.state.quoteBodyValid && 
                         this.state.quoteAuthorValid,
                     });
 
+    }
+
+    showEditErrors() {
+        if (!this.state.formValid) {
+            console.log('showing')
+            console.log(this.state.formValid)
+            return <Alert variant="danger">{this.state.formErrors.quoteTitle} 
+                                           {this.state.formErrors.quoteAuthor} 
+                                           {this.state.formErrors.quoteBody}
+                    </Alert>
+        } 
     }
 
 
@@ -529,6 +542,7 @@ export default class Profile extends Component {
                                 />
                             </Form>
                         </Alert>
+                        {this.showEditErrors()}
                     </div>
                     </Modal.Body>
                     <Modal.Footer>

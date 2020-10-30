@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert"
 import Card from "./Card";
 import Form from "react-bootstrap/Form";
+import FormControl from 'react-bootstrap/FormControl'
 import axios from "axios";
 
 export default class CreateQuote extends Component {
@@ -190,9 +191,11 @@ export default class CreateQuote extends Component {
         
     }
 
-     // ValidaateForm function sets the current state of the fields of the form.
-     validateForm() {
-         
+    // ValidaateForm function sets the current state of the fields of the form.
+    validateForm() {
+         console.log('quotetitle ' + this.state.quoteTitleValid);
+         console.log('quoteauth ' + this.state.quoteAuthorValid);
+         console.log('quoteboy ' + this.state.quoteBodyValid)
         this.setState({
             formValid:  this.state.quoteTitleValid &&
                         this.state.quoteBodyValid && 
@@ -227,6 +230,8 @@ export default class CreateQuote extends Component {
                                                         onChange={this.onChangeQuoteTitle}
                                                         name = 'quoteTitle'
                                                         placeholder = "Quote Title"
+                                                        isValid={!this.state.quoteTitleValid}
+                                                        isInvalid={!this.state.quoteTitleValid}
                                                     />
                                                     
                                                 </Col>
@@ -241,7 +246,10 @@ export default class CreateQuote extends Component {
                                                             onChange={this.onChangeQuoteAuthor}
                                                             name = 'quoteAuthor'
                                                             placeholder = 'Quote Author'
+                                                            isValid={!this.state.quoteAuthorValid}
+                                                            isInvalid={!this.state.quoteAuthorValid}
                                                     />
+
                                                     
                                                 </Col>
                                             </Row>
@@ -260,6 +268,8 @@ export default class CreateQuote extends Component {
                                         as="textarea" rows = "4"
                                         onChange={this.onChangeQuoteBody}
                                         placeholder = 'Main Body of Quote'
+                                        isValid={!this.state.quoteBodyValid}
+                                        isInvalid={!this.state.quoteBodyValid}
                                     />
                                     <Form.Text className="text-muted">
                                     Main text of the Quote must be between 200 and 350 characters.

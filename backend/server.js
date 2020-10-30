@@ -43,5 +43,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(PORT, function() {
-    console.log('Sever is running on Port: ' + __dirname);
+    console.log('Sever is running on Port: ' + PORT);
 })

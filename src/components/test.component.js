@@ -307,7 +307,10 @@ export default class TypingTest extends Component {
                     char_array : Array.from(response.data.quoteBody),
                     current_quote_char : Array.from(response.data.quoteBody)[0],
                     quote_start : response.data.quoteBody,
-                    quote_author : response.data.quoteAuthor
+                    quote_author : response.data.quoteAuthor,
+                    quoteWPM : response.data.highWPMScore,
+                    quoteAcc : response.data.highAccScore,
+                    quoteID : response.data._id
                 }))
             })
             .catch(function (err) {
@@ -409,7 +412,9 @@ export default class TypingTest extends Component {
                     }), () => this.sendHighscores(this.state.user))
                 }
 
-                if (lastWPM >= this.state.quoteWPM) {
+                console.log('latest ' + latestWPM);
+                console.log('last ' + lastWPM);
+                if (latestWPM >= this.state.quoteWPM) {
                     console.log('calling')
                     this.setState({
                         quoteWPM : highestWPM,
@@ -459,8 +464,6 @@ export default class TypingTest extends Component {
         //netWPM = ((this.state.typed_chars.length/5) / (this.state.seconds/60)) - (this.state.error_count/(this.state.seconds/60))
         return netWPM
     }
-
-
 
     // function to render button tooltips
     renderTooltip(props) {

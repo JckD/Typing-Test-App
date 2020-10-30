@@ -22,6 +22,8 @@ export default class EditAccount extends Component {
         this.editAccount = this.editAccount.bind(this);
         this.checkPassword = this.checkPassword.bind(this);
         this.passwordsMatch = this.passwordsMatch.bind(this);
+        this.validateField = this.validateField.bind(this);
+        this.validateForm = this.validateForm.bind(this);
 
         this.state ={
 
@@ -49,8 +51,16 @@ export default class EditAccount extends Component {
             onChangeCurrentPassword : '',
             Modal : true,
 
-           token : ''
+            token : '',
+            authValid : false,
+           
+            emailValid : false,
+            passwordValid : false,
+            usernameValid : false,
+            formValid : false,
+            formErrors : { email : '', password : '' , username : ''}
         }
+
     }
 
     componentDidMount() {
@@ -126,7 +136,7 @@ export default class EditAccount extends Component {
                 password : this.state.newInput.password,
                 confirmPassword : this.state.newInput.confirmPassword,
             }},
-           // () => {this.validateField(fieldName, this.state.newUserName)} 
+            () => {this.validateField(fieldName, this.state.newInput.userName)} 
         );
     }
 
@@ -141,7 +151,7 @@ export default class EditAccount extends Component {
                password : this.state.newInput.password,
                confirmPassword : this.state.newInput.confirmPassword,
             }},
-           // () => {this.validateField(fieldName, this.state.newEmail)}
+            () => {this.validateField(fieldName, this.state.newInput.email)}
         );  
     }
 
@@ -154,7 +164,7 @@ export default class EditAccount extends Component {
                 userName : this.state.newInput.userName,
                 email : this.state.newInput.email,
             }},
-           // () => {this.validateField(fieldName, this.state.newPassword)}
+            () => {this.validateField(fieldName, this.state.newInput.password)}
         );
     }
 
@@ -176,6 +186,53 @@ export default class EditAccount extends Component {
         this.setState({
             onChangeCurrentPassword : e.target.value
         })
+    }
+
+    //  Validate Field function takes name of field that is being validated and the value in that field
+    //  Check if Email is valid format using regex
+    //  Check if Password is longer than 6 characters
+    //  Check if Username is longer than 4 chacracters
+    validateField(fieldName, value) {
+        console.log(value)
+        let fieldValidateErrors = this.state.formErrors;
+        let emailValid = this.state.emailValid;
+        let passwordValid = this.state.passwordValid;
+        let usernameValid = this.state.usernameValid;
+
+      
+
+        switch(fieldName) {
+            case 'Email' :
+                emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+                fieldValidateErrors.email = emailValid ? '' : ' is invalid';
+                break;
+            
+            case 'Password':
+                passwordValid = value.length >= 6;
+                fieldValidateErrors.password = passwordValid ? '' : ' is too short';
+                break;
+            
+            case 'Username':
+                usernameValid = value.length >=4;
+                fieldValidateErrors.username = usernameValid ? '' : ' is too short';
+                break;
+
+            default:
+                break;
+
+        }
+
+        this.setState({formErrors : fieldValidateErrors, 
+                        usernameValid : usernameValid,
+                        emailValid : emailValid, 
+                        passwordValid : passwordValid
+                    },    
+                        this.validateForm);
+    }
+
+    // ValidaateForm function sets the current state of the fields of the form.
+    validateForm() {
+        this.setState({formValid:this.state.usernameValid && this.state.emailValid && this.state.passwordValid});
     }
 
     checkPassword (){
@@ -202,7 +259,14 @@ export default class EditAccount extends Component {
                     Modal : false
                 })
             }
-        }).catch (err => err) 
+            else {
+                console.log('error')
+            }
+        }).catch (err => {
+            this.setState({
+                authValid : true
+            })
+        }) 
     }
 
 
@@ -240,6 +304,7 @@ export default class EditAccount extends Component {
                                 id = "inputUserName"
                                 onChange = {this.onChangeCurrentPassword}
                                 name = "Username"
+                                isInvalid = {this.state.authValid}
                            />
                         </Form>
                     </Modal.Body>
@@ -267,6 +332,8 @@ export default class EditAccount extends Component {
                                         onChange = {this.onChangeAccountUsername}
                                         name = "Username"
                                         placeholder = {this.state.oldUser.userName}
+                                        isValid = {this.state.usernameValid}
+
                                     /><br />
 
                                     <Form.Label>Email: </Form.Label>
@@ -276,6 +343,7 @@ export default class EditAccount extends Component {
                                         onChange = {this.onChangeAccountEmail}
                                         name = "Email"
                                         placeholder = {this.state.oldUser.email}
+                                        isValid = {this.state.emailValid}
                                     /><br />
                                     
                                     <Form.Label>Password: </Form.Label>
@@ -285,6 +353,7 @@ export default class EditAccount extends Component {
                                         id = "inputPassword"
                                         onChange = {this.onChangeAccountPassword}
                                         name = "Password"
+                                        isValid = {this.state.passwordValid}
                                     />
                                     <Form.Label>Confirm Password: </Form.Label>
                                     <Form.Control
