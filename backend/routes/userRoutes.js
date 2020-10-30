@@ -173,7 +173,6 @@ UserRoutes.post('/update', verify, async(req, res) => {
 
 
 UserRoutes.post('/updateHS', verify , async(req, res) => {
-    console.log(req.body)
     await User.findByIdAndUpdate(
         { _id : req.body._id}, 
         { personalBestWPM : req.body.personalBestWPM,
@@ -187,9 +186,21 @@ UserRoutes.post('/updateHS', verify , async(req, res) => {
         }
     })
 })
+           // 
+// Push to users latest scores arrays
+UserRoutes.post('/updateScores', verify , async(req, res) => {
+    try {
+        await User.findOneAndUpdate(
+            { _id : req.body._id},
+            { $push: { 'latestWPMScores' : [req.body.wpm] ,'latestAccScores' : [req.body.acc] }},
+        )
+    } catch (e) {
+        console.log(e)
+    }
+    
+})
 
 UserRoutes.post('/addQuote', verify , async(req, res) => {
-    //console.log(req.body)
     try {
         await User.updateOne(
             { _id: req.body.userId},

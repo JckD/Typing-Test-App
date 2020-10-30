@@ -27,7 +27,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "react-sound": "^1.2.0",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "zingchart-react": "^3.1.0"
   },
   "homepage": "http://JckD.github.io/Typing-Test-App",
   "scripts": {

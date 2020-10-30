@@ -11,7 +11,8 @@ import Form from 'react-bootstrap/Form';
 import Badge from 'react-bootstrap/Badge';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-
+import 'zingchart/es6';
+import ZingChart from 'zingchart-react';
 
 // Quote component
 const Quote = props => (
@@ -107,6 +108,14 @@ export default class Profile extends Component {
 
             deletingQuote : {
                 quoteTitle : '',
+            },
+
+            chartConfig : {
+                theme : 'light',
+                type : 'line',
+                series : [{
+                    values: []
+                }]
             }
         }
     }
@@ -142,8 +151,22 @@ export default class Profile extends Component {
                     signUpDate : res.data.signUpDate.slice(0, 15),
                     personalBestWPM : res.data.personalBestWPM,
                     personalBestAcc : res.data.personalBestAcc,
-                    quoteIds : res.data.quotesAdded
-                })
+                    quoteIds : res.data.quotesAdded,
+                    chartConfig : {
+                        theme : 'dark',
+                        type : 'line',
+                        title : {
+                            test : 'Words Per Minute',
+                        },
+                        // labels : [{
+                        //         text : 'Typing Tests'
+                            
+                        // }],
+                        series: [{
+                            values : res.data.latestWPMScores
+                        }]
+                    }
+                }, () => console.log(this.state.chartConfig))
                 this.getQuotes();
             }
         })
@@ -617,6 +640,8 @@ export default class Profile extends Component {
                                 </Tab>
                                 <Tab eventKey={2} title='Your Scores'> 
                                     <h4>Your Scores</h4>
+                                    <ZingChart data={this.state.chartConfig} />
+                              
                                 </Tab>
                                 
                             </Tabs>
@@ -625,7 +650,7 @@ export default class Profile extends Component {
 
                     </Row>
                 </Card>
-                <div style={{ height : 800}}></div>
+                <div style={{ height : 800 }}></div>
             </div>
         )
     }
