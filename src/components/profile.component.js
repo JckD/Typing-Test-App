@@ -9,7 +9,9 @@ import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Form from 'react-bootstrap/Form';
 import Badge from 'react-bootstrap/Badge';
-import AutosizeInput from 'react-input-autosize'
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+
 
 // Quote component
 const Quote = props => (
@@ -70,6 +72,8 @@ export default class Profile extends Component {
         this.onChangeQuoteAuthor = this.onChangeQuoteAuthor.bind(this);
         this.onChangeQuoteBody = this.onChangeQuoteBody.bind(this);
 
+        this.handleSelect = this.handleSelect.bind(this);
+
         this.state = {
 
             id: '',
@@ -87,6 +91,7 @@ export default class Profile extends Component {
             deleteQuoteModal : false,
             editQuoteModal : false,
 
+            activeTab : props.activeTab || 1,
 
             quoteTitleValid : false,
             quoteBodyValid : false,
@@ -349,8 +354,8 @@ export default class Profile extends Component {
 
     showEditErrors() {
         if (!this.state.formValid) {
-            console.log('showing')
-            console.log(this.state.formValid)
+            //console.log('showing')
+            //console.log(this.state.formValid)
             return <Alert variant="danger">{this.state.formErrors.quoteTitle} 
                                            {this.state.formErrors.quoteAuthor} 
                                            {this.state.formErrors.quoteBody}
@@ -441,6 +446,14 @@ export default class Profile extends Component {
         }
     }
     //#endregion
+
+    handleSelect(selectedTab) {
+        // The active tab must be set into the state so that
+        // the Tabs component knows about the change and re-renders.
+        this.setState({
+          activeTab: selectedTab
+        });
+      }
 
 
     render() {
@@ -587,7 +600,7 @@ export default class Profile extends Component {
                             </Button>
                             <Button variant="outline-danger" onClick={this.handleDeleteQuoteClose}>
                                 Delete Account
-                            </Button>
+                            </Button>                   
 
                             {this.approveButton()}
                         </Col>
@@ -595,11 +608,19 @@ export default class Profile extends Component {
                     <br/>
                     <Row>
                         <Col>
-                            <h4>Your Quotes:</h4>
-                            <div>
-                                {this.quotesComponentsList()}
-
-                            </div>
+                            <Tabs className="tabClass" activeKey={this.state.activeTab} onSelect={this.handleSelect}>
+                                <Tab eventKey={1} title='Your Quotes' >
+                                    <h4>Your Quotes:</h4>
+                                    <div>
+                                        {this.quotesComponentsList()}
+                                    </div>
+                                </Tab>
+                                <Tab eventKey={2} title='Your Scores'> 
+                                    <h4>Your Scores</h4>
+                                </Tab>
+                                
+                            </Tabs>
+                                
                         </Col>
 
                     </Row>
