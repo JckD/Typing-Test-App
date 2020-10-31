@@ -75,6 +75,7 @@ export default class Profile extends Component {
 
         this.handleSelect = this.handleSelect.bind(this);
 
+
         this.state = {
 
             id: '',
@@ -110,8 +111,16 @@ export default class Profile extends Component {
                 quoteTitle : '',
             },
 
-            chartConfig : {
-                theme : 'light',
+            WPMChartConfig : {
+                theme : 'dark',
+                type : 'line',
+                series : [{
+                    values: []
+                }]
+            },
+
+            AccChartConfig : {
+                theme : 'dark',
                 type : 'line',
                 series : [{
                     values: []
@@ -142,6 +151,17 @@ export default class Profile extends Component {
                 localStorage.setItem("nimdAis", res.data.isAdmin)
             }
 
+            let avgWPM = [];
+            //fill an array the same length as the user's with the avg WPM to compare against the user
+            for(let i = 0; i < res.data.latestWPMScores.length; i++) {
+                avgWPM[i] = 40
+            }
+
+            let avgAcc = [];
+             //fill an array the same length as the user's with the avg ACC to compare against the user
+             for(let j = 0; j < res.data.latestAccScores.length; j++) {
+                avgAcc[j] = 92;
+            }
             if (res.data) {
                 //console.log(res.data)
                 this.setState({
@@ -152,20 +172,62 @@ export default class Profile extends Component {
                     personalBestWPM : res.data.personalBestWPM,
                     personalBestAcc : res.data.personalBestAcc,
                     quoteIds : res.data.quotesAdded,
-                    chartConfig : {
+                    WPMChartConfig : {
                         theme : 'dark',
                         type : 'line',
                         title : {
-                            test : 'Words Per Minute',
+                            text : 'Words Per Minute',
                         },
-                        // labels : [{
-                        //         text : 'Typing Tests'
-                            
-                        // }],
+                        height : '70%',
+                        legend : {},
+                        scaleX : {
+                            label : {
+                                text : 'Typing Tests'
+                            }
+                        },
+                        scaleY : {
+                            label : {
+                                text : 'WPM'
+                            }
+                        },
                         series: [{
-                            values : res.data.latestWPMScores
-                        }]
+                            values : res.data.latestWPMScores,
+                            text : 'Your WPM'
+                        },{
+                            values : avgWPM,
+                            text : 'Avg WPM'
+                        }
+                        ]
+                    },
+
+                    AccChartConfig : {
+                        theme : 'dark',
+                        type : 'line',
+                        title : {
+                            text : 'Typing Accuracy % ',
+                        },
+                        height : '70%',
+                        legend : {},
+                        scaleX : {
+                            label : {
+                                text : 'Typing Tests'
+                            }
+                        },
+                        scaleY : {
+                            label : {
+                                text : 'Accuracy % '
+                            }
+                        },
+                        series: [{
+                            values : res.data.latestAccScores,
+                            text : 'Your Accuracy %'
+                        },{
+                            values : avgAcc,
+                            text : 'Avg Accuracy %'
+                        }
+                        ]
                     }
+
                 }, () => console.log(this.state.chartConfig))
                 this.getQuotes();
             }
@@ -190,6 +252,8 @@ export default class Profile extends Component {
                 console.log(err);
             });
     }
+
+   
 
     //#region Quotes list
     getQuotes() {
@@ -633,15 +697,16 @@ export default class Profile extends Component {
                         <Col>
                             <Tabs className="tabClass" activeKey={this.state.activeTab} onSelect={this.handleSelect}>
                                 <Tab eventKey={1} title='Your Quotes' >
-                                    <h4>Your Quotes:</h4>
+                                    <br />
                                     <div>
                                         {this.quotesComponentsList()}
                                     </div>
                                 </Tab>
                                 <Tab eventKey={2} title='Your Scores'> 
-                                    <h4>Your Scores</h4>
-                                    <ZingChart data={this.state.chartConfig} />
-                              
+                                    <br />
+                                    <ZingChart data={this.state.WPMChartConfig} />
+                                    
+                                    <ZingChart data={this.state.AccChartConfig} />
                                 </Tab>
                                 
                             </Tabs>
