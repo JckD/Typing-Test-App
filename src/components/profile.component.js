@@ -111,21 +111,7 @@ export default class Profile extends Component {
                 quoteTitle : '',
             },
 
-            WPMChartConfig : {
-                theme : 'dark',
-                type : 'line',
-                series : [{
-                    values: []
-                }]
-            },
-
-            AccChartConfig : {
-                theme : 'dark',
-                type : 'line',
-                series : [{
-                    values: []
-                }]
-            }
+            
         }
     }
 
@@ -162,6 +148,15 @@ export default class Profile extends Component {
              for(let j = 0; j < res.data.latestAccScores.length; j++) {
                 avgAcc[j] = 92;
             }
+
+            let theme = '';
+            console.log(localStorage.getItem("isDarkMode"))
+            if (localStorage.getItem("isDarkMode")) {
+                theme = 'dark';
+            } else {
+                theme = 'light';
+            }
+            console.log(theme)
             if (res.data) {
                 //console.log(res.data)
                 this.setState({
@@ -173,12 +168,12 @@ export default class Profile extends Component {
                     personalBestAcc : res.data.personalBestAcc,
                     quoteIds : res.data.quotesAdded,
                     WPMChartConfig : {
-                        theme : 'dark',
+                        theme : theme,
                         type : 'line',
                         title : {
                             text : 'Words Per Minute',
                         },
-                        height : '70%',
+                        height : '60%',
                         legend : {},
                         scaleX : {
                             label : {
@@ -201,7 +196,7 @@ export default class Profile extends Component {
                     },
 
                     AccChartConfig : {
-                        theme : 'dark',
+                        theme : theme,
                         type : 'line',
                         title : {
                             text : 'Typing Accuracy % ',
