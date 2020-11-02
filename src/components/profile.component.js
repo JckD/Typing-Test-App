@@ -9,7 +9,10 @@ import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Form from 'react-bootstrap/Form';
 import Badge from 'react-bootstrap/Badge';
-import AutosizeInput from 'react-input-autosize'
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+import 'zingchart/es6';
+import ZingChart from 'zingchart-react';
 
 // Quote component
 const Quote = props => (
@@ -57,6 +60,7 @@ export default class Profile extends Component {
         this.editQuote = this.editQuote.bind(this);
         this.deleteQuote = this.deleteQuote.bind(this);
         this.deleteThisQuote = this.deleteThisQuote.bind(this);
+        this.showEditErrors = this.showEditErrors.bind(this);
 
         this.handleDeleteAccountClose = this.handleDeleteAccountClose.bind(this);
         this.handleDeleteQuoteClose = this.handleDeleteQuoteClose.bind(this);
@@ -68,6 +72,9 @@ export default class Profile extends Component {
         this.onChangeQuoteTitle = this.onChangeQuoteTitle.bind(this);
         this.onChangeQuoteAuthor = this.onChangeQuoteAuthor.bind(this);
         this.onChangeQuoteBody = this.onChangeQuoteBody.bind(this);
+
+        this.handleSelect = this.handleSelect.bind(this);
+
 
         this.state = {
 
@@ -86,6 +93,7 @@ export default class Profile extends Component {
             deleteQuoteModal : false,
             editQuoteModal : false,
 
+            activeTab : props.activeTab || 1,
 
             quoteTitleValid : false,
             quoteBodyValid : false,
@@ -101,7 +109,9 @@ export default class Profile extends Component {
 
             deletingQuote : {
                 quoteTitle : '',
-            }
+            },
+
+            
         }
     }
 
@@ -127,8 +137,28 @@ export default class Profile extends Component {
                 localStorage.setItem("nimdAis", res.data.isAdmin)
             }
 
+            let avgWPM = [];
+            //fill an array the same length as the user's with the avg WPM to compare against the user
+            for(let i = 0; i < res.data.latestWPMScores.length; i++) {
+                avgWPM[i] = 40
+            }
+
+            let avgAcc = [];
+             //fill an array the same length as the user's with the avg ACC to compare against the user
+             for(let j = 0; j < res.data.latestAccScores.length; j++) {
+                avgAcc[j] = 92;
+            }
+
+            let theme = '';
+            console.log(localStorage.getItem("isDarkMode"))
+            if (localStorage.getItem("isDarkMode")) {
+                theme = 'dark';
+            } else {
+                theme = 'light';
+            }
+            console.log(theme)
             if (res.data) {
-                console.log(res.data)
+                //console.log(res.data)
                 this.setState({
                     id : res.data._id,
                     username : res.data.userName,
@@ -136,8 +166,64 @@ export default class Profile extends Component {
                     signUpDate : res.data.signUpDate.slice(0, 15),
                     personalBestWPM : res.data.personalBestWPM,
                     personalBestAcc : res.data.personalBestAcc,
-                    quoteIds : res.data.quotesAdded
-                })
+                    quoteIds : res.data.quotesAdded,
+                    WPMChartConfig : {
+                        theme : theme,
+                        type : 'line',
+                        title : {
+                            text : 'Words Per Minute',
+                        },
+                        height : '60%',
+                        legend : {},
+                        scaleX : {
+                            label : {
+                                text : 'Typing Tests'
+                            }
+                        },
+                        scaleY : {
+                            label : {
+                                text : 'WPM'
+                            }
+                        },
+                        series: [{
+                            values : res.data.latestWPMScores,
+                            text : 'Your WPM'
+                        },{
+                            values : avgWPM,
+                            text : 'Avg WPM'
+                        }
+                        ]
+                    },
+
+                    AccChartConfig : {
+                        theme : theme,
+                        type : 'line',
+                        title : {
+                            text : 'Typing Accuracy % ',
+                        },
+                        height : '70%',
+                        legend : {},
+                        scaleX : {
+                            label : {
+                                text : 'Typing Tests'
+                            }
+                        },
+                        scaleY : {
+                            label : {
+                                text : 'Accuracy % '
+                            }
+                        },
+                        series: [{
+                            values : res.data.latestAccScores,
+                            text : 'Your Accuracy %'
+                        },{
+                            values : avgAcc,
+                            text : 'Avg Accuracy %'
+                        }
+                        ]
+                    }
+
+                }, () => console.log(this.state.chartConfig))
                 this.getQuotes();
             }
         })
@@ -161,6 +247,8 @@ export default class Profile extends Component {
                 console.log(err);
             });
     }
+
+   
 
     //#region Quotes list
     getQuotes() {
@@ -264,13 +352,13 @@ export default class Profile extends Component {
     saveQuote() {
         let token = localStorage.getItem('beepboop');
         let APIURL = ''
-       console.log(token)
+       //console.log(token)
         const editedQuote = this.state.editQuote;
         console.log(editedQuote)
         console.log(this.state.APIURL)
         axios.post(this.state.APIURL + '/quotes/update', editedQuote, { headers: { 'auth-token' : token}})
         .then(res => {
-            console.log(res.data)
+            //onsole.log(res.data)
             this.setState({
                 editQuoteModal : false
             })
@@ -285,19 +373,19 @@ export default class Profile extends Component {
         let quoteBodyValid = this.state.quoteBodyValid;
         let quoteAuthorValid = this.state.quoteAuthorValid;
 
-        console.log(value)
+        //console.log(value)
         switch(fieldName) {
             
             case 'quoteTitle':
                 
                 quoteTitleValid = value.length >= 0 && value.length < 40;
-                fieldValidateErrors.quoteTitle = quoteTitleValid ? '' : ' must not be empty or greater than 20 characters.';
+                fieldValidateErrors.quoteTitle = quoteTitleValid ? '' : 'Quote Title must not be empty or greater than 20 characters.';
                 break;
             
             case 'quoteBody':
                 
                 quoteBodyValid = value.length >= 200  && value.length <= 350 ;
-                fieldValidateErrors.quoteBody = quoteBodyValid ? '' : ' is too short';
+                fieldValidateErrors.quoteBody = quoteBodyValid ? '' : 'Quote Body is too short';
                 
                 break;
 
@@ -310,9 +398,9 @@ export default class Profile extends Component {
                     }), () => {fieldValidateErrors.quoteAuthor = quoteAuthorValid ? '' : ''})
                     break;
                 }
-                else if (value.length <= 10) {
+                else if (value.length <= 20) {
                     quoteAuthorValid = true
-                    fieldValidateErrors.quoteAuthor = quoteAuthorValid ? '' : ' is short long';
+                    fieldValidateErrors.quoteAuthor = quoteAuthorValid ? '' : 'Quote Author is short long';
                     break;
                 }
                 else {
@@ -328,21 +416,33 @@ export default class Profile extends Component {
             formErrors : fieldValidateErrors, 
             quoteTitleValid : quoteTitleValid, 
             quoteBodyValid : quoteBodyValid,
-            quoteAuthorValid : quoteAuthorValid
+            quoteAuthorValid : quoteAuthorValid,
         },    
             this.validateForm);
         
     }
 
      // ValidaateForm function sets the current state of the fields of the form.
-     validateForm() {
-        console.log(this.state.quoteTitleValid, this.state.quoteBodyValid, this.state.quoteAuthorValid)
+    validateForm() {
+        console.log(this.state.quoteTitleValid, this.state.quoteAuthorValid, this.state.quoteBodyValid )
+
         this.setState({
             formValid:  this.state.quoteTitleValid &&
                         this.state.quoteBodyValid && 
                         this.state.quoteAuthorValid,
                     });
 
+    }
+
+    showEditErrors() {
+        if (!this.state.formValid) {
+            //console.log('showing')
+            //console.log(this.state.formValid)
+            return <Alert variant="danger">{this.state.formErrors.quoteTitle} 
+                                           {this.state.formErrors.quoteAuthor} 
+                                           {this.state.formErrors.quoteBody}
+                    </Alert>
+        } 
     }
 
 
@@ -428,6 +528,14 @@ export default class Profile extends Component {
         }
     }
     //#endregion
+
+    handleSelect(selectedTab) {
+        // The active tab must be set into the state so that
+        // the Tabs component knows about the change and re-renders.
+        this.setState({
+          activeTab: selectedTab
+        });
+      }
 
 
     render() {
@@ -529,6 +637,7 @@ export default class Profile extends Component {
                                 />
                             </Form>
                         </Alert>
+                        {this.showEditErrors()}
                     </div>
                     </Modal.Body>
                     <Modal.Footer>
@@ -573,7 +682,7 @@ export default class Profile extends Component {
                             </Button>
                             <Button variant="outline-danger" onClick={this.handleDeleteQuoteClose}>
                                 Delete Account
-                            </Button>
+                            </Button>                   
 
                             {this.approveButton()}
                         </Col>
@@ -581,16 +690,27 @@ export default class Profile extends Component {
                     <br/>
                     <Row>
                         <Col>
-                            <h4>Your Quotes:</h4>
-                            <div>
-                                {this.quotesComponentsList()}
-
-                            </div>
+                            <Tabs className="tabClass" activeKey={this.state.activeTab} onSelect={this.handleSelect}>
+                                <Tab eventKey={1} title='Your Quotes' >
+                                    <br />
+                                    <div>
+                                        {this.quotesComponentsList()}
+                                    </div>
+                                </Tab>
+                                <Tab eventKey={2} title='Your Scores'> 
+                                    <br />
+                                    <ZingChart data={this.state.WPMChartConfig} />
+                                    
+                                    <ZingChart data={this.state.AccChartConfig} />
+                                </Tab>
+                                
+                            </Tabs>
+                                
                         </Col>
 
                     </Row>
                 </Card>
-                <div style={{ height : 800}}></div>
+                <div style={{ height : 800 }}></div>
             </div>
         )
     }

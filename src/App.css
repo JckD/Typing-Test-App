@@ -53,8 +53,6 @@
   color: white;
 }
 
-
-
 body {
   margin : 0;
 }
@@ -62,4 +60,15 @@ body {
 .dropDownLink {
   color: #282c34;
   width : 100px;
+}
+
+
+/* Inactive tab */
+.tabClass a:hover {
+  background-color: white;
+}
+
+.tabClass a {
+  background-color: #E2E3E5;
+  color: black;
 }

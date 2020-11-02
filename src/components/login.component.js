@@ -113,7 +113,6 @@ export default class Login extends Component {
         
         axios.post(APIURL + '/user/login' , loginAccount, {withCredentials:true})
         .then(res => {
-            console.log(res.data)
             localStorage.setItem("beepboop", res.data);
             
             this.props.history.push({

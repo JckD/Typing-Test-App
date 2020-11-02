@@ -2,8 +2,16 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders Navbar Link', () => {
+  const { getByText, getAllByText } = render(<App />);
+  const accountLinkElement = getByText(/Account/i);
+  const quotesLinkElement = getByText(/Quotes/i);
+  const createQuoteLinkElement = getByText(/Create Quote/i);
+
+  expect(accountLinkElement).toBeInTheDocument();
+  expect(quotesLinkElement).toBeInTheDocument();
+  expect(createQuoteLinkElement).toBeInTheDocument();
+ 
 });
+
+

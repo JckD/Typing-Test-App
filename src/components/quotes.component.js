@@ -34,6 +34,9 @@ const Quote = props => (
             <Row>
                 <Col sm={8}>
                     <span>Added by: <Alert.Link>{props.quote.quoteUser}</Alert.Link></span>
+                    <span style={{marginLeft : 10}}>Rating : {props.quote.quoteScore}</span>
+                    <span style={{marginLeft : 10}}>High Score : {props.quote.highWPMScore}WPM {props.quote.highAccScore}% Accuracy</span>
+
                 </Col>
                 <Col sm={4}>
                     <div style={{float : 'right'}}>

@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
 import axios from 'axios';
 import Card from './Card'
+import Spinner from 'react-bootstrap/Spinner'
 
 
 const TestInput = styled.input.attrs(props => ({
@@ -40,6 +41,7 @@ export default class TypingTest extends Component {
         this.renderTooltip = this.renderTooltip.bind(this);
         this.newTest = this.newTest.bind(this);
         this.sendHighscores = this.sendHighscores.bind(this);
+        this.renderSpinner = this.renderSpinner.bind(this);
 
 
         this.state = {
@@ -257,7 +259,7 @@ export default class TypingTest extends Component {
     // If it is not the state of the current word is changed, the count is incremented and the user_input is set back to empty
     compare (current_char) {
         if (current_char === this.state.user_input) {
-            console.log("match");
+            //console.log("match");
             if (this.state.count >= this.state.char_array.length -1) {
                 this.setState((state) => ({
                     typed_chars: state.typed_chars + state.user_input
@@ -297,6 +299,12 @@ export default class TypingTest extends Component {
     // then calls resettest to reset other counters and timers
     newTest () {
         // get quote from database and update state
+        this.setState({
+            quote_Title : '',
+            quote_author : '',
+            quote_body : '',
+            char_array : []
+        } )
         axios.get(this.state.apiUrl + '/quotes/random')
             .then(response => {
                 this.setState((state) => ({ 
@@ -305,7 +313,10 @@ export default class TypingTest extends Component {
                     char_array : Array.from(response.data.quoteBody),
                     current_quote_char : Array.from(response.data.quoteBody)[0],
                     quote_start : response.data.quoteBody,
-                    quote_author : response.data.quoteAuthor
+                    quote_author : response.data.quoteAuthor,
+                    quoteWPM : response.data.highWPMScore,
+                    quoteAcc : response.data.highAccScore,
+                    quoteID : response.data._id
                 }))
             })
             .catch(function (err) {
@@ -379,7 +390,7 @@ export default class TypingTest extends Component {
         let highestWPM = 0;
         let highestAcc = 0;
 
-        console.log(lastWPM, this.state.quoteWPM)
+        //console.log(lastWPM, this.state.quoteWPM)
         
 
         if (latestWPM > lastWPM) {
@@ -393,8 +404,7 @@ export default class TypingTest extends Component {
             highestAcc = latestAccuracy
             if (this.state.token !== '') {
 
-                console.log(highestWPM)
-                console.log(highestAcc)
+                // Check if score was better than user's personal best and update accordingly
                 if(highestWPM > this.state.user.personalBestWPM ) {
                     console.log('you were better')
                     this.setState(state => ({
@@ -407,17 +417,33 @@ export default class TypingTest extends Component {
                     }), () => this.sendHighscores(this.state.user))
                 }
 
-                if (lastWPM >= this.state.quoteWPM) {
-                    console.log('calling')
+                // check if score was better than the best score for that quote and update accordingly
+                if (latestWPM >= this.state.quoteWPM) {
+                    //console.log('calling')
                     this.setState({
                         quoteWPM : highestWPM,
                         quoteAcc : highestAcc
                     }, () => this.sendQuoteScores())
                 }
                 
-                
             }
 
+        }
+
+        if (this.state.token !== '') {
+            
+            // Update user's latest scores array
+            const update = {
+                _id : this.state.user._id,
+                wpm : latestWPM,
+                acc : latestAccuracy
+            } 
+            console.log(update)
+            axios.post(this.state.apiUrl + '/user/updateScores', update , { headers : {'auth-token' : this.state.token}})
+            .then(res => {
+                console.log(res.data.latestWPMScores)
+            })
+            .catch(err => err)
         }
     
     }
@@ -438,9 +464,7 @@ export default class TypingTest extends Component {
         }
 
         axios.post(this.state.apiUrl + '/quotes/updateHS', scores, {headers : {'auth-token' : this.state.token}})
-        .then(res => 
-            console.log(res.data)
-        ) .catch(err => err)
+       .catch(err => err)
     }
 
 
@@ -457,8 +481,6 @@ export default class TypingTest extends Component {
         //netWPM = ((this.state.typed_chars.length/5) / (this.state.seconds/60)) - (this.state.error_count/(this.state.seconds/60))
         return netWPM
     }
-
-
 
     // function to render button tooltips
     renderTooltip(props) {
@@ -492,6 +514,14 @@ export default class TypingTest extends Component {
         )     
     }
 
+    renderSpinner() {
+        if (!this.state.quote_Title) {
+            return <Spinner animation="border" />
+        } else {
+            return <></>
+        }
+    }
+
     render() {
         return (
             <div className="container">
@@ -501,7 +531,8 @@ export default class TypingTest extends Component {
                         <Row>
                             <Col sm={8}>
                                 <h4>{this.state.quote_Title} - {this.state.quote_author}</h4>
-                                <Alert variant="secondary">       
+                                <Alert variant="secondary">   
+                                    <span>{this.renderSpinner()}</span>
                                     <span className="quote-left">{this.state.quote_left}</span>
                                     <span className="quote-error">{this.state.err_arr}</span>
                                     <span className={this.state.quote_class}>{this.state.current_quote_char}</span>
