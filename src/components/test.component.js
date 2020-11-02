@@ -8,9 +8,11 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
 import axios from 'axios';
-import Card from './Card'
-import Spinner from 'react-bootstrap/Spinner'
-
+import Card from './Card';
+import Spinner from 'react-bootstrap/Spinner';
+import { FiThumbsDown, FiThumbsUp } from 'react-icons/fi';
+import { VscBug } from 'react-icons/vsc';
+import { IconContext } from 'react-icons'
 
 const TestInput = styled.input.attrs(props => ({
     type : 'text',
@@ -42,7 +44,9 @@ export default class TypingTest extends Component {
         this.newTest = this.newTest.bind(this);
         this.sendHighscores = this.sendHighscores.bind(this);
         this.renderSpinner = this.renderSpinner.bind(this);
-
+        this.increaseLike = this.increaseLike.bind(this);
+        this.decreaseLike = this.decreaseLike.bind(this);
+        this.updateQuoteScore = this.updateQuoteScore.bind(this);
 
         this.state = {
             quote: [],
@@ -98,6 +102,8 @@ export default class TypingTest extends Component {
             quoteAcc : 0,
             quoteID : 0,
 
+            upVote : false,
+            downVote : false,
             //api url
             apiUrl : '',
             token : '',
@@ -522,6 +528,80 @@ export default class TypingTest extends Component {
         }
     }
 
+    increaseLike() {
+        
+        if (!this.state.upVote && !this.state.downVote) {
+            //if only upvote has been clicked not downvote
+            // increase the score
+            let likeDecrease = this.state.quote_score + 1;
+            this.setState({
+                quote_score : likeDecrease,
+                upVote : true,
+                downVote : false
+            }, () => this.updateQuoteScore())
+        } else if (!this.state.upVote && this.state.downVote) {
+            // if down vote has already been clicked increase the score by 2
+            // to account for undoing the down vote
+
+            let likeDecrease = this.state.quote_score + 2;
+            this.setState({
+                quote_score : likeDecrease,
+                upVote : true,
+                downVote : false
+
+            }, () => this.updateQuoteScore())
+        } else if (this.state.upVote) {
+            // unlike
+            let likes = this.state.quote_score -1;
+            this.setState({
+                quote_score : likes,
+                upVote : false,
+            }, () => this.updateQuoteScore())
+        }
+    }
+
+    decreaseLike() {
+        if (!this.state.downVote && !this.state.upVote) {
+            // if only downvote has been clicked not upvote
+            // decrese the score
+           let likeDecrease = this.state.quote_score - 1;
+
+            this.setState({
+                quote_score : likeDecrease,
+                downVote : true,
+                upVote : false,
+            }, () => this.updateQuoteScore()) 
+            
+        } else if (!this.state.downVote && this.state.upVote) {
+            // upvote has already been clicked decrease by 2
+            // to account for undoing the upvote
+            let likeDecrease = this.state.quote_score - 2;
+
+            this.setState({
+                quote_score : likeDecrease,
+                downVote : true,
+                upVote : false,
+            }, () => this.updateQuoteScore()) 
+
+        } else if (this.state.downVote) {
+            // undo a down vote
+            let likes = this.state.quote_score + 1;
+            this.setState({
+                quote_score : likes,
+                downVote: false
+            }, () => this.updateQuoteScore())
+        }
+    }
+
+    updateQuoteScore() {
+        
+        const score = {
+           quote_score : this.state.quote_score 
+        }
+        axios.post(this.state.apiUrl + '/quotes/updateRating', score)
+        .catch(err => err)
+    }
+
     render() {
         return (
             <div className="container">
@@ -540,8 +620,14 @@ export default class TypingTest extends Component {
                                     <span className="quote-right">{this.state.quote_right}</span>
                                     <hr/>
                                     <span>Best Score: {this.state.quoteWPM}WPM {this.state.quoteAcc}% Accuracy</span>
+                                    <span style={{float : "right"}} onClick={this.decreaseLike}> <FiThumbsDown /></span>
+                                    <span style={{float : "right", marginLeft : 5, marginRight : 5}}> {this.state.quote_score} </span>
+                                    <span style={{float : "right"}} onClick={this.increaseLike}> <FiThumbsUp /></span>
+                                    
+                                    
                                 </Alert>    
                             </Col>
+                            
                             <Col sm={4}>
                                 <h4>High Scores</h4>
                                 <Alert variant="info">
@@ -581,9 +667,10 @@ export default class TypingTest extends Component {
                             <Col sm={4}>
                                 <OverlayTrigger placement="left" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
                                     <Button onClick={this.debugToggle} variant="outline-warning" style={{float : "right"}} id="debugBtn" name="debugBtn">
-                                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-bug" fill="currentColor" xmlns="http://www.w3.org/2000/svg" >
-                                            <path fillRule="evenodd" d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6H4a3.99 3.99 0 0 1 1.333-2.982A3.983 3.983 0 0 1 8 2c1.025 0 1.959.385 2.666 1.018A3.989 3.989 0 0 1 12 6z"/>
-                                        </svg>
+                                        <IconContext.Provider value={{ size : '1.5em' }}>
+                                            <VscBug />
+                                        </IconContext.Provider>
+                                        
                                     </Button>
                                 </OverlayTrigger>
                             </Col>

@@ -104,6 +104,7 @@ QuoteRoutes.post('/update', verify,  async (req, res) => {
     );
 });
 
+// Route to update the Highscore of the quote
 QuoteRoutes.post('/updateHS', verify, async(req, res) => {
     const {
         quoteWPM,
@@ -121,6 +122,11 @@ QuoteRoutes.post('/updateHS', verify, async(req, res) => {
             res.send(result)
         }
     })
+})
+
+//Route to update the quotes rating
+QuoteRoutes.post('/updateRating', async(req, res) => {
+    console.log(req.body)
 })
 
 // Route that adds a quote to the database with the body of the request
