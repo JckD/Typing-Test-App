@@ -111,7 +111,6 @@ QuoteRoutes.post('/updateHS', verify, async(req, res) => {
         quoteAcc,
         _id
     } = req.body
-    console.log(req.body)
     Quote.findByIdAndUpdate(_id, 
         { highWPMScore : quoteWPM, 
           highAccScore : quoteAcc}, 
@@ -126,7 +125,21 @@ QuoteRoutes.post('/updateHS', verify, async(req, res) => {
 
 //Route to update the quotes rating
 QuoteRoutes.post('/updateRating', async(req, res) => {
+    const {
+        _id, 
+        quote_score
+    } = req.body
     console.log(req.body)
+    Quote.findByIdAndUpdate(_id, 
+        { quoteScore : quote_score },
+        function(err, result) {
+            if (err) {
+                res.send(err)
+            } else {
+                res.send(result)
+            }
+    })
+
 })
 
 // Route that adds a quote to the database with the body of the request

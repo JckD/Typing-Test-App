@@ -571,7 +571,7 @@ export default class TypingTest extends Component {
                 downVote : true,
                 upVote : false,
             }, () => this.updateQuoteScore()) 
-            
+
         } else if (!this.state.downVote && this.state.upVote) {
             // upvote has already been clicked decrease by 2
             // to account for undoing the upvote
@@ -596,10 +596,14 @@ export default class TypingTest extends Component {
     updateQuoteScore() {
         
         const score = {
-           quote_score : this.state.quote_score 
+            _id : this.state.quoteID,
+            quote_score : this.state.quote_score,
         }
-        axios.post(this.state.apiUrl + '/quotes/updateRating', score)
-        .catch(err => err)
+        setTimeout(() => {axios.post(this.state.apiUrl + '/quotes/updateRating', score)
+        .then(res =>
+            console.log(res.data)
+            )
+        .catch(err => err) }, 3000);
     }
 
     render() {
