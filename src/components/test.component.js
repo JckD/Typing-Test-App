@@ -363,6 +363,9 @@ export default class TypingTest extends Component {
             count: 0,
             seconds : 0,
             input_disabled : false,
+            upVote : false,
+            downVote : false,
+            quote_score : 0
         }))
     }
 
@@ -515,7 +518,7 @@ export default class TypingTest extends Component {
         }
         return  (
             <Tooltip {...props}>
-                tes
+                test
             </Tooltip>
         )     
     }
@@ -599,19 +602,14 @@ export default class TypingTest extends Component {
             _id : this.state.quoteID,
             quote_score : this.state.quote_score,
         }
-        setTimeout(() => {axios.post(this.state.apiUrl + '/quotes/updateRating', score)
-        .then(res =>
-            console.log(res.data)
-            )
-        .catch(err => err) }, 3000);
+        axios.post(this.state.apiUrl + '/quotes/updateRating', score)
+        .catch(err => err)
     }
 
     render() {
         return (
             <div className="container">
                 <Card>
-                   
-                    
                         <Row>
                             <Col sm={8}>
                                 <h4>{this.state.quote_Title} - {this.state.quote_author}</h4>
