@@ -147,7 +147,6 @@ QuoteRoutes.post('/updateRating', async(req, res) => {
 QuoteRoutes.post('/add', verify , async(req, res) => {
     quote = new Quote(req.body);
     //console.log(quote)
-
     try {
         await quote.save()
         res.send(quote.id)
