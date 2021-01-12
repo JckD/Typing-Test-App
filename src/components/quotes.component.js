@@ -90,15 +90,14 @@ export default class QuoteList extends Component {
     search() {
         this.setState({
             search : document.getElementById('searchBar').value
-        })
-        
+        }) 
     }
 
     
 
     render() {
         // filter funtion that works so amazingly well without needing more requests
-        let filteredQuotes = fthis.state.quotes.ilter(
+        let filteredQuotes = this.state.quotes.filter(
             (quote) => {
                 return  quote.quoteTitle.toLowerCase().indexOf(this.state.search) !== -1 ||
                         quote.quoteAuthor.toLowerCase().indexOf(this.state.search) !== -1 || 

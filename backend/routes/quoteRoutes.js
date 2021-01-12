@@ -129,7 +129,7 @@ QuoteRoutes.post('/updateRating', async(req, res) => {
         _id, 
         quote_score
     } = req.body
-    console.log(req.body)
+    //console.log(req.body)
     Quote.findByIdAndUpdate(_id, 
         { quoteScore : quote_score },
         function(err, result) {

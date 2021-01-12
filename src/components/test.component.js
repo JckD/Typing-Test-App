@@ -494,7 +494,7 @@ export default class TypingTest extends Component {
     // function to render button tooltips
     renderTooltip(props) {
         if (props.popper.state != null) {
-            //console.log(props.popper.state.elements)
+            //console.log(props.popper.state.elements.reference)
 
             if (props.popper.state.elements.reference.id === 'restartBtn') {
                 return (
@@ -510,11 +510,23 @@ export default class TypingTest extends Component {
                 );
             } else if (props.popper.state.elements.reference.id === 'debugBtn') {
                 return (
-                    <Tooltip id="button-tooltip" {...props}>
+                    <Tooltip >
                         Show debug Info
                     </Tooltip>
                 )
-            } 
+            } else if (props.popper.state.elements.reference.id === 'dislikeOverlay') {
+                return (
+                    <Tooltip id="button-tooltip" {...props}>
+                        Like Quote
+                    </Tooltip>
+                )
+            } else if (props.popper.state.elements.reference.id === 'likeOverlay') {
+                return (
+                    <Tooltip id="buton-tooltip" {...props}>
+                        Dislike Quote
+                    </Tooltip>
+                )
+            }
         }
         return  (
             <Tooltip {...props}>
@@ -622,9 +634,14 @@ export default class TypingTest extends Component {
                                     <span className="quote-right">{this.state.quote_right}</span>
                                     <hr/>
                                     <span>Best Score: {this.state.quoteWPM}WPM {this.state.quoteAcc}% Accuracy</span>
-                                    <span style={{float : "right"}} onClick={this.decreaseLike}> <FiThumbsDown /></span>
+                                    <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
+                                        <span style={{float : "right"}} onClick={this.decreaseLike} id="dislikeOverlay"> <FiThumbsDown /></span>
+                                    </OverlayTrigger>
                                     <span style={{float : "right", marginLeft : 5, marginRight : 5}}> {this.state.quote_score} </span>
-                                    <span style={{float : "right"}} onClick={this.increaseLike}> <FiThumbsUp /></span>
+                                    <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
+                                        <span style={{float : "right"}} onClick={this.increaseLike} id="likeOverlay"> <FiThumbsUp /></span>
+                                    </OverlayTrigger>
+                                    
                                     
                                     
                                 </Alert>    
