@@ -40,9 +40,7 @@ const Quote = props => (
                 </Col>
                 <Col sm={4}>
                     <div style={{float : 'right'}}>
-                        <Alert.Link  variant="outline-seconary">
-                            Suggest Edit
-                        </Alert.Link>
+                        
                     </div>
                 </Col>
             </Row>    
