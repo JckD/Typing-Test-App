@@ -167,7 +167,6 @@ export default class QuoteList extends Component {
 
                 </Card>
                 <div style={{ height : 800}}></div>
-
             </div>
         )
     }

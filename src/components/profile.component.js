@@ -137,17 +137,6 @@ export default class Profile extends Component {
                 localStorage.setItem("nimdAis", res.data.isAdmin)
             }
 
-            let avgWPM = [];
-            //fill an array the same length as the user's with the avg WPM to compare against the user
-            for(let i = 0; i < res.data.latestWPMScores.length; i++) {
-                avgWPM[i] = 40
-            }
-
-            let avgAcc = [];
-             //fill an array the same length as the user's with the avg ACC to compare against the user
-             for(let j = 0; j < res.data.latestAccScores.length; j++) {
-                avgAcc[j] = 92;
-            }
 
             let theme = '';
             console.log(localStorage.getItem("isDarkMode"))
@@ -183,13 +172,19 @@ export default class Profile extends Component {
                         scaleY : {
                             label : {
                                 text : 'WPM'
+                            },
+                            values: "0:100:25",
+                            'ref-value' : 40,
+                            'ref-line' : {
+                                'line-color' : 'red',
+                                'line-style' : 'solid'
                             }
                         },
                         series: [{
                             values : res.data.latestWPMScores,
                             text : 'Your WPM'
                         },{
-                            values : avgWPM,
+                            values : 40,
                             text : 'Avg WPM'
                         }
                         ]
@@ -211,13 +206,19 @@ export default class Profile extends Component {
                         scaleY : {
                             label : {
                                 text : 'Accuracy % '
+                            },
+                            values: "0:100:25",
+                            'ref-value' : 92,
+                            'ref-line' : {
+                                'line-color' : 'red',
+                                'line-style' : 'solid'
                             }
                         },
                         series: [{
                             values : res.data.latestAccScores,
                             text : 'Your Accuracy %'
                         },{
-                            values : avgAcc,
+                            values : 92,
                             text : 'Avg Accuracy %'
                         }
                         ]
