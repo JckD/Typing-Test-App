@@ -22,6 +22,9 @@ UserRoutes.get('/', async (req, res) => {
     });
 });
 
+
+// Get user's profile
+// requires auth
 UserRoutes.get('/profile', verify , async(req, res) => {
     
     //console.log(req.user._id)
@@ -44,6 +47,9 @@ UserRoutes.get('/:id' , async (req, res) => {
     }
 })
 
+
+
+// Register a new user route
 UserRoutes.post('/register', 
     [
         check("userName", "Please Enter a Valid Username").not().isEmpty(),
@@ -90,6 +96,9 @@ UserRoutes.post('/register',
         }
     }  
 )
+
+
+// User login route 
 
 UserRoutes.post(
     "/login",
@@ -145,6 +154,8 @@ UserRoutes.post(
     }
 );
 
+
+// Update user info route
 UserRoutes.post('/update', verify, async(req, res) => {
         const {
             userName,
@@ -172,6 +183,7 @@ UserRoutes.post('/update', verify, async(req, res) => {
         }) 
 
 
+// Update user's highscore route
 UserRoutes.post('/updateHS', verify , async(req, res) => {
     await User.findByIdAndUpdate(
         { _id : req.body._id}, 
@@ -186,20 +198,39 @@ UserRoutes.post('/updateHS', verify , async(req, res) => {
         }
     })
 })
-           // 
+
+
 // Push to users latest scores arrays
 UserRoutes.post('/updateScores', verify , async(req, res) => {
+    // get the user obj
+    let user  = await User.find({ _id : req.body._id})
+    // check if latest scores is >= 20
+    // if it is pop the first score in the array
+    // push new score on the aray
+    if (user != undefined && user[0].latestWPMScores.length >= 20) {
+        try {
+            await User.findOneAndUpdate(
+                { _id: req.body._id},
+                { $pop: { 'latestWPMScores': -1 , 'latestAccScores' : -1 } }
+            )
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    
     try {
         await User.findOneAndUpdate(
             { _id : req.body._id},
             { $push: { 'latestWPMScores' : [req.body.wpm] ,'latestAccScores' : [req.body.acc] }},
         )
+        res.send('scores')
     } catch (e) {
         console.log(e)
     }
     
 })
 
+// Add quote to list of user's added qoutes
 UserRoutes.post('/addQuote', verify , async(req, res) => {
     try {
         await User.updateOne(
@@ -211,6 +242,7 @@ UserRoutes.post('/addQuote', verify , async(req, res) => {
     }
 })
 
+// Delete user route
 UserRoutes.post('/delete',verify , async (req, res) => {
 
     try {

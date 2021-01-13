@@ -173,7 +173,7 @@ export default class Profile extends Component {
                             label : {
                                 text : 'WPM'
                             },
-                            values: "0:100:25",
+                            values: "0:125:25",
                             'ref-value' : 40,
                             'ref-line' : {
                                 'line-color' : 'red',
@@ -207,7 +207,7 @@ export default class Profile extends Component {
                             label : {
                                 text : 'Accuracy % '
                             },
-                            values: "0:100:25",
+                            values: "0:125:25",
                             'ref-value' : 92,
                             'ref-line' : {
                                 'line-color' : 'red',
