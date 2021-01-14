@@ -92,6 +92,8 @@ export default class TypingTest extends Component {
             seconds : 0,
             // The net words per minute
             netWPM : 0,
+            resultsVariant : 'success',
+            endMsg : 'Well done!',
             // Accuracy %
             accuracy : 0,
             // Highscores
@@ -210,7 +212,6 @@ export default class TypingTest extends Component {
         // edge case if user ends test with error to just end the test if the total number of entries == the quote len.
         if (this.state.count === this.state.char_array.length) {
             this.endTest();
-            console.log('testing jenkins')
             return
         }
 
@@ -378,17 +379,43 @@ export default class TypingTest extends Component {
         let lastWPM = this.state.netWPM;
         let lastAccuracy = this.state.accuracy;
         
+        let netWPM = Math.ceil(this.calculateWPM());
+
+        let goodEndMsg = 'Well Done!';
+        let avgEndMsg = 'Not Bad!';
+        let badEndMsg = 'Yikes! You can do better';
+        let endMsg = this.state.endMsg;
+
+        // Conditional results statements
+        let variant = this.state.resultsVariant;
+        if ( netWPM > 41) {
+            variant = 'success';
+            endMsg = goodEndMsg;
+        }
+        else if (netWPM <= 41 && netWPM >= 25) {
+            variant = 'warning';
+            endMsg = avgEndMsg;
+
+        } else if ( netWPM < 25 ) {
+            variant = 'danger';
+            endMsg = badEndMsg;
+        }
+
+
+
         document.activeElement.blur();
         document.getElementById('input').focus();
         this.setState((state) => ({
             error_count : state.error_count,
             accuracy : Math.ceil((correctChars / state.char_array.length)*100),
             input_disabled : true,
+            resultsVariant : variant,
+            endMsg : endMsg,
             current_quote_char : '',
             quote_left : state.quote_body,
             seconds : 0,
             err_arr : '',
-            netWPM : Math.ceil(this.calculateWPM()),
+            netWPM : netWPM,
         }), () => this.calculateHighScore(lastAccuracy, lastWPM))
     }
 
@@ -699,8 +726,8 @@ export default class TypingTest extends Component {
                             <Col sm={8}>
                                 <Collapse in={this.state.input_disabled}>
                                     <div id="results">
-                                        <Alert variant="success">
-                                            <Alert.Heading>Well Done!</Alert.Heading>
+                                        <Alert variant={this.state.resultsVariant}>
+                                            <Alert.Heading>{this.state.endMsg}</Alert.Heading>
                                                 <p>
                                                     Here are your results:<br></br>
                                                     WPM : {this.state.netWPM} <br></br>
