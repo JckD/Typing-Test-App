@@ -74,6 +74,10 @@ export default class TypingTest extends Component {
             total_error_count : 0,
             // boolean to disable input to the text box and display results when the test is over, false == test not over, true == test over
             input_disabled : false,
+            // boolean to display new personal best msg
+            HSenabled : false,
+            // boolean to display new quote best msg
+            QHSenabled : false,
             // String that contains every thing that has been typed or that the user has passed
             quote_left : '',
             // String that contains everything the user has left to type
@@ -364,6 +368,8 @@ export default class TypingTest extends Component {
             count: 0,
             seconds : 0,
             input_disabled : false,
+            HSenabled : false,
+            QHSenabled : false,
             upVote : false,
             downVote : false,
             quote_score : 0
@@ -444,6 +450,7 @@ export default class TypingTest extends Component {
                 if(highestWPM > this.state.user.personalBestWPM ) {
                     console.log('you were better')
                     this.setState(state => ({
+                        HSenabled : true,
                         user : {
                             ...this.state.user,
                             
@@ -456,7 +463,9 @@ export default class TypingTest extends Component {
                 // check if score was better than the best score for that quote and update accordingly
                 if (latestWPM >= this.state.quoteWPM) {
                     //console.log('calling')
+                    
                     this.setState({
+                        QHSenabled : true,
                         quoteWPM : highestWPM,
                         quoteAcc : highestAcc
                     }, () => this.sendQuoteScores())
@@ -724,6 +733,20 @@ export default class TypingTest extends Component {
                         
                         <Row> 
                             <Col sm={8}>
+                                <Collapse in={this.state.HSenabled}>
+                                    <div>
+                                        <Alert variant='success'>
+                                            New Personal Best WPM Score! 
+                                        </Alert>
+                                    </div>  
+                                </Collapse>
+                                <Collapse in={this.state.QHSenabled}>
+                                    <div>
+                                       <Alert variant='success'>
+                                            New Quite High Score!
+                                        </Alert> 
+                                    </div>
+                                </Collapse>
                                 <Collapse in={this.state.input_disabled}>
                                     <div id="results">
                                         <Alert variant={this.state.resultsVariant}>
