@@ -63,11 +63,13 @@ export default class QuoteList extends Component {
             quotes: [],
             search : '',
             filteredQuotes : [],
-            sortedQuotes : []
+            sortedQuotes : [],
+            listHeight : 0
         }
     }
 
     componentDidMount(){
+        let listHeight = document.getElementById('card')
         let APIURL = ''
         if (process.env.NODE_ENV === 'production') {
             APIURL = 'https://typingtest.jdoyle.ie'
@@ -77,7 +79,8 @@ export default class QuoteList extends Component {
         axios.get(APIURL + '/quotes/approved')
             .then(response => {
                 this.setState({ quotes : response.data,
-                                filteredQuotes : response.data
+                                filteredQuotes : response.data,
+                                listHeight : listHeight
                 });
             })
             .catch(function (err) {
@@ -114,7 +117,7 @@ export default class QuoteList extends Component {
 
         let value = e.target.value
 
-        
+        console.log(document.getElementById('card').offsetHeight)
         let quotes = this.state.filteredQuotes
         let sortedQuotes = quotes
         console.log(quotes)
@@ -147,7 +150,7 @@ export default class QuoteList extends Component {
        
         return (
             <div className="container">
-                <Card>
+                <Card id='card'>
                     <Row>
                         <Col sm={7}>
                             <h4>Quotes</h4>  
@@ -172,8 +175,7 @@ export default class QuoteList extends Component {
                     </Row>
 
                 </Card>
-                <div style={{ height : 800}}></div>
-
+                <div style={{height : 800}}> </div>
             </div>
         )
     }

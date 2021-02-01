@@ -135,7 +135,7 @@ export default class QuoteList extends Component {
     render() {
        
         return (
-            <div className="container">
+            <div className="container" style={{height : window.innerHeight}}>
                 <Card>
                     <Row>
                         <Col sm={8}>
@@ -166,8 +166,6 @@ export default class QuoteList extends Component {
                     </Row>
 
                 </Card>
-                <div style={{ height : 800}}></div>
-
             </div>
         )
     }
