@@ -8,9 +8,11 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
 import axios from 'axios';
-import Card from './Card'
-import Spinner from 'react-bootstrap/Spinner'
-
+import Card from './Card';
+import Spinner from 'react-bootstrap/Spinner';
+import { FiThumbsDown, FiThumbsUp } from 'react-icons/fi';
+import { VscBug } from 'react-icons/vsc';
+import { IconContext } from 'react-icons'
 
 const TestInput = styled.input.attrs(props => ({
     type : 'text',
@@ -42,7 +44,9 @@ export default class TypingTest extends Component {
         this.newTest = this.newTest.bind(this);
         this.sendHighscores = this.sendHighscores.bind(this);
         this.renderSpinner = this.renderSpinner.bind(this);
-
+        this.increaseLike = this.increaseLike.bind(this);
+        this.decreaseLike = this.decreaseLike.bind(this);
+        this.updateQuoteScore = this.updateQuoteScore.bind(this);
 
         this.state = {
             quote: [],
@@ -70,6 +74,10 @@ export default class TypingTest extends Component {
             total_error_count : 0,
             // boolean to disable input to the text box and display results when the test is over, false == test not over, true == test over
             input_disabled : false,
+            // boolean to display new personal best msg
+            HSenabled : false,
+            // boolean to display new quote best msg
+            QHSenabled : false,
             // String that contains every thing that has been typed or that the user has passed
             quote_left : '',
             // String that contains everything the user has left to type
@@ -88,6 +96,8 @@ export default class TypingTest extends Component {
             seconds : 0,
             // The net words per minute
             netWPM : 0,
+            resultsVariant : 'success',
+            endMsg : 'Well done!',
             // Accuracy %
             accuracy : 0,
             // Highscores
@@ -98,6 +108,8 @@ export default class TypingTest extends Component {
             quoteAcc : 0,
             quoteID : 0,
 
+            upVote : false,
+            downVote : false,
             //api url
             apiUrl : '',
             token : '',
@@ -204,7 +216,6 @@ export default class TypingTest extends Component {
         // edge case if user ends test with error to just end the test if the total number of entries == the quote len.
         if (this.state.count === this.state.char_array.length) {
             this.endTest();
-            console.log('testing jenkins')
             return
         }
 
@@ -357,6 +368,11 @@ export default class TypingTest extends Component {
             count: 0,
             seconds : 0,
             input_disabled : false,
+            HSenabled : false,
+            QHSenabled : false,
+            upVote : false,
+            downVote : false,
+            quote_score : 0
         }))
     }
 
@@ -369,17 +385,43 @@ export default class TypingTest extends Component {
         let lastWPM = this.state.netWPM;
         let lastAccuracy = this.state.accuracy;
         
+        let netWPM = Math.ceil(this.calculateWPM());
+
+        let goodEndMsg = 'Well Done!';
+        let avgEndMsg = 'Not Bad!';
+        let badEndMsg = 'Yikes! You can do better';
+        let endMsg = this.state.endMsg;
+
+        // Conditional results statements
+        let variant = this.state.resultsVariant;
+        if ( netWPM > 41) {
+            variant = 'success';
+            endMsg = goodEndMsg;
+        }
+        else if (netWPM <= 41 && netWPM >= 25) {
+            variant = 'warning';
+            endMsg = avgEndMsg;
+
+        } else if ( netWPM < 25 ) {
+            variant = 'danger';
+            endMsg = badEndMsg;
+        }
+
+
+
         document.activeElement.blur();
         document.getElementById('input').focus();
         this.setState((state) => ({
             error_count : state.error_count,
             accuracy : Math.ceil((correctChars / state.char_array.length)*100),
             input_disabled : true,
+            resultsVariant : variant,
+            endMsg : endMsg,
             current_quote_char : '',
             quote_left : state.quote_body,
             seconds : 0,
             err_arr : '',
-            netWPM : Math.ceil(this.calculateWPM()),
+            netWPM : netWPM,
         }), () => this.calculateHighScore(lastAccuracy, lastWPM))
     }
 
@@ -408,6 +450,7 @@ export default class TypingTest extends Component {
                 if(highestWPM > this.state.user.personalBestWPM ) {
                     console.log('you were better')
                     this.setState(state => ({
+                        HSenabled : true,
                         user : {
                             ...this.state.user,
                             
@@ -420,7 +463,9 @@ export default class TypingTest extends Component {
                 // check if score was better than the best score for that quote and update accordingly
                 if (latestWPM >= this.state.quoteWPM) {
                     //console.log('calling')
+                    
                     this.setState({
+                        QHSenabled : true,
                         quoteWPM : highestWPM,
                         quoteAcc : highestAcc
                     }, () => this.sendQuoteScores())
@@ -485,7 +530,7 @@ export default class TypingTest extends Component {
     // function to render button tooltips
     renderTooltip(props) {
         if (props.popper.state != null) {
-            //console.log(props.popper.state.elements)
+            //console.log(props.popper.state.elements.reference)
 
             if (props.popper.state.elements.reference.id === 'restartBtn') {
                 return (
@@ -501,15 +546,27 @@ export default class TypingTest extends Component {
                 );
             } else if (props.popper.state.elements.reference.id === 'debugBtn') {
                 return (
-                    <Tooltip id="button-tooltip" {...props}>
+                    <Tooltip >
                         Show debug Info
                     </Tooltip>
                 )
-            } 
+            } else if (props.popper.state.elements.reference.id === 'dislikeOverlay') {
+                return (
+                    <Tooltip id="button-tooltip" {...props}>
+                        Like Quote
+                    </Tooltip>
+                )
+            } else if (props.popper.state.elements.reference.id === 'likeOverlay') {
+                return (
+                    <Tooltip id="buton-tooltip" {...props}>
+                        Dislike Quote
+                    </Tooltip>
+                )
+            }
         }
         return  (
             <Tooltip {...props}>
-                tes
+                test
             </Tooltip>
         )     
     }
@@ -522,12 +579,85 @@ export default class TypingTest extends Component {
         }
     }
 
+    increaseLike() {
+        
+        if (!this.state.upVote && !this.state.downVote) {
+            //if only upvote has been clicked not downvote
+            // increase the score
+            let likeDecrease = this.state.quote_score + 1;
+            this.setState({
+                quote_score : likeDecrease,
+                upVote : true,
+                downVote : false
+            }, () => this.updateQuoteScore())
+        } else if (!this.state.upVote && this.state.downVote) {
+            // if down vote has already been clicked increase the score by 2
+            // to account for undoing the down vote
+
+            let likeDecrease = this.state.quote_score + 2;
+            this.setState({
+                quote_score : likeDecrease,
+                upVote : true,
+                downVote : false
+
+            }, () => this.updateQuoteScore())
+        } else if (this.state.upVote) {
+            // unlike
+            let likes = this.state.quote_score -1;
+            this.setState({
+                quote_score : likes,
+                upVote : false,
+            }, () => this.updateQuoteScore())
+        }
+    }
+
+    decreaseLike() {
+        if (!this.state.downVote && !this.state.upVote) {
+            // if only downvote has been clicked not upvote
+            // decrese the score
+           let likeDecrease = this.state.quote_score - 1;
+
+            this.setState({
+                quote_score : likeDecrease,
+                downVote : true,
+                upVote : false,
+            }, () => this.updateQuoteScore()) 
+
+        } else if (!this.state.downVote && this.state.upVote) {
+            // upvote has already been clicked decrease by 2
+            // to account for undoing the upvote
+            let likeDecrease = this.state.quote_score - 2;
+
+            this.setState({
+                quote_score : likeDecrease,
+                downVote : true,
+                upVote : false,
+            }, () => this.updateQuoteScore()) 
+
+        } else if (this.state.downVote) {
+            // undo a down vote
+            let likes = this.state.quote_score + 1;
+            this.setState({
+                quote_score : likes,
+                downVote: false
+            }, () => this.updateQuoteScore())
+        }
+    }
+
+    updateQuoteScore() {
+        
+        const score = {
+            _id : this.state.quoteID,
+            quote_score : this.state.quote_score,
+        }
+        axios.post(this.state.apiUrl + '/quotes/updateRating', score)
+        .catch(err => err)
+    }
+
     render() {
         return (
-            <div className="container">
+            <div className="container" style={{height : window.innerHeight}}>
                 <Card>
-                   
-                    
                         <Row>
                             <Col sm={8}>
                                 <h4>{this.state.quote_Title} - {this.state.quote_author}</h4>
@@ -540,8 +670,19 @@ export default class TypingTest extends Component {
                                     <span className="quote-right">{this.state.quote_right}</span>
                                     <hr/>
                                     <span>Best Score: {this.state.quoteWPM}WPM {this.state.quoteAcc}% Accuracy</span>
+                                    <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
+                                        <span style={{float : "right"}} onClick={this.decreaseLike} id="dislikeOverlay"> <FiThumbsDown /></span>
+                                    </OverlayTrigger>
+                                    <span style={{float : "right", marginLeft : 5, marginRight : 5}}> {this.state.quote_score} </span>
+                                    <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
+                                        <span style={{float : "right"}} onClick={this.increaseLike} id="likeOverlay"> <FiThumbsUp /></span>
+                                    </OverlayTrigger>
+                                    
+                                    
+                                    
                                 </Alert>    
                             </Col>
+                            
                             <Col sm={4}>
                                 <h4>High Scores</h4>
                                 <Alert variant="info">
@@ -581,9 +722,10 @@ export default class TypingTest extends Component {
                             <Col sm={4}>
                                 <OverlayTrigger placement="left" delay={{ show: 250, hide: 400 }} overlay={this.renderTooltip}>
                                     <Button onClick={this.debugToggle} variant="outline-warning" style={{float : "right"}} id="debugBtn" name="debugBtn">
-                                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-bug" fill="currentColor" xmlns="http://www.w3.org/2000/svg" >
-                                            <path fillRule="evenodd" d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6H4a3.99 3.99 0 0 1 1.333-2.982A3.983 3.983 0 0 1 8 2c1.025 0 1.959.385 2.666 1.018A3.989 3.989 0 0 1 12 6z"/>
-                                        </svg>
+                                        <IconContext.Provider value={{ size : '1.5em' }}>
+                                            <VscBug />
+                                        </IconContext.Provider>
+                                        
                                     </Button>
                                 </OverlayTrigger>
                             </Col>
@@ -591,10 +733,24 @@ export default class TypingTest extends Component {
                         
                         <Row> 
                             <Col sm={8}>
+                                <Collapse in={this.state.HSenabled}>
+                                    <div>
+                                        <Alert variant='success'>
+                                            New Personal Best WPM Score! 
+                                        </Alert>
+                                    </div>  
+                                </Collapse>
+                                <Collapse in={this.state.QHSenabled}>
+                                    <div>
+                                       <Alert variant='success'>
+                                            New Quite High Score!
+                                        </Alert> 
+                                    </div>
+                                </Collapse>
                                 <Collapse in={this.state.input_disabled}>
                                     <div id="results">
-                                        <Alert variant="success">
-                                            <Alert.Heading>Well Done!</Alert.Heading>
+                                        <Alert variant={this.state.resultsVariant}>
+                                            <Alert.Heading>{this.state.endMsg}</Alert.Heading>
                                                 <p>
                                                     Here are your results:<br></br>
                                                     WPM : {this.state.netWPM} <br></br>
@@ -631,7 +787,7 @@ export default class TypingTest extends Component {
                             </Col>
                         </Row> 
                 </Card>    
-                <div style={{ height : 800}}></div>
+               
             </div>  
         )
     }

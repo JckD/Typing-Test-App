@@ -283,7 +283,7 @@ export default class EditAccount extends Component {
 
     render() {
         return (
-            <div className="container">
+            <div className="container" style={{height : window.innerHeight}}>
 
                 <Modal
                     show={this.state.Modal}
@@ -379,7 +379,7 @@ export default class EditAccount extends Component {
                         </Col>
                     </Row>
                 </Card>
-                <div style={{ height : 800}}></div>
+                
             </div>
         )
     }

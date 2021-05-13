@@ -10,6 +10,7 @@ import Account from './components/account.component';
 import Profile from './components/profile.component';
 import EditAccount from './components/editAccount.component';
 import ApproveQuote from './components/approveQuote.component';
+import Leaderboard from './components/leaderboard.component';
 
 import PrivateRoute from './components/privateRoute.component';
 import './App.css';
@@ -55,6 +56,7 @@ const App = () => {
                   <Link to="/quotes" className="nav-link">Quotes</Link>
                   <Link to="/createQuote" className="nav-link">Create Quote</Link>
                   <Link to="/account" className="nav-link">Account</Link>
+                  <Link to="/leaderboard" className="nav-link">Leaderboard</Link>
                 </Nav>
                 <Nav>
                   <Button variant="outline-secondary" onClick={() => {
@@ -77,6 +79,7 @@ const App = () => {
           <Route path="/account"exact component={Account} />
           <Route path="/profile" component={Profile} />
           <Route path="/editAccount" component={EditAccount} />
+          <Route path="/leaderboard" component={Leaderboard}/>
           <PrivateRoute path="/approveQuote" component={ApproveQuote} exact/>
       
         </Router>  
