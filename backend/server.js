@@ -6,7 +6,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const PORT = 8080;
 const router = express.Router();
-require('dotenv').config({ path: './.env'});
+require('dotenv').config({ path: __dirname + '/.env'});
 
 
 //mongo db URI
