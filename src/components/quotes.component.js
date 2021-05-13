@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import FormControl from 'react-bootstrap/FormControl';
 import Alert from 'react-bootstrap/Alert';
 import axios from 'axios';
 import Card from "./Card";
@@ -40,9 +41,7 @@ const Quote = props => (
                 </Col>
                 <Col sm={4}>
                     <div style={{float : 'right'}}>
-                        <Alert.Link  variant="outline-seconary">
-                            Suggest Edit
-                        </Alert.Link>
+                        
                     </div>
                 </Col>
             </Row>    
@@ -58,14 +57,19 @@ export default class QuoteList extends Component {
 
         this.search = this.search.bind(this);
         this.quotesList = this.quotesList.bind(this);
+        this.selectSort = this.selectSort.bind(this);
 
         this.state = {
             quotes: [],
-            search : ''
+            search : '',
+            filteredQuotes : [],
+            sortedQuotes : [],
+            listHeight : 0
         }
     }
 
     componentDidMount(){
+        let listHeight = document.getElementById('card')
         let APIURL = ''
         if (process.env.NODE_ENV === 'production') {
             APIURL = 'https://typingtest.jdoyle.ie'
@@ -74,7 +78,10 @@ export default class QuoteList extends Component {
         }
         axios.get(APIURL + '/quotes/approved')
             .then(response => {
-                this.setState({ quotes : response.data});
+                this.setState({ quotes : response.data,
+                                filteredQuotes : response.data,
+                                listHeight : listHeight
+                });
             })
             .catch(function (err) {
                 console.log(err);
@@ -88,44 +95,87 @@ export default class QuoteList extends Component {
     }
 
     search() {
-        this.setState({
-            search : document.getElementById('searchBar').value
-        })
-        
-    }
+       
+        let search = document.getElementById('searchBar').value
 
-    
-
-    render() {
         // filter funtion that works so amazingly well without needing more requests
-        let filteredQuotes = this.state.quotes.filter(
+        let filteredQuotes = this.state.filteredQuotes.filter(
             (quote) => {
-                return  quote.quoteTitle.toLowerCase().indexOf(this.state.search) !== -1 ||
-                        quote.quoteAuthor.toLowerCase().indexOf(this.state.search) !== -1 || 
-                        quote.quoteUser.indexOf(this.state.search) !== -1;
+                return  quote.quoteTitle.toLowerCase().indexOf(search) !== -1 ||
+                        quote.quoteAuthor.toLowerCase().indexOf(search) !== -1 || 
+                        quote.quoteUser.indexOf(search) !== -1;
             }
         )
+
+        this.setState({
+            filteredQuotes : filteredQuotes
+        })
+    }
+
+    selectSort(e){
+
+
+        let value = e.target.value
+
+        console.log(document.getElementById('card').offsetHeight)
+        let quotes = this.state.filteredQuotes
+        let sortedQuotes = quotes
+        console.log(quotes)
+        switch (value) {
+
+            case 'a-z':
+                sortedQuotes = quotes.sort((a,b) => (a.quoteTitle > b.quoteTitle) ? 1 : -1) 
+                break;
+
+            case 'z-a': 
+                sortedQuotes = quotes.sort((a,b) => (a.quoteTitle < b.quoteTitle) ? 1 : -1) 
+                break;
+
+            case 'rating':
+                sortedQuotes = quotes.sort((a,b) => (a.quoteScore < b.quoteScore) ? 1 : -1)
+                break;
+
+            case 'score':
+                sortedQuotes = quotes.sort((a,b) => (a.highWPMScore < b.highWPMScore) ? 1 : -1)
+                break;
+        }
+
+        this.setState({
+            filteredQuotes : sortedQuotes
+        }) 
+    }
+
+
+    render() {
+       
         return (
             <div className="container">
-                <Card>
+                <Card id='card'>
                     <Row>
-                        <Col sm={8}>
+                        <Col sm={7}>
                             <h4>Quotes</h4>  
                         </Col>
-                        <Col sm={4}>
+                        <Col sm={2}>
+                            <FormControl as="select" size="sm" onChange={this.selectSort}>
+                                <option value="a-z">A-Z</option>
+                                <option value="z-a">Z-A</option>
+                                <option value="rating">Rating</option>
+                                <option value="score">High Score</option>
+                            </FormControl>
+                        </Col>
+                        <Col sm={3}>
                             <SearchInput id="searchBar"  onChange={this.search}></SearchInput>
                         </Col>
                         
                     </Row><br/>
                     <Row>
                         <Col>
-                            {this.quotesList(filteredQuotes)}
+                            {this.quotesList(this.state.filteredQuotes)}
                         </Col>
                     </Row>
 
                 </Card>
-                <div style={{ height : 800}}></div>
-
+                <div style={{height : 800}}> </div>
             </div>
         )
     }

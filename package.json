@@ -9,25 +9,26 @@
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
-    "bootstrap": "^4.5.0",
+    "bootstrap": "^4.5.3",
     "cors": "^2.8.5",
     "cs-add-candidate-btn": "^1.0.0",
     "dotenv": "^8.2.0",
     "express-jwt": "^6.0.0",
-    "express-validator": "^6.6.1",
+    "express-validator": "^6.9.2",
     "i": "^0.3.6",
     "j": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.10.9",
-    "react": "^16.13.1",
-    "react-bootstrap": "^1.0.1",
+    "mongoose": "^5.11.11",
+    "react": "^16.14.0",
+    "react-bootstrap": "^1.4.3",
     "react-compound-timer": "^1.2.0",
-    "react-dom": "^16.13.1",
+    "react-dom": "^16.14.0",
+    "react-icons": "^3.11.0",
     "react-input-autosize": "^2.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^3.4.4",
     "react-sound": "^1.2.0",
-    "styled-components": "^5.1.1",
+    "styled-components": "^5.2.1",
     "zingchart-react": "^3.1.0"
   },
   "homepage": "http://JckD.github.io/Typing-Test-App",
@@ -55,7 +56,7 @@
     ]
   },
   "devDependencies": {
-    "babel-plugin-styled-components": "^1.10.7",
+    "babel-plugin-styled-components": "^1.12.0",
     "gh-pages": "^3.1.0"
   }
 }
