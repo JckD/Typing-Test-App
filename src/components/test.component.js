@@ -12,8 +12,6 @@ import Card from './Card';
 import Spinner from 'react-bootstrap/Spinner';
 
 
-
-
 const TestInput = styled.input.attrs(props => ({
     type : 'text',
     
