@@ -6,9 +6,8 @@ const path = require('path');
 const mongoose = require('mongoose');
 const PORT = 8080;
 const router = express.Router();
-const dotenv = require('dotenv');
+require('dotenv').config({ path: 'C:/Users/Jack/Documents/Typing-Test-App/backend/.env'});
 
-dotenv.config();
 
 //mongo db URI
 const { dbURI } = require('../config.json');
