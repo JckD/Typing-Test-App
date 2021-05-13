@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/Typing-Test-App/precache-manifest.f57f0774917397725999f738e262a68c.js"
+  "/Typing-Test-App/precache-manifest.1932926a73e033aedec66f98820358a6.js"
 );
 
 self.addEventListener('message', (event) => {
