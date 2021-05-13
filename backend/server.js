@@ -22,7 +22,7 @@ if ( process.env.NODE_ENV === 'development'){
 }
 app.use(cors({ credentials : true, origin: 'http://' + CORSorigin}));
 
-app.use(express.static(path.join( __dirname, 'public')))
+app.use(express.static(path.join('../build/')))
 
 
 app.use(bodyParser.json());
@@ -37,8 +37,8 @@ connection.once('open', function() {
 app.use('/Quotes', quoteRoutes);
 app.use('/user', userRoutes);
 
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public','index.html'))
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build','index.html'))
 })
 
 app.listen(PORT, function() {
