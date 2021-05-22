@@ -6,20 +6,19 @@
     "runtime-main.js": "/Typing-Test-App/static/js/runtime-main.c39adce7.js",
     "runtime-main.js.map": "/Typing-Test-App/static/js/runtime-main.c39adce7.js.map",
     "static/css/2.95258f03.chunk.css": "/Typing-Test-App/static/css/2.95258f03.chunk.css",
-    "static/js/2.34a1ef2c.chunk.js": "/Typing-Test-App/static/js/2.34a1ef2c.chunk.js",
-    "static/js/2.34a1ef2c.chunk.js.map": "/Typing-Test-App/static/js/2.34a1ef2c.chunk.js.map",
+
+    "static/js/2.8deb4d3b.chunk.js": "/Typing-Test-App/static/js/2.8deb4d3b.chunk.js",
+    "static/js/2.8deb4d3b.chunk.js.map": "/Typing-Test-App/static/js/2.8deb4d3b.chunk.js.map",
     "index.html": "/Typing-Test-App/index.html",
-    "precache-manifest.d88d09e5317150d0935c069803d3a0f4.js": "/Typing-Test-App/precache-manifest.d88d09e5317150d0935c069803d3a0f4.js",
+    "precache-manifest.fe17711fb9e47b5959a665dd200883ba.js": "/Typing-Test-App/precache-manifest.fe17711fb9e47b5959a665dd200883ba.js",
     "service-worker.js": "/Typing-Test-App/service-worker.js",
     "static/css/2.95258f03.chunk.css.map": "/Typing-Test-App/static/css/2.95258f03.chunk.css.map",
     "static/css/main.b9f273a6.chunk.css.map": "/Typing-Test-App/static/css/main.b9f273a6.chunk.css.map",
-    "static/js/2.34a1ef2c.chunk.js.LICENSE.txt": "/Typing-Test-App/static/js/2.34a1ef2c.chunk.js.LICENSE.txt"
+    "static/js/2.8deb4d3b.chunk.js.LICENSE.txt": "/Typing-Test-App/static/js/2.8deb4d3b.chunk.js.LICENSE.txt"
+
   },
   "entrypoints": [
     "static/js/runtime-main.c39adce7.js",
     "static/css/2.95258f03.chunk.css",
-    "static/js/2.34a1ef2c.chunk.js",
-    "static/css/main.b9f273a6.chunk.css",
-    "static/js/main.e62611bc.chunk.js"
-  ]
-}
+
+    "static/js/2.8deb4d3b.chunk.js",
