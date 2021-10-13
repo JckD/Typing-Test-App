@@ -6,7 +6,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const PORT = 8080;
 const router = express.Router();
-require('dotenv').config({ path: 'C:/Users/Jack/Documents/Typing-Test-App/backend/.env'});
+require('dotenv').config({ path: __dirname + '/.env'});
 
 
 //mongo db URI
@@ -22,8 +22,8 @@ if ( process.env.NODE_ENV === 'development'){
 }
 app.use(cors({ credentials : true, origin: 'http://' + CORSorigin}));
 
-app.use(express.static(path.join('../build')))
-
+app.use(express.static(path.join(__dirname,'/build/')))
+console.log(path.join(__dirname, '/build/'))
 
 app.use(bodyParser.json());
 
