@@ -1,4 +1,4 @@
-export default {
+ const light = {
     colors: {
         background : "white",
         cardBackground : "#F5FFFA",
@@ -7,3 +7,5 @@ export default {
         buttonColor : "ECEFF4",
     },
 };
+
+export default light

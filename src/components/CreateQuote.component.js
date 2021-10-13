@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert"
 import Card from "./Card";
 import Form from "react-bootstrap/Form";
-import FormControl from 'react-bootstrap/FormControl'
+//import FormControl from 'react-bootstrap/FormControl'
 import axios from "axios";
 
 export default class CreateQuote extends Component {

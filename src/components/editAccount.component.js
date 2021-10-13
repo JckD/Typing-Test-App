@@ -175,7 +175,7 @@ export default class EditAccount extends Component {
                 confirmPassword: e.target.value,
                 userName : this.state.newInput.userName,
                 email : this.state.newInput.email,
-                passowrd : this.state.newInput.password,
+                password : this.state.newInput.password,
             }},
            // () => {this.validateField(fieldName, this.state.newConfirmPassword)}
         );

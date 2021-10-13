@@ -496,7 +496,7 @@ export default class TypingTest extends Component {
         axios.post(this.state.apiUrl + '/user/updateHS', user , { headers : {'auth-token' : this.state.token}})
         .then(res =>
             console.log(res.data)    
-        ) .catch(err => err)
+        ).catch(err => err)
     }
 
     sendQuoteScores() {

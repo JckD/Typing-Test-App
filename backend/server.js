@@ -11,7 +11,7 @@ require('dotenv').config({ path: 'C:/Users/Jack/Documents/Typing-Test-App/backen
 
 //mongo db URI
 const { dbURI } = require('../config.json');
-mongoose.set('useFindAndModify', false);
+//mongoose.set('useFindAndModify', false);
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -27,7 +27,7 @@ app.use(express.static(path.join('../build')))
 
 app.use(bodyParser.json());
 
-mongoose.connect(process.env.DBURI, { useNewUrlParser: true,  useUnifiedTopology: true });
+ mongoose.connect(process.env.DBURI, { useNewUrlParser: true,  useUnifiedTopology: true });
 const connection = mongoose.connection;
 
 connection.once('open', function() {

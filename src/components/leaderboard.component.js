@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Alert from 'react-bootstrap/Alert';
+//import Alert from 'react-bootstrap/Alert';
 import axios from 'axios';
 import Card from "./Card";
 import Badge from 'react-bootstrap/Badge'
 import Table from 'react-bootstrap/Table'
 import styled from 'styled-components';
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 
 const SearchInput = styled.input.attrs(props => ({
     type : 'text',
@@ -117,7 +117,7 @@ export default class QuoteList extends Component {
                return <LeaderAcc user={currentUser} key={i} index={i}/> 
             } else if (bestWPM === currentUser) {
                 return <Leader user={currentUser} key={i} index={i}/>
-            } else if (bestAcc == currentUser) {
+            } else if (bestAcc === currentUser) {
                 return <BestAcc user={currentUser} key={i} index={i}/>
             }
             return <Ranking user={currentUser} key={i} index={i} /> 
