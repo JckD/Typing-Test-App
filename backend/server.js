@@ -19,6 +19,7 @@ const userRoutes = require('./routes/userRoutes');
 let CORSorigin = 'localhost:3000';
 if ( process.env.NODE_ENV === 'development'){
   CORSorigin = 'localhost:8080'
+  
 }
 app.use(cors({ credentials : true, origin: 'http://' + CORSorigin}));
 
