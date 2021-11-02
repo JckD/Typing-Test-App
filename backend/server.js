@@ -11,7 +11,7 @@ require('dotenv').config({ path: __dirname + '/.env'});
 
 //mongo db URI
 const { dbURI } = require('../config.json');
-mongoose.set('useFindAndModify', false);
+//mongoose.set('useFindAndModify', false);
 // Routes
 const quoteRoutes = require('./routes/quoteRoutes');
 const userRoutes = require('./routes/userRoutes');
