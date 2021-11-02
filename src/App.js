@@ -43,7 +43,7 @@ const App = () => {
         
         <Router>
         <div className="container">
-            <Navbar collapseOnSelect expand="lg" bg={isDarkMode ? 'dark' : 'light'} variant={isDarkMode ? 'dark' : 'light'} sticky="top">
+            <Navbar collapseOnSelect expand="lg" variant={isDarkMode ? 'dark' : 'light'} sticky="top">
               <NavbarBrand>
                 <NavIcon></NavIcon>
               </NavbarBrand>
